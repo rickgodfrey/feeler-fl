@@ -3,6 +3,7 @@
     "description": "feeler - foundation library",
     "homepage": "https://github.com/rickguo/feeler-fl",
     "type": "base-library",
+    "minimum-stability": "dev",
     "keywords": [
         "feeler", "fl", "feeler/fl"
     ],
