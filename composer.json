@@ -5,7 +5,7 @@
     "type": "base-library",
     "minimum-stability": "dev",
     "keywords": [
-        "feeler", "fl", "feeler/fl"
+        "feeler", "fl", "feeler fl"
     ],
     "require": {
         "php": ">=7.3"
