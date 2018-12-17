@@ -1,5 +1,5 @@
 {
-    "name": "feeler/fl",
+    "name": "rickguo/feeler.fl",
     "description": "feeler - foundation library",
     "type": "base library",
     "require": {
