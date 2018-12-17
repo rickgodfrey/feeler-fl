@@ -3,7 +3,11 @@
     "description": "feeler - foundation library",
     "homepage": "https://github.com/rickguo/feeler-fl",
     "type": "base-library",
+    "keywords": [
+        "feeler", "fl", "feeler/fl"
+    ],
     "require": {
+        "php": ">=7.3"
     },
     "license": "MIT",
     "authors": [
@@ -16,5 +20,7 @@
         "psr-4": {
             "feeler\\fl\\": "/"
         }
+    },
+    "autoload-dev": {
     }
 }
