@@ -6,7 +6,7 @@
  * Time: 下午10:11
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Time{
 	protected static $theDay;

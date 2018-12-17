@@ -6,7 +6,7 @@
  * Time: 下午4:16
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Dict{
     public static function lettersInLowerCase(){

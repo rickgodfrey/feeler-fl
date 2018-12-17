@@ -6,7 +6,7 @@
  * Author: Rick Guo
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Url{
 	protected $get;

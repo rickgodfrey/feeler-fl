@@ -6,7 +6,7 @@
  * Time: 下午3:04
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Str{
 	public static function isAvailable(&$string){

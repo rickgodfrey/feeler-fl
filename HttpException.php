@@ -6,7 +6,7 @@
  * Time: 上午11:06
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class HttpException extends \Exception{
 	protected $type;

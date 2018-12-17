@@ -6,7 +6,7 @@
  * Author: Rick Guo
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Version{
 	public static function compare($number1, $number2, $operator){

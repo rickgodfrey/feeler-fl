@@ -6,7 +6,7 @@
  * Time: 下午4:51
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Security{
     /**

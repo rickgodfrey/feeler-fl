@@ -6,7 +6,7 @@
  * Time: 上午11:06
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Exception extends \Exception {
 	function __construct($code = 0, $message = "", \Exception $previous = null)

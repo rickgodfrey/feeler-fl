@@ -6,7 +6,7 @@
  * Time: 下午2:31
  */
 
-namespace rickguo\Fl;
+namespace Feeler\Fl;
 
 class Obj{
 	public static function toArr($obj){
