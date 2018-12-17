@@ -6,7 +6,7 @@
  * Author: Rick Guo
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Version{
 	public static function compare($number1, $number2, $operator){

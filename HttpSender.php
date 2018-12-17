@@ -6,7 +6,7 @@
  * Time: 下午2:21
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class HttpSender implements Interfaces\IHttpSender {
 	protected $timeout;

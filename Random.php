@@ -1,6 +1,6 @@
 <?php
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Random{
 	public static function uuid($whole = false){

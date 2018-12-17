@@ -6,7 +6,7 @@
  * Time: 下午6:10
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Math{
 	public static function calc($pattern){

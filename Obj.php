@@ -6,7 +6,7 @@
  * Time: 下午2:31
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Obj{
 	public static function toArr($obj){

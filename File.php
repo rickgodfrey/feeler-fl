@@ -1,6 +1,6 @@
 <?php 
 
-namespace Fl;
+namespace rickguo\Fl;
 
 defined("HEAD") or define("HEAD", 1);
 defined("END") or define("END", 2);

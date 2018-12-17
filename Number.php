@@ -6,7 +6,7 @@
  * Time: 下午10:11
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Number{
 	public static $reflectInstance;

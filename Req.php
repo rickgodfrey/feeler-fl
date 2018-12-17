@@ -6,7 +6,7 @@
  * Author: Rick Guo
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Req{
 	protected static $input;

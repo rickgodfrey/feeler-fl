@@ -6,7 +6,7 @@
  * Time: 下午4:17
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Validator{
 	//test the legality of the mail address

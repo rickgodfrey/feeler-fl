@@ -6,7 +6,7 @@
  * Time: 下午4:51
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Security{
     /**

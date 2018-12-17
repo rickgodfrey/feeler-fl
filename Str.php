@@ -6,7 +6,7 @@
  * Time: 下午3:04
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Str{
 	public static function isAvailable(&$string){

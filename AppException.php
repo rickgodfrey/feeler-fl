@@ -6,7 +6,7 @@
  * Time: 上午11:06
  */
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class AppException extends \Exception {
 	protected $type;

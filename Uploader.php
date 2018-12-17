@@ -1,6 +1,6 @@
 <?php
 
-namespace Fl;
+namespace rickguo\Fl;
 
 class Uploader{
 	public $rootPath;
