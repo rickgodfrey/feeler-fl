@@ -11,7 +11,6 @@ namespace rickguo\Fl;
 class Arr{
 	public function __isset($name)
 	{
-		// TODO: Implement __isset() method.
 		return null;
 	}
 
