@@ -1,0 +1,15 @@
+{
+    "name": "feeler/fl",
+    "description": "feeler - foundation library",
+    "type": "base library",
+    "require": {
+        "chillerlan/php-qrcode": "^2.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "rickguo",
+            "email": "rickguo@feeler.top"
+        }
+    ]
+}
