@@ -11,5 +11,10 @@
             "name": "rickguo",
             "email": "rickguo@feeler.top"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "feeler\\fl\\": "/"
+        }
+    }
 }
