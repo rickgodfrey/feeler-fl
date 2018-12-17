@@ -2,7 +2,7 @@
     "name": "feeler/fl",
     "description": "feeler - foundation library",
     "homepage": "https://github.com/rickguo/feeler-fl",
-    "type": "base library",
+    "type": "base-library",
     "require": {
         "chillerlan/php-qrcode": "^2.0"
     },
