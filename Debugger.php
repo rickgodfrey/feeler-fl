@@ -1,40 +1,47 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 17-3-3
- * Time: 下午10:11
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Fl;
 
 class Debugger{
-	public static $startTime;
-	public static $endTime;
+	protected static $startTime;
+	protected static $endTime;
+	protected static $executionTime;
+	protected static $decimalPlace = 6;
 
-	public static function start(){
+	public static function startPoint(){
 		$time = microtime();
 		$time = explode(" ", $time);
 		$time = $time[1] + $time[0];
 		self::$startTime = $time;
 	}
 
-	public static function end(){
+	public static function endPoint(){
 		$time = microtime();
 		$time = explode(" ", $time);
 		$time = $time[1] + $time[0];
 		self::$endTime = $time;
 	}
 
-	public static function executionTime($decimalPlace = 6){
-		self::end();
+	public static function lastExecutionTime(){
+        $decimalPlace = self::$decimalPlace;
 
-		if(!self::$startTime || !self::$endTime || !is_int($decimalPlace) || $decimalPlace < 0){
-			return false;
-		}
+        if(!self::$startTime || !self::$endTime || !is_int($decimalPlace) || $decimalPlace < 0){
+            self::$executionTime = false;
+            return self::$executionTime;
+        }
 
-		$time = self::$endTime - self::$startTime;
+        $time = self::$endTime - self::$startTime;
+        self::$executionTime = number_format($time, $decimalPlace);
 
-		return number_format($time, $decimalPlace);
-	}
+        return self::$executionTime;
+    }
+
+    public static function setDecimalPlace($decimalPlace){
+	    self::$decimalPlace = !is_int($decimalPlace) || $decimalPlace < 0 ? 6 : $decimalPlace;
+    }
 }

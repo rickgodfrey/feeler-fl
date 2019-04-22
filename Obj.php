@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 17-3-28
- * Time: 下午2:31
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Fl;
@@ -26,7 +25,7 @@ class Obj{
 		return $arr;
 	}
 
-	public static function create(){
+	public static function new(){
 		return new \stdClass();
 	}
 

@@ -1,32 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 17-5-12
- * Time: 下午3:04
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Fl;
 
 class Str{
-	public static function isAvailable(&$string){
-		if(!is_string($string)){
-			return false;
-		}
-
-		$string = trim($string);
-
-		if(!$string){
-			return false;
-		}
-
-		return true;
-	}
-
-	public static function itIs($string){
-		return is_string($string);
-	}
-
 	public static function hideParts($string, $hideRate = 0.5, $symbol = "*", $symbolRepeatTimes = 4){
 		if(!self::isAvailable($string) || !is_float($hideRate) || $hideRate <= 0){
 			return "";

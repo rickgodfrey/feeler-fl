@@ -1,14 +1,17 @@
-<?php 
+<?php
 /**
- * Foundation Library
- * 
- * Brief: Array Constructions
- * Author: Rick Guo
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Fl;
 
 class Arr{
+    const ASC = 1;
+    const DESC = 2;
+    const SORT_NATURAL = 3;
+
 	public function __isset($name)
 	{
 		return null;

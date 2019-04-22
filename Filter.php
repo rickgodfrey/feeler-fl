@@ -1,21 +1,30 @@
 <?php
 /**
- * Foundation Library
- * 
- * Brief: Filting Constructions
- * Author: Rick Guo
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Fl;
 
 class Filter{
+    const INT = 1;
+    const FLOAT = 2;
+    const DOUBLE = 3;
+    const STRING = 4;
+    const HTML_ESCAPED = 5;
+    const HTML_UNESCAPED = 6;
+    const NO_FILTERING = 7;
+
 	//slice the string to the length
 	public static function sliceStr($text, $len = -1){
 		if(is_int($len) && $len > 0){
 			return mb_substr($text, 0, $len, "utf-8");
 		}
-		else if($len === 0)
-			return null;
+		else if($len === 0) {
+            return null;
+        }
+
 		return $text;
 	}
 	
