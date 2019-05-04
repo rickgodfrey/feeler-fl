@@ -5,11 +5,12 @@
     "type": "foundation-library",
     "minimum-stability": "dev",
     "keywords": [
-        "feeler", "fl", "feeler fl"
+        "feeler", "fl", "feeler-fl"
     ],
     "require": {
-        "php": ">=7.3",
-        "mb_substring": "*",
+        "php": ">=5.6",
+        "ext-mbstring": "*",
+        "ext-curl": "*",
         "feeler/base": "dev"
     },
     "license": "MIT",
@@ -21,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "feeler\\fl\\": "/"
+            "Feeler\\Fl\\": "/"
         }
     },
     "autoload-dev": {
