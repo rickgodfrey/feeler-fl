@@ -5,10 +5,17 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl;
+namespace Feeler\Fl\Network\Protocols;
+use Feeler\Fl\Arr;
+use Feeler\Fl\Str;
+use Feeler\Fl\Network\Protocols\Http\HttpException;
+use Feeler\Fl\Network\Protocols\Http\HttpSender;
 
 class Http
 {
+    const IP_V4 = 4;
+    const IP_V6 = 6;
+
     public static $headers;
     public static $pathParams = [];
 
@@ -44,11 +51,21 @@ class Http
             self::$headers = self::getAllHeaders();
         }
 
-        if (!self::$headers || !isset(self::$headers[$key])) {
+        if (!self::$headers) {
             return null;
         }
 
-        return isset(self::$headers[$key]) ? self::$headers[$key] : null;
+        $rs = Arr::getVal(self::$headers, $key, false, true, $result);
+
+        if($result === false && strpos(($key = key($rs)), "_") !== false){
+            $headerKey = str_replace("_", "-", $key);
+            if(isset(self::$headers[$headerKey]) && self::$headers[$headerKey]){
+                $val = self::$headers[$headerKey];
+            }
+            $rs = [$key => $val];
+        }
+
+        return $rs;
     }
 
     public static function getHeaders($keys)
@@ -59,7 +76,8 @@ class Http
 
         $headers = [];
         foreach ($keys as $key) {
-            $headers[$key] = self::getHeader($key);
+            $rs = self::getHeader($key);
+            $headers[key($rs)] = current($rs);
         }
 
         return $headers;
@@ -110,22 +128,21 @@ class Http
         return $_SERVER["REQUEST_METHOD"];
     }
 
-    public static function isAllowedIpAddr($ipAddrPattern, $ipVersion = "V4")
+    public static function isAllowedIpAddr($ipAddrPattern)
     {
         if (!$ipAddrPattern || !is_string($ipAddrPattern)) {
             throw new HttpException(1003, "ILLEGAL_IP_ADDR");
         }
 
-        $ipAddr = $_SERVER["REMOTE_ADDR"];
+        $ipAddr = self::clientIpAddr();
+        $ipVersion = self::IP_V4;
+        $ipv4AddrRegex = "/^\s*?([0-9]{1,3}|\*)((?:\.(?:[0-9]{1,3}|\*)){1,3})\s*$/i";
 
-        if ($ipVersion == "V4") {
-            $ipv4AddrRegex = "/^\s*?([0-9]{1,3}|\*)((?:\.(?:[0-9]{1,3}|\*)){1,3})\s*$/i";
-            $ipv6AddrRegex = "";
+        if (!preg_match($ipv4AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
+            $ipVersion = self::IP_V6;
+        }
 
-            if (!preg_match($ipv4AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
-                return false;
-            }
-
+        if ($ipVersion == self::IP_V4) {
             $array = explode(".", $ipAddrPatternSegs[2]);
             foreach ($array as $key => $val) {
                 if ($val == "") {
@@ -134,7 +151,6 @@ class Http
             }
 
             $ipAddrPatternSegs = Arr::mergeAll([$ipAddrPatternSegs[1]], $array);
-
 
             $ipAddrSegs = explode(".", $ipAddr);
 
@@ -153,7 +169,13 @@ class Http
             }
 
             return true;
-        } else {
+        }
+        else if($ipVersion == self::IP_V6){
+            $ipv6Addr = "::1";
+
+            return $ipAddr === $ipv6Addr ? true : false;
+        }
+        else{
             return false;
         }
     }
@@ -166,9 +188,6 @@ class Http
     public static function clientIpAddr()
     {
         $ip = null;
-        if ($ip !== null) {
-            return $ip;
-        }
 
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -187,5 +206,22 @@ class Http
         }
 
         return $ip;
+    }
+
+    public static function isSecureConn(){
+        if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "1" || strtolower($_SERVER["HTTPS"]) == "on")) {
+            return true;
+        }
+        elseif (isset($_SERVER["REQUEST_SCHEME"]) && $_SERVER["REQUEST_SCHEME"] == "https") {
+            return true;
+        }
+        elseif (isset($_SERVER["SERVER_PORT"]) && ($_SERVER["SERVER_PORT"] == "443")) {
+            return true;
+        }
+        elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {
+            return true;
+        }
+
+        return false;
     }
 }

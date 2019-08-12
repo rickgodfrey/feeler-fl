@@ -198,7 +198,7 @@ class Math{
 		}
 
 		unset($numbers[0]);
-		Arr::tidy($numbers);
+        $numbers = Arr::tidy($numbers);
 
 		foreach($numbers as $key => $number){
 			if(!Number::isNumeric($number) || $number == 0){

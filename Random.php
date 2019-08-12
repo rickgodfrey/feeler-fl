@@ -26,7 +26,7 @@ class Random{
 		return $uuid;
 	}
 	
-	public static function num($len = 6){
+	public static function number($len = 6){
 		$nums = array(6, 8, 1, 7, 2, 5, 3, 9, 0, 4);
 		
 		if($len > 10) $len = 10;
@@ -41,19 +41,22 @@ class Random{
 		return (string)$num;
 	}
 
-    /**  生成随机名称
-     * @param $length 名称长度
-     * @param int $numeric
+    /**
+     * @param $length
+     * @param bool $isNumeric
      * @return string
      */
-    public static function random($length, $numeric = 0) {
-        $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
-        $seed = $numeric ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
-        $hash = '';
+    public static function string($length, $isNumeric = false) {
+        $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $isNumeric ? 10 : 35);
+        $seed = $isNumeric ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
+        
+        $hash = "";
         $max = strlen($seed) - 1;
+
         for($i = 0; $i < $length; $i++) {
             $hash .= $seed{mt_rand(0, $max)};
         }
+
         return $hash;
     }
 }

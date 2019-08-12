@@ -129,22 +129,4 @@ class Filter{
 
 		return $html;
 	}
-
-	//the filter act
-	public static function actCallback($data, $callback){
-		if(!is_callable($callback)){
-			return $data;
-		}
-
-		if(is_array($data) && $data){
-			foreach($data as $key => $val){
-				$data[$key] = self::actCallback($val, $callback);
-			}
-		}
-		else{
-			$data = $callback($data);
-		}
-
-		return $data;
-	}
 }

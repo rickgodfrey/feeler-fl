@@ -8,14 +8,23 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Fl\Exceptions\AppException;
+
 class Version{
+    /**
+     * @param $number1
+     * @param $number2
+     * @param $operator
+     * @return bool
+     * @throws AppException
+     */
 	public static function compare($number1, $number2, $operator){
 		if(!in_array($operator, [">", "<", "=", ">=", "<="])){
 			throw new AppException(1, "Wrong Operator");
 		}
 
-		if(Number::isNumeric($number1) && Number::isNumeric($number2)){
-			return Number::compare($number1, $number2, $operator);
+		if(!self::isVerNum($number1) || !self::isVerNum($number2)){
+			return false;
 		}
 
 		$compare = strnatcasecmp($number1, $number2);
@@ -42,4 +51,18 @@ class Version{
 				break;
 		}
 	}
+
+	public static function isVerNum(&$verNum){
+	    if(!Str::isAvailable($verNum)){
+	        return false;
+        }
+
+	    $isVerNum = preg_match("/^v?([0-9]+(?:\.[0-9]+)*)$/i", $verNum, $matches) ? true : false;
+
+	    if(strtolower(substr($verNum, 0, 1)) === "v"){
+            $verNum = $matches[1];
+        }
+
+	    return $isVerNum;
+    }
 }

@@ -5,17 +5,24 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl;
+namespace Feeler\Fl\Network\Protocols\Http;
 
-class HttpSender implements Interfaces\IHttpSender
+use Feeler\Fl\Arr;
+
+class HttpSender implements IHttpSender
 {
+    const GET = "GET";
+    const POST = "POST";
+    const PUT = "PUT";
+    const DELETE = "DELETE";
+    
     protected $timeout;
     protected $url;
     protected $params;
     protected $headers;
     protected $basicAuth;
 
-    function __construct($headers = [], $basicAuth = "", $timeout = 5)
+    function __construct($headers = [], $basicAuth = null, $timeout = 5)
     {
         $this->setHeaders($headers);
         $this->setBasicAuth($basicAuth);
@@ -47,7 +54,7 @@ class HttpSender implements Interfaces\IHttpSender
             return $this;
         }
 
-        $this->headers = Arr::merge($this->preDefinedHeaders(), $headers);
+        $this->headers = Arr::mergeByKey($this->preDefinedHeaders(), $headers);
 
         return $this;
     }
@@ -99,7 +106,7 @@ class HttpSender implements Interfaces\IHttpSender
         }
 
         if ($basicAuth) {
-            $headers = Arr::merge($headers, ["Authorization: Basic " . base64_encode($basicAuth)]);
+            $headers = Arr::addToBottom("Authorization: Basic ".base64_encode($basicAuth), $headers);
         }
 
         $contentType = null;
@@ -172,8 +179,10 @@ class HttpSender implements Interfaces\IHttpSender
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         @curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+
+        //curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+
         if (!empty($params)) {
-            //curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POST, true);
             if (is_array($params)) {
                 $params = http_build_query($params);

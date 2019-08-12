@@ -7,7 +7,11 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Fl\Exceptions\AppException;
+
 class Time{
+    const TIME_STAMP_NOW = "TIME_STAMP_NOW";
+
 	protected static $theDay;
 	protected static $datetimeObj;
 	protected static $defaultTimezone;
@@ -33,8 +37,8 @@ class Time{
 		return $time;
 	}
 
-	public static function getTimeInfo($timestamp = "NOW"){
-		if($timestamp == "NOW"){
+	public static function getTimeInfo($timestamp = self::TIME_STAMP_NOW){
+		if($timestamp == self::TIME_STAMP_NOW){
 			return getdate();
 		}
 
@@ -62,6 +66,14 @@ class Time{
 
 		return strtotime(self::timeToStr( $time, "Y-m-d {$timeInfo["hours"]}:0:0"));
 	}
+
+    public static function nextHour($time = null){
+	    if($time === null){
+	        $time = time();
+        }
+
+        return strtotime("+1 hour", $time);
+    }
 
 	public static function minuteTime($time){
 		if(($time = self::getTime($time)) === null){
@@ -190,7 +202,7 @@ class Time{
 		return self::$timezone;
 	}
 
-	public static function strToTime($timeStr, $timeformat = null, $time = "NOW"){
+	public static function strToTime($timeStr, $timeformat = null, $time = self::TIME_STAMP_NOW){
 		if(!Str::isAvailable($timeStr) || !Str::isAvailable($timeformat)){
 			return false;
 		}
@@ -202,11 +214,11 @@ class Time{
 		if(Number::isInteric($time)){
 			self::datetimeInstance()->setTimestamp($time);
 		}
-		else if($time == "NOW"){
+		else if($time == self::TIME_STAMP_NOW){
 			self::datetimeInstance()->setTimestamp(time());
 		}
 		else{
-			throw new AppException(1, "time param must be timestamp or 'NOW' flag");
+			throw new AppException(1, "time param must be a timestamp or flag");
 		}
 
 		if (($timeObj = self::datetimeInstance()->createFromFormat($timeformat, $timeStr)) === false) {
@@ -219,4 +231,16 @@ class Time{
 	public static function periodDate($timestamp, $daysCount = 1){
 
 	}
+
+	public static function countPeriodDays($startTime, $endTime){
+        if(!Number::isPosiInteric($startTime) || !Number::isPosiInteric($endTime)){
+            return 0;
+        }
+
+        if(($period = $endTime - $startTime) <= 0){
+            return 0;
+        }
+
+        return ceil($period / 86400);
+    }
 }

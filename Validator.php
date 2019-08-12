@@ -8,6 +8,9 @@
 namespace Feeler\Fl;
 
 class Validator{
+    const LOCALE_COMPATIBLE = "COMPATIBLE";
+    const LOCALE_CN = "CN";
+
 	//test the legality of the mail address
 	public static function testMail($mail, &$parts = null){
 		$regex = "/^([a-zA-Z0-9_-]+?)@([a-zA-Z0-9-]+)((?:\.[a-zA-Z]*){1,3})$/";
@@ -16,13 +19,13 @@ class Validator{
 	}
 
 	//test the legality of the phone number
-	public static function testPhoneNumber($phoneNumber, &$country = "COMPATIBLE"){
+	public static function testPhoneNumber($phoneNumber, $country = self::LOCALE_COMPATIBLE){
 		if(!Number::isInteric($phoneNumber)){
 			return false;
 		}
 
 		$regex = [
-		    "COMPATIBLE" => "/^[0-9]{7,11}$/",
+		    "COMPATIBLE" => "/^[0-9]{5,11}$/",
 			"CN" => "/^1[0-9]{10}$/",
 		];
 

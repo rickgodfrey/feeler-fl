@@ -114,7 +114,7 @@ class Image {
 		return true;
 	}
 	
-	public static function saveAs($res, $file){
+	public static function saveAs(string $file, $res){
 		if(!is_resource($res) || !$file)
 			return false;
 		
@@ -179,7 +179,7 @@ class Image {
 		$imageSize = [];
 	
 		$file = TEMP_PATH.Random::uuid().".png";
-		if(self::saveAs($res, $file)){
+		if(self::saveAs($file, $res)){
 			$imageSize = getimagesize($file);
 			$imageSize = [$imageSize[0], $imageSize[1]];
 			File::rm($file);

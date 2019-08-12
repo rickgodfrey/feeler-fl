@@ -7,7 +7,9 @@
 
 namespace Feeler\Fl;
 
-class Number{
+use Feeler\Fl\Exceptions\AppException;
+
+class Number extends \Feeler\Base\Number {
 	public static $reflectInstance;
 	protected static $numbersAndZhNumbersRelations = [
 		0 => "零",
@@ -22,6 +24,13 @@ class Number{
 		9 => "九",
 	];
 
+    /**
+     * @param $methodName
+     * @param $params
+     * @return bool|void
+     * @throws AppException
+     * @throws \ReflectionException
+     */
 	public static function __callStatic($methodName, $params)
 	{
 		if(empty($params)){
@@ -57,7 +66,6 @@ class Number{
 		if(!self::isNumeric($number) || $number == 0 || !self::isInt($decimalPlaceLen) || $decimalPlaceLen < 0){
             if($fixedDecimalPlace && self::isPosiInteric($decimalPlaceLen)){
                 return "0.".str_repeat("0", $decimalPlaceLen);
-
             }
             else{
                 return 0;
@@ -75,15 +83,13 @@ class Number{
 			$number = (float)number_format($number, $decimalPlaceLen, ".", $thousandsSep);
 		}
 		else{
-			if($decimalPlaceLen == 0){
-
-			}
-			else{
+			if($decimalPlaceLen > 0){
 				$format1 = "%.{$decimalPlaceLen}f";
-				$format2 = "%.".($decimalPlaceLen + 1)."f";
+				$format2 = "%.".($decimalPlaceLen + 2)."f";
 				$length = -$decimalPlaceLen;
 
 				$number = sprintf($format1,substr(sprintf($format2, $number), 0, $length));
+
 				if($showThousandsSep){
 					preg_match("/(-|+)?(\d+)(\.)?(\d*)/i", $number, $matches);
 					$symbol = $matches[1];
@@ -128,6 +134,13 @@ class Number{
 		return $number;
 	}
 
+    /**
+     * @param $number1
+     * @param $number2
+     * @param $operator
+     * @return bool
+     * @throws AppException
+     */
 	public static function compare($number1, $number2, $operator){
 		if(!in_array($operator, [">", "<", "=", ">=", "<="])){
 			throw new AppException(1, "Wrong Operator");

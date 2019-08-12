@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl\Interfaces;
+namespace Feeler\Fl\Network\Protocols\Http;
 
 interface IHttpSender{
 	public function send($url, $params = [], $headers = [], $basicAuth = "");
