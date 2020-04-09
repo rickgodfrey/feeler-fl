@@ -22,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Feeler\\Fl\\": "feeler/fl/"
+            "Feeler\\Fl\\": "/"
         },
         "files": [
             
