@@ -8,7 +8,7 @@
         "feeler", "fl", "feeler-fl"
     ],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.3",
         "ext-mbstring": "*",
         "ext-curl": "*",
         "feeler/base": "dev-master"
@@ -22,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Feeler\\Fl\\": "feeler/fl/",
+            "Feeler\\Fl\\": "feeler/fl/"
         },
         "files": [
             "Exceptions.php"
@@ -34,6 +34,5 @@
         "branch-alias": {
             "dev": "1.0.0-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

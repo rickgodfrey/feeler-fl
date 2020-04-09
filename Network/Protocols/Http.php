@@ -7,6 +7,7 @@
 
 namespace Feeler\Fl\Network\Protocols;
 use Feeler\Fl\Arr;
+use Feeler\Fl\Number;
 use Feeler\Fl\Str;
 use Feeler\Fl\Network\Protocols\Http\HttpException;
 use Feeler\Fl\Network\Protocols\Http\HttpSender;
@@ -15,6 +16,7 @@ class Http
 {
     const IP_V4 = 4;
     const IP_V6 = 6;
+    const IP_INVALID = 1;
 
     public static $headers;
     public static $pathParams = [];
@@ -24,14 +26,25 @@ class Http
 
     }
 
-    public static function getAllHeaders()
-    {
+    public static function getAllHeaders(){
         if (!Arr::isAvailable(self::$headers)) {
             $headers = [];
 
             foreach ($_SERVER as $name => $value) {
                 if (substr($name, 0, 5) == "HTTP_") {
-                    $headers[strtolower(str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($name, 5))))))] = $value;
+                    $name = substr($name, 5);
+                    $name = str_replace("_", " ", $name);
+                    $name = str_replace(" ", "-", $name);
+                    $name = strtolower($name);
+                    $nameArr = explode("-", $name);
+                    $name = "";
+                    foreach($nameArr as $str){
+                        $name .= "-".ucfirst($str);
+                    }
+                    $name = substr($name, 1);
+
+                    $headers[$name] = $value;
+                    $headers[strtolower(str_replace("-", "_", $name))] = $value;
                 }
             }
 
@@ -55,15 +68,7 @@ class Http
             return null;
         }
 
-        $rs = Arr::getVal(self::$headers, $key, false, true, $result);
-
-        if($result === false && strpos(($key = key($rs)), "_") !== false){
-            $headerKey = str_replace("_", "-", $key);
-            if(isset(self::$headers[$headerKey]) && self::$headers[$headerKey]){
-                $val = self::$headers[$headerKey];
-            }
-            $rs = [$key => $val];
-        }
+        $rs = Arr::getVal(self::$headers, $key, false, true);
 
         return $rs;
     }
@@ -126,6 +131,44 @@ class Http
     public static function requestMethod()
     {
         return $_SERVER["REQUEST_METHOD"];
+    }
+
+    public static function isIpAddr($ipAddr)
+    {
+        if (!Str::isAvailable($ipAddr)) {
+            return self::IP_INVALID;
+        }
+
+        $ipAddr = explode(".", $ipAddr, 4);
+
+        $i = 1;
+        foreach($ipAddr as $seg){
+            if(!Number::isInteric($seg)){
+                return self::IP_INVALID;
+            }
+
+            if((int)$seg > 255 || (int)$seg < 0){
+                return self::IP_INVALID;
+            }
+
+            if($i > 4){
+                return self::IP_INVALID;
+            }
+
+            $i++;
+        }
+
+        return self::IP_V4;
+    }
+
+    public static function ipToNumber($ipAddr){
+        if(self::isIpAddr($ipAddr) !== self::IP_V4){
+            return "";
+        }
+
+        $ipSegs = explode(".", $ipAddr);
+
+        return (256 * ($ipSegs[2] + 256 * ($ipSegs[1] + 256 * $ipSegs[0])) + $ipSegs[3]);
     }
 
     public static function isAllowedIpAddr($ipAddrPattern)

@@ -19,7 +19,7 @@ class HttpException extends \Exception{
 	public function renderException($e){
 		if($this->type == "JSON") {
 			if (!is_object($e)) {
-				self::output("101", "服务器遇到了一点问题，请您稍后重试。");
+				self::output("101", "An error has occured.");
 			}
 
 			self::output($e->getCode(), $e->getMessage());
@@ -36,7 +36,7 @@ class HttpException extends \Exception{
 		if($code == 0){
 			if(TP_ENV == "production"){
 				$code = 1;
-				$message = "服务器遇到了一点问题，请您稍后重试。";
+				$message = "An error has occured.";
 			}
 			else{
 				$code = 1;

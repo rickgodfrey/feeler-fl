@@ -59,7 +59,9 @@ class Filter{
 				break;
 
                 case self::HTML_ESCAPED:
-					$data = htmlspecialchars((string)$data, ENT_QUOTES);
+                    if(is_string($data)){
+                        $data = htmlspecialchars($data, ENT_QUOTES);
+                    }
 					break;
 
                 case self::HTML_UNESCAPED:

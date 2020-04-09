@@ -7,26 +7,51 @@
 
 namespace Feeler\Fl\Exceptions;
 
+use app\versions\rootversion\models\Setting;
+use Feeler\Fl\Number;
+
 class AppException extends \Exception {
     protected $type;
 
-    function __construct($code = 0, $message = "", $type = "JSON", Exception $previous = null)
+    public function __construct($code = 0, $message = "", $type = "JSON", Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->type = $type;
     }
 
+    /**
+     * @param $e
+     * @throws \Feeler\Fl\Encryption\Exception\BadFormatException
+     * @throws \Feeler\Fl\Encryption\Exception\EnvironmentIsBrokenException
+     * @throws \ReflectionException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function renderException($e){
         if($this->type == "JSON") {
             if (!is_object($e)) {
-                self::output("101", "服务器遇到了一点问题，请您稍后重试。");
+                self::output("1", "system error[2]");
             }
 
             self::output($e->getCode(), $e->getMessage());
         }
     }
 
-    //输出JSON数据方法
+    /**
+     * @param $code
+     * @param $message
+     * @param array $data
+     * @return |null
+     * @throws \Feeler\Fl\Encryption\Exception\BadFormatException
+     * @throws \Feeler\Fl\Encryption\Exception\EnvironmentIsBrokenException
+     * @throws \ReflectionException
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public static function output($code, $message, $data = []){
         if(!$code && !is_numeric($code))
             return null;
@@ -36,7 +61,7 @@ class AppException extends \Exception {
         if($code == 0){
             if(TP_ENV == "production"){
                 $code = 1;
-                $message = "服务器遇到了一点问题，请您稍后重试。";
+                $message = "system error[1]";
             }
             else{
                 $code = 1;
@@ -52,12 +77,16 @@ class AppException extends \Exception {
             $output["data"] = $data;
         }
 
-        $output = json_encode($output, JSON_UNESCAPED_UNICODE);
+        $output = json_encode($output, JSON_UNESCAPED_UNICODE, 1024);
+
+        $output = Setting::instance()->encrypt($output);
+        $contentLength = Number::format(strlen($output) / 1024, 2, false);
 
         self::responseCode(200);
 
         ob_end_clean();
-        header("Content-Type: application/json; charset=utf-8");
+        header("Content-Type: text/html; charset=utf-8");
+        header("Content-Length: {$contentLength}");
         header("Content-Transfer-Encoding: binary");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
