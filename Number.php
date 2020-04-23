@@ -80,7 +80,7 @@ class Number extends \Feeler\Base\Number {
 				$thousandsSep = "";
 			}
 
-            $number = (float)(sprintf("%.{$decimalPlaceLen}f", (float)number_format($number, $decimalPlaceLen, ".", $thousandsSep)));
+            $number = (float)(sprintf("%.{$decimalPlaceLen}f", number_format($number, $decimalPlaceLen, ".", $thousandsSep)));
 		}
 		else{
 			if($decimalPlaceLen > 0){
