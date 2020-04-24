@@ -4,7 +4,7 @@ namespace Feeler\Fl\Encryption;
 
 class AES {
     const AES_256_CBC = "AES-256-CBC";
-    const IV = "AJhHaZ6";
+    const IV = "7e67q1ssSlqlxCnS";
 
     public static function encrypt(string $text, string $key) : string
     {
