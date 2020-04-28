@@ -62,63 +62,46 @@ class Number extends \Feeler\Base\Number {
 		return true;
 	}
 
-	public static function format($number, $decimalPlaceLen = 2, $round = true, $fixedDecimalPlace = false, $showThousandsSep = false){
-		if(!self::isNumeric($number) || $number == 0 || !self::isInt($decimalPlaceLen) || $decimalPlaceLen < 0){
+    public static function format($number, $decimalPlaceLen = 2, $round = true, $fixedDecimalPlace = false, $showThousandsSep = false){
+        if(!self::isNumeric($number) || $number == 0 || !self::isInt($decimalPlaceLen) || $decimalPlaceLen < 0){
             if($fixedDecimalPlace && self::isPosiInteric($decimalPlaceLen)){
                 return "0.".str_repeat("0", $decimalPlaceLen);
             }
             else{
                 return 0;
             }
-		}
+        }
 
-		if($round){
-			if($showThousandsSep){
-				$thousandsSep = ",";
-			}
-			else{
-				$thousandsSep = "";
-			}
+        if($showThousandsSep){
+            $thousandsSep = ",";
+        }
+        else{
+            $thousandsSep = "";
+        }
 
-            $number = (float)(sprintf("%.{$decimalPlaceLen}f", number_format($number, $decimalPlaceLen, ".", $thousandsSep)));
-		}
-		else{
-			if($decimalPlaceLen > 0){
-				$format1 = "%.{$decimalPlaceLen}f";
-				$format2 = "%.".($decimalPlaceLen + 2)."f";
-				$length = -$decimalPlaceLen;
+        if($round){
+            $number = sprintf("%.{$decimalPlaceLen}f", number_format($number, $decimalPlaceLen, ".", $thousandsSep));
+        }
+        else{
+            if($decimalPlaceLen == 0){
+                $number = floor($number);
+            }
+            else{
+                $digit = $decimalPlaceLen + 1;
+                $number = sprintf("%.{$digit}f", number_format($number, $digit, ".", $thousandsSep));
+                if(self::isFloaric($number)){
+                    $numberParts = explode(".", $number);
+                    $decimalLen = strlen($numberParts[1]);
+                    if($decimalLen > $decimalPlaceLen){
+                        $numberParts[1] = substr($numberParts[1], 0, ($decimalLen - ($decimalLen - $decimalPlaceLen)));
+                        $number = $numberParts[0].".".$numberParts[1];
+                    }
+                }
+            }
+        }
 
-				$number = sprintf($format1,substr(sprintf($format2, $number), 0, $length));
-
-				if($showThousandsSep){
-					preg_match("/(-|+)?(\d+)(\.)?(\d*)/i", $number, $matches);
-					$symbol = $matches[1];
-					$integerPlace = $matches[2];
-					$point = $matches[3];
-					$decimalPlace = $matches[4];
-
-					if(($integerLength = strlen($integerPlace)) > 3){
-						$integerPlace = strrev($integerPlace);
-
-						$integer = "";
-						for($i = 0; $i < $integerLength; $i++){
-							if($i > 0 && $i % 3 == 0){
-								$integer .= ",";
-							}
-
-							$integer .= $integerPlace[$i];
-						}
-
-						$integer = strrev($integer);
-
-						$number = (float)($symbol.$integer.$point.$decimalPlace);
-					}
-				}
-			}
-		}
-
-		if($fixedDecimalPlace && self::isPosiInteric($decimalPlaceLen)){
-		    $numberParts = explode(".", (string)$number, 2);
+        if($fixedDecimalPlace && self::isPosiInteric($decimalPlaceLen)){
+            $numberParts = explode(".", (string)$number, 2);
 
             if(isset($numberParts[1])){
                 if(($len = strlen($numberParts[1])) < $decimalPlaceLen){
@@ -130,9 +113,12 @@ class Number extends \Feeler\Base\Number {
                 $number = $number.".".str_repeat("0", $decimalPlaceLen);
             }
         }
+        else{
+            $number = (float)$number;
+        }
 
-		return $number;
-	}
+        return $number;
+    }
 
     /**
      * @param $number1
