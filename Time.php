@@ -243,4 +243,16 @@ class Time{
 
         return ceil($period / 86400);
     }
+
+    public static function microtime():string {
+        $microtime = (string)microtime();
+        $microtime = explode(" ", $microtime);
+        if(count($microtime) < 2){
+            return "";
+        }
+
+        $microtime = $microtime[1].substr($microtime[0], 1);
+
+        return $microtime;
+    }
 }
