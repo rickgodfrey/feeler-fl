@@ -8,8 +8,8 @@
 namespace Feeler\Fl;
 
 class Random{
-	public static function uuid($whole = false){
-		$id = strtolower(md5(uniqid(mt_rand(0, (double)microtime() * 1000000), true)));
+	public static function uuid($whole = false): string {
+		$id = strtolower(md5(uniqid(mt_rand(0, (int)((double)Time::microSecond() * 100000000)), true)));
 		
 		if($whole){
 			$uuid = 
@@ -46,9 +46,9 @@ class Random{
      * @param bool $isNumeric
      * @return string
      */
-    public static function string($length, $isNumeric = false) {
-        $seed = base_convert(md5(microtime().$_SERVER['DOCUMENT_ROOT']), 16, $isNumeric ? 10 : 35);
-        $seed = $isNumeric ? (str_replace('0', '', $seed).'012340567890') : ($seed.'zZ'.strtoupper($seed));
+    public static function string($length, $isNumeric = false):string {
+        $seed = base_convert(md5(Time::microtime().$_SERVER["DOCUMENT_ROOT"]), 16, $isNumeric ? 10 : 35);
+        $seed = $isNumeric ? (str_replace("0", "", $seed)."012340567890") : ($seed."zZ".strtoupper($seed));
         
         $hash = "";
         $max = strlen($seed) - 1;

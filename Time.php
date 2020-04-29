@@ -255,4 +255,14 @@ class Time{
 
         return $microtime;
     }
+
+    public static function microSecond(){
+        $microtime = (string)microtime();
+        $microtime = explode(" ", $microtime);
+        if(count($microtime) < 2){
+            return "";
+        }
+
+        return $microtime[1];
+    }
 }
