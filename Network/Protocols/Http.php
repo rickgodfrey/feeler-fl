@@ -68,9 +68,9 @@ class Http
             return null;
         }
 
-        $rs = Arr::getVal(self::$headers, $key, false, true);
+        $val = Arr::getVal(self::$headers, $key, $dataKey);
 
-        return $rs;
+        return [$dataKey => $val];
     }
 
     public static function getHeaders($keys)
