@@ -68,7 +68,7 @@ class Number extends \Feeler\Base\Number {
                 return "0.".str_repeat("0", $decimalPlaceLen);
             }
             else{
-                return 0;
+                return "0";
             }
         }
 
@@ -112,9 +112,6 @@ class Number extends \Feeler\Base\Number {
             else{
                 $number = $number.".".str_repeat("0", $decimalPlaceLen);
             }
-        }
-        else{
-            $number = (float)$number;
         }
 
         return $number;
