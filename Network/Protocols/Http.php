@@ -267,4 +267,11 @@ class Http
 
         return false;
     }
+
+    public static function responseCode($code = 200){
+        if(!$code || headers_sent())
+            return false;
+
+        return http_response_code($code);
+    }
 }
