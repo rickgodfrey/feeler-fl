@@ -9,7 +9,7 @@ namespace Feeler\Fl\Exceptions;
 
 use Feeler\Base\Errno;
 
-class DbException extends Exception {
+class CommitException extends DbException{
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

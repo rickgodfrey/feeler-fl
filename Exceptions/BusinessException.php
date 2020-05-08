@@ -9,7 +9,10 @@ namespace Feeler\Fl\Exceptions;
 
 use Feeler\Base\Errno;
 
-class DbException extends Exception {
+/**
+ * Exceptions about Business.
+ */
+class BusinessException extends Exception {
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

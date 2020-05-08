@@ -7,10 +7,10 @@
 
 namespace Feeler\Fl\Exceptions;
 
-abstract class AppException extends \Exception {
+abstract class AppException extends Exception {
     protected $type;
 
-    public function __construct($code = 0, $message = "", $type = "JSON", \Throwable $previous = null)
+    public function __construct($message = "", $code = Errno::UNSPECIFIED, $type = "JSON", \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->type = $type;
