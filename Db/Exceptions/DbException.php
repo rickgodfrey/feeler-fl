@@ -7,6 +7,7 @@
 
 namespace Feeler\Fl\Db\Exceptions;
 
+use Feeler\Fl\Exceptions\BaseException;
 use Feeler\Base\Errno;
 
 class DbException extends BaseException {
