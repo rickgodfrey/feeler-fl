@@ -5,15 +5,18 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl\Network\Protocols\Http;
+namespace Feeler\Fl\Network\Protocols\Exceptions;
 
+use Feeler\Fl\Exceptions\BaseException;
+use Feeler\Base\Errno;
 use Feeler\Fl\Network\Protocols\Http;
 use Feeler\Fl\Number;
 
-class HttpException extends \Exception{
+
+class HttpException extends BaseException {
 	protected $type;
 
-    public function __construct($code = 0, $message = "", $type = "JSON", \Throwable $previous = null)
+    public function __construct($message = "", $code = Errno::UNSPECIFIED, $type = "JSON", \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->type = $type;

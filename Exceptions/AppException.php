@@ -9,7 +9,7 @@ namespace Feeler\Fl\Exceptions;
 
 use Feeler\Base\Errno;
 
-abstract class AppException extends Exception {
+abstract class AppException extends BaseException {
     protected $type;
 
     public function __construct($message = "", $code = Errno::UNSPECIFIED, $type = "JSON", \Throwable $previous = null)

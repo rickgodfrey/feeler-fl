@@ -6,10 +6,11 @@
  */
 
 namespace Feeler\Fl\Network\Protocols;
+
 use Feeler\Fl\Arr;
 use Feeler\Fl\Number;
 use Feeler\Fl\Str;
-use Feeler\Fl\Network\Protocols\Http\HttpException;
+use Feeler\Fl\Network\Protocols\Exceptions\HttpException;
 use Feeler\Fl\Network\Protocols\Http\HttpSender;
 
 class Http
@@ -124,7 +125,7 @@ class Http
         $requestMethod = $_SERVER["REQUEST_METHOD"];
 
         if (Arr::isAvailable($toCheckAllowedMethods) && !in_array($requestMethod, $toCheckAllowedMethods)) {
-            throw new HttpException(1003, "REQUEST_METHOD_ERROR");
+            throw new HttpException("REQUEST_METHOD_ERROR", 1003);
         }
     }
 
@@ -171,10 +172,15 @@ class Http
         return (256 * ($ipSegs[2] + 256 * ($ipSegs[1] + 256 * $ipSegs[0])) + $ipSegs[3]);
     }
 
+    /**
+     * @param $ipAddrPattern
+     * @return bool
+     * @throws HttpException
+     */
     public static function isAllowedIpAddr($ipAddrPattern)
     {
         if (!$ipAddrPattern || !is_string($ipAddrPattern)) {
-            throw new HttpException(1003, "ILLEGAL_IP_ADDR");
+            throw new HttpException("ILLEGAL_IP_ADDR", 1003);
         }
 
         $ipAddr = self::clientIpAddr();

@@ -12,7 +12,7 @@ use Feeler\Base\Errno;
 /**
  * Exceptions about Business.
  */
-class BusinessException extends Exception {
+class BusinessException extends BaseException {
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
