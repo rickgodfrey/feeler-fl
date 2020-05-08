@@ -1,11 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 2019-05-05
- * Time: 20:38
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
-class Rsa2
+
+namespace Feeler\Fl\Encryption;
+
+class RSA
 {
     private static $PRIVATE_KEY = 'rsa_private_key.pem 内容';
     private static $PUBLIC_KEY  = 'rsa_public_key.pem 内容';

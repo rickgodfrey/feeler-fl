@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl\Exceptions;
+namespace Feeler\Fl\Db\Exceptions;
 
 use Feeler\Base\Errno;
 
