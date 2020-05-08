@@ -7,6 +7,8 @@
 
 namespace Feeler\Fl\Exceptions;
 
+use Feeler\Base\Errno;
+
 abstract class AppException extends Exception {
     protected $type;
 
