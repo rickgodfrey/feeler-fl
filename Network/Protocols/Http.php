@@ -258,20 +258,22 @@ class Http
     }
 
     public static function isSecureConn(){
+        $isSecureConn = false;
+
         if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "1" || strtolower($_SERVER["HTTPS"]) == "on")) {
-            return true;
+            $isSecureConn = true;
         }
         elseif (isset($_SERVER["REQUEST_SCHEME"]) && $_SERVER["REQUEST_SCHEME"] == "https") {
-            return true;
+            $isSecureConn = true;
         }
         elseif (isset($_SERVER["SERVER_PORT"]) && ($_SERVER["SERVER_PORT"] == "443")) {
-            return true;
+            $isSecureConn = true;
         }
         elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {
-            return true;
+            $isSecureConn = true;
         }
 
-        return false;
+        return $isSecureConn;
     }
 
     public static function responseCode($code = 200){
