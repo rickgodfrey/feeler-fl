@@ -20,5 +20,5 @@ abstract class AppException extends BaseException {
 
     abstract public function renderException($e);
 
-    abstract public static function output($code, $data);
+    abstract public static function output($code, $message, $data);
 }
