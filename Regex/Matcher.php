@@ -37,6 +37,10 @@ class Matcher extends BaseClass {
                     $pattern = Pattern::HAS_EMAIL;
                 }
                 break;
+
+            default:
+                $pattern = "";
+                break;
         }
 
         if(!Str::isAvailable($pattern)){
