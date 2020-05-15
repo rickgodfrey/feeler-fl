@@ -50,6 +50,10 @@ class Redis extends BaseClass {
         }
     }
 
+    public static function getInstance(){
+        return self::$usingInstance;
+    }
+
     public static function set(string $key, $value, $expiration = null){
         if(!Str::isAvailable($key)){
             return false;
