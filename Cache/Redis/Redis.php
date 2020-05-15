@@ -8,15 +8,21 @@
 namespace Feeler\Fl\Cache\Redis;
 
 use Feeler\Base\BaseClass;
+use Feeler\Base\Singleton;
 use Feeler\Base\Str;
 use Feeler\Base\Arr;
 
-class Redis extends BaseClass {
+class Redis extends Singleton {
     protected static $instances = [];
     /**
      * @var \Redis
      */
     protected static $usingInstance;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     protected static function select(string $instanceName){
         if(!Str::isAvailable($instanceName)){
@@ -27,7 +33,7 @@ class Redis extends BaseClass {
             return false;
         }
 
-        self::$usingInstance = self::$instances[$instanceName];
+        self::$usingInstance = self::$instances[$instanceName]["instance"];
 
         return true;
     }
@@ -48,13 +54,15 @@ class Redis extends BaseClass {
         if(Str::isAvailable($serviceObject->password)){
             self::$usingInstance->auth($serviceObject->password);
         }
+
+        return true;
     }
 
     public static function getInstance(){
         return self::$usingInstance;
     }
 
-    public static function set(string $key, $value, $expiration = null){
+    public function set(string $key, $value, $expiration = null){
         if(!Str::isAvailable($key)){
             return false;
         }
@@ -62,7 +70,7 @@ class Redis extends BaseClass {
         return self::$usingInstance->set($key, $value, $expiration);
     }
 
-    public static function get(string $key){
+    public function get(string $key){
         if(!Str::isAvailable($key)){
             return false;
         }
@@ -70,7 +78,7 @@ class Redis extends BaseClass {
         return self::$usingInstance->get($key);
     }
 
-    public static function rm(string $key) :int{
+    public function rm(string $key) :int{
         $keys = func_get_args();
 
         foreach($keys as $index => $key){

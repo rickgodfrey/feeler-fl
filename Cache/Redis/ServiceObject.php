@@ -17,5 +17,8 @@ class ServiceObject extends BaseClass {
     public function __construct($ipAddr, $port, $password = null)
     {
         parent::__construct();
+        $this->ipAddr = $ipAddr;
+        $this->port = $port;
+        $this->password = $password;
     }
 }
