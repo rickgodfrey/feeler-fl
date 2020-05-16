@@ -9,15 +9,18 @@ namespace Feeler\Fl\Cache\Redis;
 
 use Feeler\Base\BaseClass;
 use Feeler\Base\Exceptions\InvalidMethodException;
+use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Base\Arr;
 use Feeler\Base\TFactory;
 
 class Redis extends \Redis {
-    const DEFAULT_INSTANCE = "default";
-
     use TFactory;
 
+    const DEFAULT_INSTANCE = "default";
+
+    protected static $prefix = "";
+    protected static $expiration = null;
     /**
      * @var \Redis
      */
@@ -28,28 +31,43 @@ class Redis extends \Redis {
         parent::__construct();
     }
 
-    public static function __callStatic($methodName, $params)
+    /**
+     * @return string
+     */
+    public function prefix(): string
     {
-        if(method_exists(self::$usingInstance, $methodName)){
-            return call_user_func_array([self::$usingInstance, $methodName], $params);
-        }
-        else{
-            throw new InvalidMethodException("Calling invalid method: \\Redis::{$methodName}()");
+        return self::$prefix;
+    }
+
+    /**
+     * @param mixed $prefix
+     */
+    public static function setPrefix($prefix): void
+    {
+        if(Str::isAvailable($prefix)){
+            self::$prefix = $prefix;
         }
     }
 
-    protected static function selectDb(string $instanceName){
-        if(!Str::isAvailable($instanceName)){
-            return false;
+    /**
+     * @param $expiration
+     */
+    public static function setExpiration($expiration){
+        if(Number::isPosiInteric($expiration)){
+            self::$expiration = (int)$expiration;
+        }
+    }
+
+    public function expiration(){
+        return self::$expiration;
+    }
+
+    public function genKey($key) : string {
+        if(!Str::isAvailable($key)){
+            return "";
         }
 
-        if(!isset(static::$instances[$instanceName])){
-            return false;
-        }
-
-        static::$usingInstance = static::$instances[$instanceName];
-
-        return true;
+        return $this->prefix().$key;
     }
 
     /**
@@ -62,26 +80,61 @@ class Redis extends \Redis {
             return false;
         }
 
-        static::$instances[$instanceName] = new self();
+        $instance = new self();
+        static::setUsingInstance($instanceName, $instance);
+        static::setInstance($instanceName, $instance);
 
-        static::selectDb($instanceName);
-
-        static::$usingInstance->connect($serviceObject->ipAddr, $serviceObject->port);
+        if($serviceObject->isPersistent == true){
+            static::$usingInstance->pconnect($serviceObject->ipAddr, $serviceObject->port);
+        }
+        else{
+            static::$usingInstance->connect($serviceObject->ipAddr, $serviceObject->port);
+        }
 
         if(Str::isAvailable($serviceObject->password)){
             static::$usingInstance->auth($serviceObject->password);
         }
+
+        static::setPrefix($serviceObject->prefix);
+        static::setExpiration($serviceObject->expiration);
     }
 
-    public static function rm(string $key) :int{
+    /**
+     * @param string $key
+     * @return bool|mixed|string
+     */
+    public function get($key){
+        if(!Str::isAvailable($key)){
+            return false;
+        }
+
+        return static::$usingInstance->get($this->genKey($key));
+    }
+
+    public function set($key, $value, $expiration = null){
+        if(!Str::isAvailable($key)){
+            return false;
+        }
+
+        if($expiration === null && $this->expiration() !== null){
+            $expiration = $this->expiration();
+        }
+
+        return static::$usingInstance->set($this->genKey($key), $value, $expiration);
+    }
+
+    public function rm($key) :int{
         $keys = func_get_args();
 
-        foreach($keys as $index => $key){
+        foreach($keys as $index => &$key){
             if(!Str::isAvailable($key)){
                 unset($keys[$index]);
                 continue;
             }
+
+            $key = $this->genKey($key);
         }
+        unset($key);
 
         $keys = Arr::tidy($keys);
 
