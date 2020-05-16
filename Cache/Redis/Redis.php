@@ -28,6 +28,16 @@ class Redis extends \Redis {
         parent::__construct();
     }
 
+    public static function __callStatic($methodName, $params)
+    {
+        if(method_exists(self::$usingInstance, $methodName)){
+            return call_user_func_array([self::$usingInstance, $methodName], $params);
+        }
+        else{
+            throw new InvalidMethodException("Calling invalid method: \\Redis::{$methodName}()");
+        }
+    }
+
     protected static function selectDb(string $instanceName){
         if(!Str::isAvailable($instanceName)){
             return false;
