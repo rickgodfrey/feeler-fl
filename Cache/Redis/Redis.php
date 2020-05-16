@@ -11,9 +11,11 @@ use Feeler\Base\BaseClass;
 use Feeler\Base\Exceptions\InvalidMethodException;
 use Feeler\Base\Str;
 use Feeler\Base\Arr;
+use Feeler\Base\TFactory;
 
 class Redis extends \Redis {
-    protected static $instances = [];
+    use TFactory;
+
     /**
      * @var \Redis
      */
@@ -53,10 +55,7 @@ class Redis extends \Redis {
             return false;
         }
 
-        self::$instances[$instanceName] = [
-            "service_object" => $serviceObject,
-            "instance" => (new \Redis()),
-        ];
+        self::$instances[$instanceName] = new static();
 
         self::selectDb($instanceName);
 
