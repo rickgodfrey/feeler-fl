@@ -14,6 +14,8 @@ use Feeler\Base\Arr;
 use Feeler\Base\TFactory;
 
 class Redis extends \Redis {
+    const DEFAULT_INSTANCE = "default";
+
     use TFactory;
 
     /**
@@ -21,14 +23,9 @@ class Redis extends \Redis {
      */
     protected static $usingInstance;
 
-    public static function __callStatic($methodName, $params)
+    public function __construct()
     {
-        if(method_exists(self::$usingInstance, $methodName)){
-            return call_user_func_array([self::$usingInstance, $methodName], $params);
-        }
-        else{
-            throw new InvalidMethodException("Calling invalid method: \\Redis::{$methodName}()");
-        }
+        parent::__construct();
     }
 
     protected static function selectDb(string $instanceName){
@@ -36,11 +33,11 @@ class Redis extends \Redis {
             return false;
         }
 
-        if(!isset(self::$instances[$instanceName])){
+        if(!isset(static::$instances[$instanceName])){
             return false;
         }
 
-        self::$usingInstance = self::$instances[$instanceName];
+        static::$usingInstance = static::$instances[$instanceName];
 
         return true;
     }
@@ -55,18 +52,15 @@ class Redis extends \Redis {
             return false;
         }
 
-        self::$instances[$instanceName] = new static();
+        static::$instances[$instanceName] = new self();
 
-        self::selectDb($instanceName);
+        static::selectDb($instanceName);
 
-        self::$usingInstance->connect($serviceObject->ipAddr, $serviceObject->port);
+        static::$usingInstance->connect($serviceObject->ipAddr, $serviceObject->port);
+
         if(Str::isAvailable($serviceObject->password)){
-            self::$usingInstance->auth($serviceObject->password);
+            static::$usingInstance->auth($serviceObject->password);
         }
-    }
-
-    public static function getInstance(){
-        return self::$usingInstance;
     }
 
     public static function rm(string $key) :int{
@@ -85,6 +79,6 @@ class Redis extends \Redis {
             return 0;
         }
 
-        return self::$usingInstance->del($keys);
+        return static::$usingInstance->del($keys);
     }
 }
