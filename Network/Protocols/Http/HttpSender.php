@@ -7,8 +7,8 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
-use Feeler\Fl\Arr;
-use Feeler\Fl\Str;
+use Feeler\Base\Arr;
+use Feeler\Base\Str;
 
 class HttpSender implements IHttpSender
 {

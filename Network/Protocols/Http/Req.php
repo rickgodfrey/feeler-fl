@@ -7,7 +7,7 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
-use Feeler\Fl\Arr;
+use Feeler\Base\Arr;
 
 class Req{
     const HTML_ESCAPED = Filter::HTML_ESCAPED;

@@ -7,7 +7,10 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Arr;
 use Feeler\Base\Table;
+use Feeler\Base\File;
+use Feeler\Base\Number;
 
 class Image {
     public static $typeMappings = [

@@ -8,6 +8,9 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Str;
+use Feeler\Base\Arr;
+
 class Xml{
     /**
      * @param $xml

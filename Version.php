@@ -8,7 +8,7 @@
 
 namespace Feeler\Fl;
 
-use Feeler\Fl\Exceptions\AppException;
+use Feeler\Base\Str;
 
 class Version{
     /**
@@ -16,11 +16,11 @@ class Version{
      * @param $number2
      * @param $operator
      * @return bool
-     * @throws AppException
+     * @throws \Exception
      */
 	public static function compare($number1, $number2, $operator){
 		if(!in_array($operator, [">", "<", "=", ">=", "<="])){
-			throw new AppException(1, "Wrong Operator");
+			throw new \Exception("Wrong Operator");
 		}
 
 		if(!self::isVerNum($number1) || !self::isVerNum($number2)){

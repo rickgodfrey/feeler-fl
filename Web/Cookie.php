@@ -3,8 +3,8 @@
 namespace Feeler\Fl\Web;
 
 use Feeler\Base\BaseClass;
-use Feeler\Fl\Number;
-use Feeler\Fl\Str;
+use Feeler\Base\Number;
+use Feeler\Base\Str;
 
 class Cookie extends BaseClass {
     public static function set($key, $value, $expiration = 0) :bool{

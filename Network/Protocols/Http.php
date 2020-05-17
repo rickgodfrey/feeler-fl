@@ -7,9 +7,9 @@
 
 namespace Feeler\Fl\Network\Protocols;
 
-use Feeler\Fl\Arr;
-use Feeler\Fl\Number;
-use Feeler\Fl\Str;
+use Feeler\Base\Arr;
+use Feeler\Base\Number;
+use Feeler\Base\Str;
 use Feeler\Fl\Network\Protocols\Exceptions\HttpException;
 use Feeler\Fl\Network\Protocols\Http\HttpSender;
 

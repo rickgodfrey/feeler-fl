@@ -10,7 +10,6 @@ namespace Feeler\Fl\Network\Protocols\Exceptions;
 use Feeler\Fl\Exceptions\BaseException;
 use Feeler\Base\Errno;
 use Feeler\Fl\Network\Protocols\Http;
-use Feeler\Fl\Number;
 
 
 class HttpException extends BaseException {

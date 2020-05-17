@@ -7,6 +7,8 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Number;
+
 class Validator{
     const LOCALE_COMPATIBLE = "COMPATIBLE";
     const LOCALE_CN = "CN";

@@ -7,6 +7,10 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Str;
+use Feeler\Base\Arr;
+use Feeler\Base\Number;
+
 class Math{
 	public static function calc($pattern){
 		if(!Str::isAvailable($pattern)){

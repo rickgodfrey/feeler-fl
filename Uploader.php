@@ -7,6 +7,9 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Arr;
+use Feeler\Base\File;
+
 class Uploader{
 	public $rootPath;
 	public $dir;

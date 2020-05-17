@@ -7,7 +7,8 @@
 
 namespace Feeler\Fl;
 
-use Feeler\Fl\Exceptions\AppException;
+use Feeler\Base\Number;
+use Feeler\Base\Str;
 
 class Time{
     const TIME_STAMP_NOW = "TIME_STAMP_NOW";
@@ -218,7 +219,7 @@ class Time{
 			self::datetimeInstance()->setTimestamp(time());
 		}
 		else{
-			throw new AppException(1, "time param must be a timestamp or flag");
+			throw new \Exception("time param must be a timestamp or flag");
 		}
 
 		if (($timeObj = self::datetimeInstance()->createFromFormat($timeformat, $timeStr)) === false) {
