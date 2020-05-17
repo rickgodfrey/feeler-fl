@@ -108,7 +108,7 @@ class Redis extends \Redis {
             return false;
         }
 
-        return parent::get($this->genKey($key));
+        return json_decode(parent::get($this->genKey($key)), true);
     }
 
     public function set($key, $value, $expiration = null){
@@ -120,7 +120,7 @@ class Redis extends \Redis {
             $expiration = $this->expiration();
         }
 
-        return parent::set($this->genKey($key), $value, $expiration);
+        return json_encode(parent::set($this->genKey($key), $value, $expiration));
     }
 
     public function rm($key) :int{
