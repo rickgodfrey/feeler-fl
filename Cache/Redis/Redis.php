@@ -120,7 +120,7 @@ class Redis extends \Redis {
             $expiration = $this->expiration();
         }
 
-        return json_encode(parent::set($this->genKey($key), $value, $expiration));
+        return parent::set($this->genKey($key), json_encode($value), $expiration);
     }
 
     public function rm($key) :int{
