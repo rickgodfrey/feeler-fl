@@ -12,11 +12,6 @@ use Feeler\Base\Str;
 
 class HttpSender implements IHttpSender
 {
-    const GET = "GET";
-    const POST = "POST";
-    const PUT = "PUT";
-    const DELETE = "DELETE";
-
     protected $timeout;
     protected $url;
     protected $params;

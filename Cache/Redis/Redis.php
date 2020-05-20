@@ -17,7 +17,7 @@ use Feeler\Base\TFactory;
 class Redis extends \Redis {
     use TFactory;
 
-    const DEFAULT_INSTANCE = "default";
+    const DEFAULT_INSTANCE = "DEFAULT_INSTANCE";
 
     protected static $prefix = "";
     protected static $expiration = null;

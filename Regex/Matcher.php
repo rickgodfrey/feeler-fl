@@ -11,10 +11,10 @@ use Feeler\Base\BaseClass;
 use Feeler\Base\Str;
 
 class Matcher extends BaseClass {
-    const DOMAIN_NAME = 1;
-    const EMAIL = 2;
+    const DOMAIN_NAME = "DOMAIN_NAME";
+    const EMAIL = "EMAIL";
 
-    protected static function match($string, int $kind, &$matches, bool $strict = true){
+    protected static function match($string, string $kind, &$matches, bool $strict = true){
         if(!Str::isAvailable($string)){
             return false;
         }

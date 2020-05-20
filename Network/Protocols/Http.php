@@ -15,9 +15,9 @@ use Feeler\Fl\Network\Protocols\Http\HttpSender;
 
 class Http
 {
-    const IP_V4 = 4;
-    const IP_V6 = 6;
-    const IP_INVALID = 1;
+    const IP_V4 = "IP_V4";
+    const IP_V6 = "IP_V6";
+    const IP_INVALID = "IP_INVALID";
 
     public static $headers;
     public static $pathParams = [];

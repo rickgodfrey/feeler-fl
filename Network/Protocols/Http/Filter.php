@@ -8,13 +8,13 @@
 namespace Feeler\Fl\Network\Protocols\Http;
 
 class Filter{
-    const INT = 1;
-    const FLOAT = 2;
-    const DOUBLE = 3;
-    const STRING = 4;
-    const HTML_ESCAPED = 5;
-    const HTML_UNESCAPED = 6;
-    const NO_FILTERING = 7;
+    const INT = "INT";
+    const FLOAT = "FLOAT";
+    const DOUBLE = "DOUBLE";
+    const STRING = "STRING";
+    const HTML_ESCAPED = "HTML_ESCAPED";
+    const HTML_UNESCAPED = "HTML_UNESCAPED";
+    const NO_FILTERING = "NO_FILTERING";
 
 	//slice the string to the length
 	public static function sliceStr($text, $len = -1){
