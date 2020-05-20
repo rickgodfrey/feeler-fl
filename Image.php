@@ -8,34 +8,24 @@
 namespace Feeler\Fl;
 
 use Feeler\Base\Arr;
+use Feeler\Base\Singleton;
 use Feeler\Base\Table;
 use Feeler\Base\File;
 use Feeler\Base\Number;
+use Feeler\Base\Str;
 
-class Image {
-    public static $typeMappings = [
+class Image extends Singleton {
+    const TYPE_MAPPINGS = [
         "jpg" => "jpeg",
     ];
 
-    public $font;
+    const FONT_PATH = ROOT_PATH."requirements/fonts/yahei_mono.ttf";
 
     protected static $instance;
 
-    function __construct(){
-        $this->font = ROOT_PATH."requirements/fonts/yahei_mono.ttf";
-    }
-
-    protected static function instance(){
-        if(!is_object(self::$instance)){
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
     public static function revertType(&$type){
-        if(isset(self::$typeMappings[$type])){
-            $type = self::$typeMappings[$type];
+        if(isset(self::TYPE_MAPPINGS[$type])){
+            $type = self::TYPE_MAPPINGS[$type];
         }
 
         return true;
@@ -45,13 +35,15 @@ class Image {
         return is_resource($res) ? imagedestroy($res) : false;
     }
 
-    public static function create($width, $height, $color = array(255, 255, 255, 100)){
-        if(!$width || !$height)
+    public static function create($width, $height, $color = [255, 255, 255, 100]){
+        if(!Number::isNumeric($width) || !Number::isNumeric($height)){
             return false;
+        }
 
         $src = imagecreatetruecolor($width, $height);
-        if(!($color = self::getColor($src, $color)))
+        if(!($color = self::getColor($src, $color))){
             return false;
+        }
 
         imagealphablending($src, true);
         imagefill($src, 0, 0, $color);
@@ -61,8 +53,9 @@ class Image {
     }
 
     public static function createFromFile($srcFile){
-        if(!is_file($srcFile))
+        if(!is_file($srcFile)){
             return false;
+        }
 
         ($type = File::getExt($srcFile)) and self::revertType($type);
 
@@ -108,7 +101,7 @@ class Image {
         return imagecreatefromstring($string);
     }
 
-    public static function setColor(&$src, $rgb = array()){
+    public static function setColor(&$src, $rgb = []){
         if(!is_resource($src) || !Number::isInteric($color = self::getColor($src, $rgb)))
             return false;
 
@@ -120,11 +113,13 @@ class Image {
     }
 
     public static function saveAs(string $file, $res){
-        if(!is_resource($res) || !$file)
+        if(!is_resource($res) || !Str::isAvailable($file)) {
             return false;
+        }
 
-        if(!File::mkdir(File::getPath($file)))
+        if(!File::mkdir(File::getPath($file))){
             return false;
+        }
 
         $type = File::getExt($file);
         self::revertType($type);
@@ -151,12 +146,14 @@ class Image {
     }
 
     public static function getColor($src, $rgb){
-        if(!Arr::isAvailable($rgb))
+        if(!Arr::isAvailable($rgb)){
             return null;
+        }
 
         $count = count($rgb);
-        if($count != 3 && $count != 4)
+        if($count != 3 && $count != 4){
             return null;
+        }
 
         if($count == 4){
             [$r, $g, $b, $a] = $rgb;
@@ -171,11 +168,13 @@ class Image {
     }
 
     public static function fillRectangle(&$src, $rectangle = []){
-        if(!is_resource($src) || !Arr::isAvailable($rectangle, ["w", "h", "x", "y", "color"]))
+        if(!is_resource($src) || !Arr::isAvailable($rectangle, ["w", "h", "x", "y", "color"])){
             return false;
+        }
 
-        if(!($rectangle["color"] = self::getColor($src, $rectangle["color"])))
+        if(!($rectangle["color"] = self::getColor($src, $rectangle["color"]))){
             return false;
+        }
 
         return imagefilledrectangle($src, $rectangle["x"], $rectangle["y"], $rectangle["x"] + $rectangle["w"], $rectangle["y"] + $rectangle["h"], $rectangle["color"]);
     }
@@ -201,10 +200,11 @@ class Image {
         $size = [];
 
         if($string && isset($font["size"]) && Number::isNumeric($font["size"]) && $font["size"] > 0){
-            if(!isset($font["angle"]) || !Number::isNumeric($font["angle"]))
+            if(!isset($font["angle"]) || !Number::isNumeric($font["angle"])){
                 $font["angle"] = 0;
+            }
 
-            $size = imageftbbox($font["size"], $font["angle"], $this->font, $string);
+            $size = imageftbbox($font["size"], $font["angle"], self::FONT_PATH, $string);
             $size = [$size[2] - $size[0], $size[7] - $size[1]];
             $size = [abs($size[0]), abs($size[1])];
         }
@@ -217,12 +217,15 @@ class Image {
     }
 
     private function _sign(&$src, $content, $font = []){
-        if(!is_resource($src) || !$content || !Arr::isAvailable($font, ["size", "color", "x", "y"]) ||
-            !Number::isInteric($fontColor = self::getColor($src, $font["color"])) || !($imageSize = self::getResSize($src)))
+        if(!is_resource($src) || !$content || !Arr::isAvailable($font, ["size", "color", "x", "y"])
+            || !Number::isInteric($fontColor = self::getColor($src, $font["color"])) || !($imageSize = self::getResSize($src)))
+        {
             return false;
+        }
 
-        if(!($stringRectangleSize = self::getStringRectangleSize($content, $font)))
+        if(!($stringRectangleSize = self::getStringRectangleSize($content, $font))){
             return false;
+        }
 
         $fontYOffset = $stringRectangleSize[1] - 3;
         [$font["w"], $font["h"]] = $stringRectangleSize;
@@ -235,7 +238,7 @@ class Image {
             $font["angle"] = 0;
         }
 
-        $rs = imagefttext($src, $font["size"], $font["angle"], $font["x"], $font["y"], $fontColor, $this->font, $content);
+        $rs = imagefttext($src, $font["size"], $font["angle"], $font["x"], $font["y"], $fontColor, self::FONT_PATH, $content);
 
         return $rs ? true : false;
     }
@@ -245,14 +248,16 @@ class Image {
     }
 
     public static function zoom(&$src, $size){
-        if(!is_resource($src) || (!Arr::isAvailable($size) && !Number::isFloaric($size)))
+        if(!is_resource($src) || (!Arr::isAvailable($size) && !Number::isFloaric($size))){
             return false;
+        }
 
         $size = Number::format($size, 3);
         $srcSize = self::getResSize($src);
 
-        if(Number::isNumeric($size))
+        if(Number::isNumeric($size)){
             $size = [Number::format($srcSize[0] * $size, 0), Number::format($srcSize[1] * $size, 0)];
+        }
 
         $dest = self::create($size[0], $size[1]);
 
@@ -305,8 +310,9 @@ class Image {
     }
 
     public static function calcPosition($elementInfo, $containerInfo){
-        if(!Arr::isAvailable($elementInfo, ["w", "h", "x", "y"]) || !Arr::isAvailable($containerInfo, ["w", "h"]))
+        if(!Arr::isAvailable($elementInfo, ["w", "h", "x", "y"]) || !Arr::isAvailable($containerInfo, ["w", "h"])){
             return [];
+        }
 
         $param = [];
 
@@ -321,8 +327,9 @@ class Image {
 
         $elementInfo["x"] = 0;
         foreach($param["x"] as $key => $val){
-            if(empty($val))
+            if(empty($val)){
                 continue;
+            }
 
             if(Number::isNumeric($val)){
                 $elementInfo["x"] += Number::format($val, 1);
@@ -342,8 +349,9 @@ class Image {
 
         $elementInfo["y"] = 0;
         foreach($param["y"] as $key => $val){
-            if(empty($val))
+            if(empty($val)){
                 continue;
+            }
 
             if(Number::isNumeric($val)){
                 $elementInfo["y"] += Number::format($val, 1);
@@ -361,16 +369,18 @@ class Image {
             }
         }
 
-        return array($elementInfo["x"], $elementInfo["y"]);
+        return [$elementInfo["x"], $elementInfo["y"]];
     }
 
     public static function crop(&$src){
         $params = func_get_args();
-        if(!is_resource($src) || !isset($params[1]) || !Arr::isAvailable($params[1], ["x", "y", "w", "h"]))
+        if(!is_resource($src) || !isset($params[1]) || !Arr::isAvailable($params[1], ["x", "y", "w", "h"])){
             return false;
+        }
 
-        if(isset($params[2]) && !Arr::isAvailable($params[2], ["x", "y", "w", "h"]))
+        if(isset($params[2]) && !Arr::isAvailable($params[2], ["x", "y", "w", "h"])){
             return false;
+        }
 
         $params = Arr::rebuild($params, ["0", "1", "2"]);
         $imageSize = self::getResSize($src);
@@ -394,8 +404,9 @@ class Image {
         else{
             $elementInfo = Arr::rebuild($params[1], ["(int:0){{x}}", "(int:0){{y}}", "(int:0){{w}}", "(int:0){{h}}"]);
             $containerInfo = Arr::rebuild($params[2], ["(int:0){{x}}", "(int:0){{y}}", "(int:0){{w}}", "(int:0){{h}}"]);
-            if(!($position = self::calcPosition(["w" => $elementInfo["w"], "h" => $elementInfo["h"], "x" => $containerInfo["x"], "y" => $containerInfo["y"]], $containerInfo)))
+            if(!($position = self::calcPosition(["w" => $elementInfo["w"], "h" => $elementInfo["h"], "x" => $containerInfo["x"], "y" => $containerInfo["y"]], $containerInfo))){
                 return false;
+            }
 
             $containerInfo["x"] = $position[0];
             $containerInfo["y"] = $position[1];
@@ -433,10 +444,11 @@ class Image {
             return false;
         }
 
-        if(!($imageSize = self::getResSize($src)))
+        if(!($imageSize = self::getResSize($src))){
             return false;
+        }
 
-        $containerSize = array($borderSize * 2 + $imageSize[0], $borderSize * 2 + $imageSize[1]);
+        $containerSize = [$borderSize * 2 + $imageSize[0], $borderSize * 2 + $imageSize[1]];
 
         return self::crop(
             $src,
@@ -446,25 +458,28 @@ class Image {
     }
 
     public static function puzzle($containerInfo, $images){
-        $params = func_get_args();
-
-        if(!Arr::isAvailable($containerInfo, ["w", "h"]))
+        if(!Arr::isAvailable($containerInfo) || !isset($containerInfo["w"]) || !isset($containerInfo["h"])){
             return false;
-
-        foreach($images as $key => $image){
-            if(!Arr::isAvailable($image, ["res", "layer_num", "x", "y", "w", "h"]))
-                unset($images[$key]);
         }
 
-        if(!$images)
+        foreach($images as $key => $image){
+            if(!Arr::isAvailable($image, ["res", "layer_num", "x", "y", "w", "h"])){
+                unset($images[$key]);
+            }
+        }
+
+        if(!$images){
             return false;
+        }
 
         Table::sortByField($images, "layer_num", Table::SORT_DESC);
 
-        if(isset($containerInfo["bg_color"]))
+        if(isset($containerInfo["bg_color"])){
             $dest = self::create($containerInfo["w"], $containerInfo["h"], $containerInfo["bg_color"]);
-        else
+        }
+        else{
             $dest = self::create($containerInfo["w"], $containerInfo["h"]);
+        }
 
         foreach($images as $image){
             $position = self::calcPosition($image, $containerInfo);
