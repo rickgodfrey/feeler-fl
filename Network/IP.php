@@ -7,6 +7,8 @@
 
 namespace Feeler\Fl\Network;
 
+use Feeler\Base\Number;
+
 class IP {
     const IP_V4 = "IP_V4";
     const IP_V6 = "IP_V6";
@@ -42,5 +44,21 @@ class IP {
 
     public static function isIpV4($ipAddr) : bool{
         return (self::isIpAddr($ipAddr) === self::IP_V4) ? true : false;
+    }
+
+    public static function ipToNumber($ipAddr) : int{
+        if (!Str::isAvailable($ipAddr)) {
+            return false;
+        }
+
+        return ip2long($ipAddr);
+    }
+
+    public static function numberToIp($number) : string{
+        if(!Number::isInteric($number)){
+            return "";
+        }
+
+        return ($rs = long2ip($number)) ? $rs : "";
     }
 }

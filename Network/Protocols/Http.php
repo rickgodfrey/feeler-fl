@@ -10,6 +10,7 @@ namespace Feeler\Fl\Network\Protocols;
 use Feeler\Base\Arr;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
+use Feeler\Fl\Network\IP;
 use Feeler\Fl\Network\Protocols\Exceptions\HttpException;
 use Feeler\Fl\Network\Protocols\Http\HttpSender;
 
@@ -131,7 +132,7 @@ class Http
 
     public static function requestMethod()
     {
-        return $_SERVER["REQUEST_METHOD"];
+        return isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : "";
     }
 
     public static function isIpAddr($ipAddr)
@@ -162,14 +163,8 @@ class Http
         return self::IP_V4;
     }
 
-    public static function ipToNumber($ipAddr){
-        if(self::isIpAddr($ipAddr) !== self::IP_V4){
-            return "";
-        }
-
-        $ipSegs = explode(".", $ipAddr);
-
-        return (256 * ($ipSegs[2] + 256 * ($ipSegs[1] + 256 * $ipSegs[0])) + $ipSegs[3]);
+    public static function ipToNumber($ipAddr) : int{
+        return IP::ipToNumber($ipAddr);
     }
 
     /**
