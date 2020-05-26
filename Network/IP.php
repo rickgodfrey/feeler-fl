@@ -8,6 +8,7 @@
 namespace Feeler\Fl\Network;
 
 use Feeler\Base\Number;
+use Feeler\Base\Str;
 
 class IP {
     const IP_V4 = "IP_V4";
