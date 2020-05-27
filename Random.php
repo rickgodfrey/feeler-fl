@@ -9,7 +9,7 @@ namespace Feeler\Fl;
 
 class Random{
 	public static function uuid(bool $whole = false): string {
-        $id = strtolower(md5(uniqid(mt_rand(0, (int)((double)Time::microSecond() * 100000000)), true)));
+        $id = strtolower(md5(uniqid(mt_rand((int)((double)Time::microSecond() * 100000000), (int)9223372036854775807), true)));
 		
 		if($whole){
 			$uuid = 
