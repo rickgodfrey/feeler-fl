@@ -58,7 +58,7 @@ class Http
 
     public static function getHeader($key)
     {
-        if (!$key || !is_string($key)) {
+        if (!Str::isAvailable($key)) {
             return null;
         }
 
