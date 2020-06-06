@@ -42,7 +42,7 @@ class Random{
         while($max < $length){
             $str = base_convert(str_shuffle($string), 16, ($isNumeric ? 10 : 36));
             $seed .= $str;
-            $max += strlen($str) - 1;
+            $max += strlen($str);
         }
         for($i = 0; $i < $length; $i++) {
             $hash .= $seed[mt_rand(0, $max)];
