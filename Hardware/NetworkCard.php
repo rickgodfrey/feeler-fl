@@ -14,6 +14,7 @@ use Feeler\Fl\System\Command;
 
 class NetworkCard {
     protected static $eth0Info = [];
+    protected static $eth0MacAddr = "";
 
     public static function getCardPrefix() : string {
         switch(OS::name()){
@@ -78,15 +79,16 @@ class NetworkCard {
     }
 
     public static function getEth0MacAddr() : string {
-        if(!($rs = self::getEth0Info())){return "";}
-        $macAddr = "";
-        $beginWith = self::macAddrInfoBeginWith();
-        foreach($rs as $info){
-            if(Str::isAvailable($info) && preg_match("/{$beginWith}\s*((?:[0-9a-z]{2})(?:[:0-9a-z]{3}){5})/i", $info, $matches)){
-                $macAddr = $matches[1];
-                break;
+        if(!Str::isAvailable(self::$eth0MacAddr)){
+            if(!($rs = self::getEth0Info())){return "";}
+            $beginWith = self::macAddrInfoBeginWith();
+            foreach($rs as $info){
+                if(Str::isAvailable($info) && preg_match("/{$beginWith}\s*((?:[0-9a-z]{2})(?:[:0-9a-z]{3}){5})/i", $info, $matches)){
+                    self::$eth0MacAddr = $matches[1];
+                    break;
+                }
             }
         }
-        return $macAddr;
+        return self::$eth0MacAddr;
     }
 }
