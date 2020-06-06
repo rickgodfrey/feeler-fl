@@ -12,6 +12,7 @@ use Feeler\Base\Str;
 use Feeler\Fl\Hardware\NetworkCard;
 
 class Random{
+    const BASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`1234567890-=~!@#$%^&*()_+[]\\;',?/{}|:\"<>.";
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
 
     public static function uuid(bool $whole = false): string {
@@ -34,10 +35,15 @@ class Random{
         if(!Number::isPosiInteric($length)){return "";}
         $length = (int)$length;
         $hash = "";
-        if($withUUID){$seed = ($seed = Random::uuid()).strtoupper($seed);}
-        else{$seed = str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`1234567890-=~!@#$%^&*()_+[]\\;',?/{}|:\"<>.");}
-        $seed = base_convert($seed, 16, ($isNumeric ? 10 : 36));
+        if($withUUID){$string = strtoupper(($string = Random::uuid())).$string;}
+        else{$string = self::BASE_CHARS;}
+        $seed = base_convert(str_shuffle($string), 16, ($isNumeric ? 10 : 36));
         $max = strlen($seed) - 1;
+        while($max < $length){
+            $str = base_convert(str_shuffle($string), 16, ($isNumeric ? 10 : 36));
+            $seed .= $str;
+            $max += strlen($str) - 1;
+        }
         for($i = 0; $i < $length; $i++) {
             $hash .= $seed[mt_rand(0, $max)];
         }
