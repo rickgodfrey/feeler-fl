@@ -10,7 +10,7 @@ namespace Feeler\Fl;
 use Feeler\Fl\Hardware\NetworkCard;
 
 class Random{
-    const UUID_ZONE_FLAG = "7dbd03e6baf1460d8ec699a4e42930eb";
+    const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
 
 	public static function uuid(bool $whole = false): string {
         $uuid = self::UUID_ZONE_FLAG;
