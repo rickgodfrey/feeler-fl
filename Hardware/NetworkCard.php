@@ -21,7 +21,7 @@ class NetworkCard {
                 return "eth";
                 break;
 
-            case "darwin":
+            case "macos":
                 return "en";
                 break;
 
@@ -37,7 +37,7 @@ class NetworkCard {
                 return OS::LINUX_MAC_ADDR_INFO_BEGIN_WITH;
                 break;
 
-            case "darwin":
+            case "macos":
                 return OS::DARWIN_MAC_ADDR_INFO_BEGIN_WITH;
                 break;
 
@@ -52,7 +52,6 @@ class NetworkCard {
             if(($cardName = self::getCardPrefix())){
                 $cardName .= "0";
                 @exec(Command::networkDetail(), $rs);
-
                 $firstRowMatched = false;
                 $endFlagCrossedRows = 0;
                 $cardInfo = [];
@@ -71,6 +70,7 @@ class NetworkCard {
                         $cardInfo[] = $info;
                     }
                 }
+                self::$eth0Info = $cardInfo;
             }
         }
 
@@ -82,7 +82,7 @@ class NetworkCard {
         $macAddr = "";
         $beginWith = self::macAddrInfoBeginWith();
         foreach($rs as $info){
-            if(preg_match("/{$beginWith}\s*((?:[0-9a-z])(?:\:[0-9a-z]){5})/i", $info, $matches)){
+            if(Str::isAvailable($info) && preg_match("/{$beginWith}\s*((?:[0-9a-z]{2})(?:[:0-9a-z]{3}){5})/i", $info, $matches)){
                 $macAddr = $matches[1];
                 break;
             }
