@@ -39,7 +39,7 @@ class Random{
         $seed = "";
         $max = 0;
         while($max < $length){
-            $str = base_convert(str_shuffle(($withUUID ? self::uuid() : self::uniqueId())), 16, ($isNumeric ? 10 : 36));
+            $str = base_convert(str_shuffle(($withUUID ? self::uuid() : self::uniqueId())), 16, ($isNumeric ? 10 : 35));
             $seed .= $str;
             $max += strlen($str);
         }
