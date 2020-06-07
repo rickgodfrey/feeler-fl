@@ -56,8 +56,8 @@ class Random{
      * @return string
      */
     public static function number($length, bool $strict = true, $startWith = null) :string {
-        return (Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")))
-            ? (preg_match("/[{$numbers}]*?({$startWith}[0-9]*)?/", ($number = self::number($length)), $matches) && Number::isInteric($matches[1]) ? (($matchedLen = strlen($matches[1])) === $length ? $matches[1] : ($matches[1].self::number($length - $matchedLen, false))) : self::number($length, $startWith))
+        return (Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")) && ($strict = ($startWith === 0 ? false : $strict)) !== null)
+            ? (preg_match("/[{$numbers}]*?({$startWith}[0-9]*)?/", ($number = self::number($length, $strict, $startWith)), $matches) && Number::isInteric($matches[1]) ? (($matchedLen = strlen($matches[1])) === $length ? $matches[1] : ($matches[1].self::number($length - $matchedLen, false))) : self::number($length, $strict, $startWith))
             : (($number = self::string($length, true)) && $strict ? (($len = strlen(($number = ltrim($number, "0")))) < $length ? $number.self::string(($length - $len), true) : $number) : $number);
     }
 
