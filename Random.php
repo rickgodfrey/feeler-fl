@@ -36,16 +36,14 @@ class Random{
         if(!Number::isPosiInteric($length)){return "";}
         $length = (int)$length;
         $hash = "";
-        if($withUUID){$string = strtoupper(($string = self::uuid())).$string;}
-        else{$string = strtoupper(($string = self::uniqueId())).$string;}
-        $seed = base_convert(str_shuffle($string), 16, ($isNumeric ? 10 : 36));
-        $max = strlen($seed) - 1;
+        $seed = "";
+        $max = 0;
         while($max < $length){
-            $str = base_convert(str_shuffle($string), 16, ($isNumeric ? 10 : 36));
+            $str = base_convert(str_shuffle(($withUUID ? self::uuid() : self::uniqueId())), 16, ($isNumeric ? 10 : 36));
             $seed .= $str;
             $max += strlen($str);
         }
-        for($i = 0; $i < $length; $i++) {
+        for(($max--) && $i = 0; $i < $length; $i++) {
             $hash .= $seed[mt_rand(0, $max)];
         }
         return $hash;
@@ -56,12 +54,12 @@ class Random{
      * @return string
      */
     public static function number($length, bool $strict = true, $startWith = null) :string {
-        return (Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && ($strict = ($startWith === 0 ? false : $strict)) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")))
-            ? (preg_match("/[{$numbers}]*?({$startWith}[0-9]*)?/", ($number = self::number($length, $strict)), $matches) && Number::isInteric($matches[1]) ? (($matchedLen = strlen($matches[1])) === $length ? $matches[1] : ($matches[1].self::number(($length - $matchedLen), false))) : self::number($length, $strict, $startWith))
-            : (($number = self::string($length, true)) && $strict ? (($len = strlen(($number = ltrim($number, "0")))) < $length ? $number.self::string(($length - $len), true) : $number) : $number);
+        return (($strict = ((int)$startWith === 0 ? false : $strict)) !== null && Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")))
+            ? (preg_match("/^[{$numbers}]*({$startWith}[0-9]*)$/", ($number = self::number($length, $strict)), $matches) && ($number = (int)$matches[1]) && (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) ? ($len < $length ? $number.self::number($length - $len, false) : $number) : self::number($length, $strict, $startWith)))
+            : (($number = self::string($length, true)) !== null && $strict && ($number = (int)$number) !== null ? (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) < $length ? $number.self::string(($length - $len), true) : $number) : $number);
     }
 
-    public static function uniqueId() :?string {
+    public static function uniqueId() :string {
         return md5(uniqid(mt_rand((int)((double)Time::microSecond() * 100000000), (int)9223372036854775807), true));
     }
 }
