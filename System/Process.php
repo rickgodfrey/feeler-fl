@@ -8,7 +8,7 @@
 namespace Feeler\Fl\System;
 
 class Process {
-    public static function pid() {
+    public static function pid() :?int {
         return !empty(($pid = posix_getpid())) ? $pid : null;
     }
 }
