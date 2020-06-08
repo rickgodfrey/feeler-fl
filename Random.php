@@ -16,10 +16,6 @@ use Feeler\Fl\System\Process;
 class Random{
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
 
-    const STRING = "STRING";
-    const NUMBER = "NUMBER";
-    const LETTERS = "LETTERS";
-
     public static function uuid(bool $whole = false): string {
         $uuid = self::UUID_ZONE_FLAG;
         if($macAddr = NetworkCard::getEth0MacAddr()){$uuid .= "::".md5($macAddr);}
