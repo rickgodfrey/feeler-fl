@@ -20,7 +20,7 @@ class Random{
         $uuid = self::UUID_ZONE_FLAG;
         if($macAddr = NetworkCard::getEth0MacAddr()){$uuid .= "::".md5($macAddr);}
         if($pid = Process::pid()){$uuid .= "::".md5($pid);}
-        $uuid .= "::".md5(self::string(33, false, false));
+        $uuid .= "::".md5(self::string(64, false, false));
         $uuid .= "::".self::uniqueId();
         $uuid = strtolower(substr(sha1($uuid), 0, 32));
         if($whole){$uuid = substr($uuid, 0, 8) ."-".substr($uuid, 8, 4) ."-".substr($uuid, 12, 4) ."-".substr($uuid, 16, 4) ."-".substr($uuid, 20, 12);}
@@ -40,7 +40,7 @@ class Random{
         $seed = "";
         $max = 0;
         while($max < $length){
-            $str = base_convert(str_shuffle(($withUUID ? self::uuid() : self::uniqueId())), 16, ($isNumeric ? 10 : 35));
+            $str = base_convert(str_shuffle(($withUUID ? self::uuid() : self::uniqueId())), 16, ($isNumeric ? 10 : 36));
             $seed .= $str;
             $max += strlen($str);
         }
