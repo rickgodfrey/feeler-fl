@@ -7,6 +7,7 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Arr;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Fl\Hardware\NetworkCard;
