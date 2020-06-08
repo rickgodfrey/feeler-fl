@@ -51,7 +51,7 @@ class Random{
         for(($max--) && $i = 0; $i < $length; $i++) {
             $char = $seed[mt_rand(0, $max)];
             if(!$isNumeric && ($ord = ord($char)) >= 48 && $ord <= 57){
-                $char = chr($ord + Arr::current(Arr::shuffle([17, 49])));
+                $char = chr(mt_rand(65, 122));
             }
             $hash .= $char;
         }
