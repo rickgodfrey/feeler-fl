@@ -44,7 +44,11 @@ class Random{
             $max += strlen($str);
         }
         for(($max--) && $i = 0; $i < $length; $i++) {
-            $hash .= $seed[mt_rand(0, $max)];
+            $char = $seed[mt_rand(0, $max)];
+            if(!$isNumeric && ($ord = ord($char)) >= 48 && $ord <= 57){
+                $char = chr($ord + Arr::current(Arr::shuffle([16, 40])));
+            }
+            $hash .= $char;
         }
         return $hash;
     }
