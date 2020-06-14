@@ -16,6 +16,10 @@ use Feeler\Fl\System\Process;
 class Random{
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
 
+    const STRING_MIXED = "STRING_MIXED";
+    const STRING_NUMERIC = "STRING_NUMERIC";
+    const STRING_LETTERS = "STRING_LETTERS";
+
     public static function uuid(bool $whole = false): string {
         $uuid = self::UUID_ZONE_FLAG;
         if($macAddr = NetworkCard::getEth0MacAddr()){$uuid .= "::".md5($macAddr);}
@@ -33,20 +37,21 @@ class Random{
      * @param bool $withUUID
      * @return string
      */
-    public static function string($length, bool $isNumeric = false, bool $withUUID = true) :string {
-        if(!Number::isPosiInteric($length)){return "";}
+    public static function string($length, string $stringType = self::STRING_MIXED, bool $withUUID = true) :string {
+        if(!self::defined($stringType) || !Number::isPosiInteric($length)){return "";}
         $length = (int)$length;
         $hash = "";
         $seed = "";
         $max = 0;
         while($max < $length){
-            $str = base_convert(str_shuffle(($withUUID ? self::uuid() : self::uniqueId())), 16, ($isNumeric ? 10 : 36));
+            $str = str_shuffle(($withUUID ? self::uuid() : self::uniqueId()));
+            ($stringType === self::STRING_NUMERIC) and ($str = base_convert($str, 16, 10));
             $seed .= $str;
             $max += strlen($str);
         }
         for(($max--) && $i = 0; $i < $length; $i++) {
             $char = $seed[mt_rand(0, $max)];
-            if(!$isNumeric && ($ord = ord($char)) >= 48 && $ord <= 57){
+            if(($stringType === self::STRING_LETTERS) && ($ord = ord($char)) >= 48 && $ord <= 57){
                 $char = chr(mt_rand(65, 122));
             }
             $hash .= $char;
