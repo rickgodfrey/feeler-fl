@@ -7,13 +7,14 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Fl\Hardware\NetworkCard;
 use Feeler\Fl\System\Process;
 
-class Random{
+class Random extends BaseClass{
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
 
     const STRING_MIXED = "STRING_MIXED";
