@@ -7,10 +7,12 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
+use Feeler\Base\Base;
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
+use Feeler\Fl\Network\Protocols\Http;
 
-class HttpSender implements IHttpSender
+class HttpSender extends BaseClass implements IHttpSender
 {
     protected $timeout;
     protected $url;
@@ -19,25 +21,29 @@ class HttpSender implements IHttpSender
     protected $headersArray;
     protected $basicAuth;
 
-    function __construct($headers = [], $basicAuth = null, $timeout = 5)
+    protected function constructorName() :string {
+        return self::INITIALIZE;
+    }
+
+    public function initialize($headers = [], $basicAuth = null, $timeout = 5)
     {
         $this->setHeaders($headers);
         $this->setBasicAuth($basicAuth);
         if (!is_int($timeout) || $timeout < 1) {
             $timeout = 5;
         }
-
         $this->timeout = $timeout;
+        return $this;
     }
 
-    protected function preDefinedHeaders()
+    protected function predefinedHeaders()
     {
         return [
             "connection" => "keep-alive",
             "cache_control" => "no-cache",
             "pragma" => "no-cache",
-            "user_agent" => isset($_SERVER["HTTP_USER_AGENT"]) ? $_SERVER["HTTP_USER_AGENT"] : "",
-            "accept" => isset($_SERVER["HTTP_ACCEPT"]) ? $_SERVER["HTTP_ACCEPT"] : "",
+            "user_agent" => Http::userAgent(),
+            "accept" => Http::accept(),
             "referer" => "",
             "accept_encoding" => "gzip,deflate,sdch",
             "accept_language" => "en-US,zh-CN;q=0.8,zh;q=0.6",
@@ -47,7 +53,7 @@ class HttpSender implements IHttpSender
     public function setHeaders($headers)
     {
         if (!Arr::isAvailable($headers)) {
-            $this->headers = $this->preDefinedHeaders();
+            $this->headers = $this->predefinedHeaders();
             return $this;
         }
 
@@ -57,7 +63,7 @@ class HttpSender implements IHttpSender
             }
         }
 
-        $this->headers = Arr::mergeByKey($this->preDefinedHeaders(), $headers);
+        $this->headers = Arr::mergeByKey($this->predefinedHeaders(), $headers);
 
         return $this;
     }
@@ -130,7 +136,7 @@ class HttpSender implements IHttpSender
             $headers = $this->headers;
         }
         else{
-            $headers = Arr::mergeByKey($headers, $this->preDefinedHeaders());
+            $headers = Arr::mergeByKey($headers, $this->predefinedHeaders());
         }
 
         if (!$basicAuth) {

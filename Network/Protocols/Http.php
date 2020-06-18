@@ -226,7 +226,7 @@ class Http
 
     public static function getSenderInstance($headers = [], $basicAuth = "")
     {
-        return new HttpSender($headers, $basicAuth);
+        return (new HttpSender())->constructor($headers, $basicAuth);
     }
 
     public static function clientIpAddr()
@@ -254,7 +254,6 @@ class Http
 
     public static function isSecureConn(){
         $isSecureConn = false;
-
         if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "1" || strtolower($_SERVER["HTTPS"]) == "on")) {
             $isSecureConn = true;
         }
@@ -267,14 +266,25 @@ class Http
         elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {
             $isSecureConn = true;
         }
-
         return $isSecureConn;
     }
 
     public static function responseCode($code = 200){
-        if(!$code || headers_sent())
+        if(!$code || headers_sent()){
             return false;
-
+        }
         return http_response_code($code);
+    }
+
+    public static function userAgent():string{
+        return (string)Arr::get("HTTP_USER_AGENT", $_SERVER);
+    }
+
+    public static function accept():string{
+        return (string)Arr::get("HTTP_ACCEPT", $_SERVER);
+    }
+
+    public static function serverName(){
+        return (string)Arr::get("SERVER_NAME", $_SERVER);
     }
 }
