@@ -18,7 +18,6 @@ class Cookie extends BaseClass {
         else if(Str::isAvailable($expiration)){
             $expiration = strtotime($expiration);
         }
-
         if(!Number::isPosiInteric($expiration)){
             $expiration = 0;
         }

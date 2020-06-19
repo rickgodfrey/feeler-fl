@@ -17,7 +17,7 @@ class Uploader{
 	public $maxSize;
 	public $force;
 	public $allowTypes = "*";
-	public $checkTypes = array();
+	public $checkTypes = [];
 	
 	private $_sysErrCodeBaseNum = 1000;
 	private $_commonErrCodeBaseNum = 2000;
@@ -40,7 +40,7 @@ class Uploader{
 	}
 
 	public function act(){
-		$filesInfo = array();
+		$filesInfo = [];
 		if(!is_dir($this->path)){
 			File::mkdir($this->path);
 		}

@@ -10,6 +10,7 @@ namespace Feeler\Fl\Network\Protocols;
 use Feeler\Base\Arr;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
+use Feeler\Base\GlobalAccess;
 use Feeler\Fl\Network\IP;
 use Feeler\Fl\Network\Protocols\Exceptions\HttpException;
 use Feeler\Fl\Network\Protocols\Http\HttpSender;
@@ -32,7 +33,7 @@ class Http
         if (!Arr::isAvailable(self::$headers)) {
             $headers = [];
 
-            foreach ($_SERVER as $name => $value) {
+            foreach (GlobalAccess::server() as $name => $value) {
                 if (substr($name, 0, 5) == "HTTP_") {
                     $name = substr($name, 5);
                     $name = str_replace("_", " ", $name);
@@ -101,7 +102,7 @@ class Http
                 $value = "";
             }
 
-            $_GET[$key] = $value;
+            GlobalAccess::get($key, $value);
         }
 
         self::$pathParams = $params;
@@ -123,7 +124,7 @@ class Http
 
     public static function allowRequestMethods($toCheckAllowedMethods = [])
     {
-        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        $requestMethod = GlobalAccess::server("REQUEST_METHOD");
 
         if (Arr::isAvailable($toCheckAllowedMethods) && !in_array($requestMethod, $toCheckAllowedMethods)) {
             throw new HttpException("REQUEST_METHOD_ERROR", 1003);
@@ -132,7 +133,7 @@ class Http
 
     public static function requestMethod()
     {
-        return isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : "";
+        return (string)GlobalAccess::server("REQUEST_METHOD");
     }
 
     public static function isIpAddr($ipAddr)
@@ -233,8 +234,8 @@ class Http
     {
         $ip = null;
 
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        if (GlobalAccess::server("HTTP_X_FORWARDED_FOR")) {
+            $arr = explode(',', GlobalAccess::server("HTTP_X_FORWARDED_FOR"));
             $pos = array_search('unknown', $arr);
             if ($pos !== false) {
                 unset($arr[$pos]);
@@ -242,11 +243,11 @@ class Http
 
             $ip = trim($arr[0]);
         }
-        else if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        else if (GlobalAccess::server("HTTP_CLIENT_IP")) {
+            $ip = GlobalAccess::server("HTTP_CLIENT_IP");
         }
-        else if (isset($_SERVER['REMOTE_ADDR'])) {
-            $ip = $_SERVER['REMOTE_ADDR'];
+        else if (GlobalAccess::server("REMOTE_ADDR")) {
+            $ip = GlobalAccess::server("REMOTE_ADDR");
         }
 
         return $ip;
@@ -254,16 +255,16 @@ class Http
 
     public static function isSecureConn(){
         $isSecureConn = false;
-        if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "1" || strtolower($_SERVER["HTTPS"]) == "on")) {
+        if ((GlobalAccess::server("HTTPS") == "1" || strtolower(GlobalAccess::server("HTTPS")) === "on")) {
             $isSecureConn = true;
         }
-        elseif (isset($_SERVER["REQUEST_SCHEME"]) && $_SERVER["REQUEST_SCHEME"] == "https") {
+        elseif (GlobalAccess::server("REQUEST_SCHEME") === "https") {
             $isSecureConn = true;
         }
-        elseif (isset($_SERVER["SERVER_PORT"]) && ($_SERVER["SERVER_PORT"] == "443")) {
+        elseif (GlobalAccess::server("SERVER_PORT") == "443") {
             $isSecureConn = true;
         }
-        elseif (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {
+        elseif (GlobalAccess::server("HTTP_X_FORWARDED_PROTO") === "https") {
             $isSecureConn = true;
         }
         return $isSecureConn;
@@ -277,14 +278,14 @@ class Http
     }
 
     public static function userAgent():string{
-        return (string)Arr::get("HTTP_USER_AGENT", $_SERVER);
+        return (string)GlobalAccess::server("HTTP_USER_AGENT");
     }
 
     public static function accept():string{
-        return (string)Arr::get("HTTP_ACCEPT", $_SERVER);
+        return (string)GlobalAccess::server("HTTP_ACCEPT");
     }
 
     public static function serverName(){
-        return (string)Arr::get("SERVER_NAME", $_SERVER);
+        return (string)GlobalAccess::server("SERVER_NAME");
     }
 }
