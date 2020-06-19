@@ -32,7 +32,6 @@ class Http
     public static function getAllHeaders(){
         if (!Arr::isAvailable(self::$headers)) {
             $headers = [];
-
             foreach (GlobalAccess::server() as $name => $value) {
                 if (substr($name, 0, 5) == "HTTP_") {
                     $name = substr($name, 5);

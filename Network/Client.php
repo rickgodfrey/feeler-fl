@@ -8,5 +8,5 @@
 namespace Feeler\Fl\Network;
 
 class Client {
-    
+
 }
