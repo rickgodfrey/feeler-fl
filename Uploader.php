@@ -8,7 +8,9 @@
 namespace Feeler\Fl;
 
 use Feeler\Base\Arr;
+use Feeler\Base\Str;
 use Feeler\Base\File;
+use Feeler\Base\GlobalAccess;
 
 class Uploader{
 	public $rootPath;
@@ -45,21 +47,21 @@ class Uploader{
 			File::mkdir($this->path);
 		}
 
-		foreach($_FILES as $field => $file){
-			if(!isset($_FILES[$field]["name"]) || $_FILES[$field]["name"] === "")
+		foreach(GlobalAccess::files() as $field => $file){
+			if(!isset($file["name"]) || !Str::isAvailable($file["name"]))
 				continue;
 
-			if(is_array($_FILES[$field]["name"])){
-				$keys = array_keys($_FILES[$field]["name"]);
+			if(is_array($file["name"])){
+				$keys = array_keys($file["name"]);
 
 				foreach($keys as $key){
-					$filesInfo[$field][$key]["name"] = $_FILES[$field]["name"][$key];
-					$filesInfo[$field][$key]["code"] = $this->_getErrorCode($_FILES[$field]["error"][$key], true);
+					$filesInfo[$field][$key]["name"] = $file["name"][$key];
+					$filesInfo[$field][$key]["code"] = $this->_getErrorCode($file["error"][$key], true);
 
 					if($filesInfo[$field][$key]["code"] == 0){
-						$fileExt = File::getExt($_FILES[$field]["name"][$key]);
+						$fileExt = File::getExt($file["name"][$key]);
 						if($fileExt == null){
-							$fileExt = File::getType($_FILES[$field]["tmp_name"][$key]);
+							$fileExt = File::getType($file["tmp_name"][$key]);
 						}
 
 						if($this->allowTypes !== "*"){
@@ -73,27 +75,27 @@ class Uploader{
 								$filesInfo[$field][$key]["code"] = $this->_getErrorCode(1);
 							}
 						}
-						else if($_FILES[$field]["size"][$key] > $this->maxSize){
+						else if($file["size"][$key] > $this->maxSize){
 							$filesInfo[$field][$key]["code"] = $this->_getErrorCode(2);
 						}
 
-						if($filesInfo[$field][$key]["code"] == 0 && is_uploaded_file($_FILES[$field]["tmp_name"][$key])){
+						if($filesInfo[$field][$key]["code"] == 0 && is_uploaded_file($file["tmp_name"][$key])){
 							if(is_array($fileExt))
 								$fileExt = Arr::current($fileExt);
 
-							$filesInfo[$field][$key]["md5"] = md5_file($_FILES[$field]["tmp_name"][$key]);
+							$filesInfo[$field][$key]["md5"] = md5_file($file["tmp_name"][$key]);
 							$filesInfo[$field][$key]["name"] = $filesInfo[$field][$key]["md5"].".".$fileExt;
 							$filesInfo[$field][$key]["ext"] = $fileExt;
 							$filesInfo[$field][$key]["path"] = $this->path;
 							$filesInfo[$field][$key]["dir"] = $this->dir;
 							$filesInfo[$field][$key]["src"] = $this->dir.$filesInfo[$field][$key]["name"];
 							$filesInfo[$field][$key]["file"] = $this->path.$filesInfo[$field][$key]["name"];
-							$filesInfo[$field][$key]["size"] = $_FILES[$field]["size"][$key];
+							$filesInfo[$field][$key]["size"] = $file["size"][$key];
 
 							$filesInfo[$field][$key]["code"] = $this->_getErrorCode(100, true);
 
 							if((!$this->force && is_file($filesInfo[$field][$key]["file"]) && md5_file($filesInfo[$field][$key]["file"]) === $filesInfo[$field][$key]["md5"]) ||
-								move_uploaded_file($_FILES[$field]["tmp_name"][$key], $filesInfo[$field][$key]["src"]))
+								move_uploaded_file($file["tmp_name"][$key], $filesInfo[$field][$key]["src"]))
 							{
 								$filesInfo[$field][$key]["code"] = 0;
 							}
@@ -102,13 +104,13 @@ class Uploader{
 				}
 			}
 			else{
-				$filesInfo[$field][0]["name"] = $_FILES[$field]["name"];
-				$filesInfo[$field][0]["code"] = $this->_getErrorCode($_FILES[$field]["error"], true);
+				$filesInfo[$field][0]["name"] = $file["name"];
+				$filesInfo[$field][0]["code"] = $this->_getErrorCode($file["error"], true);
 
 				if($filesInfo[$field][0]["code"] == 0){
-					$fileExt = File::getExt($_FILES[$field]["name"]);
+					$fileExt = File::getExt($file["name"]);
 					if($fileExt == null){
-						$fileExt = File::getType($_FILES[$field]["tmp_name"]);
+						$fileExt = File::getType($file["tmp_name"]);
 					}
 
 					if($this->allowTypes !== "*"){
@@ -122,27 +124,27 @@ class Uploader{
 							$filesInfo[$field][0]["code"] = $this->_getErrorCode(1);
 						}
 					}
-					else if($_FILES[$field]["size"] > $this->maxSize){
+					else if($file["size"] > $this->maxSize){
 						$filesInfo[$field][0]["code"] = $this->_getErrorCode(2);
 					}
 
-					if($filesInfo[$field][0]["code"] == 0 && is_uploaded_file($_FILES[$field]["tmp_name"])){
+					if($filesInfo[$field][0]["code"] == 0 && is_uploaded_file($file["tmp_name"])){
 						if(is_array($fileExt))
 							$fileExt = Arr::current($fileExt);
 
-						$filesInfo[$field][0]["md5"] = md5_file($_FILES[$field]["tmp_name"]);
+						$filesInfo[$field][0]["md5"] = md5_file($file["tmp_name"]);
 						$filesInfo[$field][0]["name"] = $filesInfo[$field][0]["md5"].".".$fileExt;
 						$filesInfo[$field][0]["ext"] = $fileExt;
 						$filesInfo[$field][0]["path"] = $this->path;
 						$filesInfo[$field][0]["dir"] = $this->dir;
 						$filesInfo[$field][0]["src"] = $this->dir.$filesInfo[$field][0]["name"];
 						$filesInfo[$field][0]["file"] = $this->path.$filesInfo[$field][0]["name"];
-						$filesInfo[$field][0]["size"] = $_FILES[$field]["size"];
+						$filesInfo[$field][0]["size"] = $file["size"];
 
 						$filesInfo[$field][0]["code"] = $this->_getErrorCode(100, true);
 
 						if((!$this->force && is_file($filesInfo[$field][0]["file"]) && md5_file($filesInfo[$field][0]["file"]) === $filesInfo[$field][0]["md5"]) ||
-							move_uploaded_file($_FILES[$field]["tmp_name"], $filesInfo[$field][0]["file"]))
+							move_uploaded_file($file["tmp_name"], $filesInfo[$field][0]["file"]))
 						{
 							$filesInfo[$field][0]["code"] = 0;
 						}

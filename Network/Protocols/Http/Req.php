@@ -8,6 +8,7 @@
 namespace Feeler\Fl\Network\Protocols\Http;
 
 use Feeler\Base\Arr;
+use Feeler\Base\GlobalAccess;
 
 class Req{
     const TYPE_GET = "TYPE_GET";
@@ -23,10 +24,10 @@ class Req{
 
     public static function get($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
         if($field === null){
-            return self::filter($_GET, $type, $len);
+            return self::filter(GlobalAccess::get(), $type, $len);
         }
 
-        $value = Arr::getVal($_GET, $field);
+        $value = Arr::getVal(GlobalAccess::get(), $field);
         $value = self::filter($value, $type, $len);
 
         return $value;
@@ -34,10 +35,10 @@ class Req{
 
     public static function post($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
         if($field === null){
-            return self::filter($_POST, $type, $len);
+            return self::filter(GlobalAccess::post(), $type, $len);
         }
 
-        $value = Arr::getVal($_POST, $field);
+        $value = Arr::getVal(GlobalAccess::post(), $field);
         $value = self::filter($value, $type, $len);
 
         return $value;

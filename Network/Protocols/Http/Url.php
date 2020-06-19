@@ -7,6 +7,8 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
+use Feeler\Base\GlobalAccess;
+
 class Url{
 	protected $get;
 	protected $reqPath;
@@ -150,7 +152,7 @@ class Url{
 			$get = $this->params;
 		}
 		else
-			$get = $_GET;
+			$get = GlobalAccess::get();
 		
 		return $get;
 	}

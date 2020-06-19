@@ -5,6 +5,7 @@ namespace Feeler\Fl\Web;
 use Feeler\Base\BaseClass;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
+use Feeler\Base\GlobalAccess;
 
 class Cookie extends BaseClass {
     public static function set($key, $value, $expiration = 0) :bool{
@@ -26,11 +27,7 @@ class Cookie extends BaseClass {
     }
 
     public static function get($key) {
-        if(!Str::isAvailable($key) || !isset($_COOKIE[$key])){
-            return null;
-        }
-
-        return $_COOKIE[$key];
+        return GlobalAccess::cookie($key);
     }
 
     public static function expire($key, $expiration) : bool{
@@ -53,7 +50,7 @@ class Cookie extends BaseClass {
     }
 
     public static function rm($key) : bool{
-        if(!Str::isAvailable($key) || !isset($_COOKIE[$key])){
+        if(GlobalAccess::cookie($key) === null){
             return true;
         }
 
