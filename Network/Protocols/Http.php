@@ -224,6 +224,11 @@ class Http
         }
     }
 
+    /**
+     * @param array $headers
+     * @param string $basicAuth
+     * @return HttpSender
+     */
     public static function getSenderInstance($headers = [], $basicAuth = "")
     {
         return (new HttpSender())->constructor($headers, $basicAuth);
