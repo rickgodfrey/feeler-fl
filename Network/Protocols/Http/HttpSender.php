@@ -7,7 +7,7 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
-use Feeler\Base\Base;
+use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
 use Feeler\Fl\Network\Protocols\Http;
