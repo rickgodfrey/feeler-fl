@@ -23,7 +23,7 @@ class Random extends BaseClass{
 
     public static function uuid(bool $whole = false): string {
         $uuid = self::UUID_ZONE_FLAG;
-        if($macAddr = NetworkCard::getEth0MacAddr()){$uuid .= "::".md5($macAddr);}
+        //if($macAddr = NetworkCard::getEth0MacAddr()){$uuid .= "::".md5($macAddr);}
         if($pid = Process::pid()){$uuid .= "::".md5($pid);}
         $uuid .= "::".md5(self::string(64, false, false));
         $uuid .= "::".self::uniqueId();
