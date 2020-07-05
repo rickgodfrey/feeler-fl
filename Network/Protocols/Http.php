@@ -24,7 +24,7 @@ class Http
     public static $headers;
     public static $pathParams = [];
 
-    function __construct()
+    public function __construct()
     {
 
     }

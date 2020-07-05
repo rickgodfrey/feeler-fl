@@ -122,35 +122,30 @@ class HttpSender extends BaseClass implements IHttpSender
     }
 
     //packaging of the original curl api
-    public function curlSend($url = "", $params = [], $headers = [], $basicAuth = "")
+    public function send($url = "", $method = Req::GET, $params = [])
     {
-        if (!is_string($url) || !$url) {
+        if (!Str::isAvailable($url)) {
             return false;
         }
 
-        if (!$params) {
-            $params = $this->params;
+        if(!in_array($method, [Req::GET, Req::POST, Req::PUT, Req::DELETE])){
+            $method = Req::GET;
         }
 
-        if (!$headers) {
-            $headers = $this->headers;
-        }
-        else{
-            $headers = Arr::mergeByKey($headers, $this->predefinedHeaders());
+        if (!Arr::isArray($params) && !Str::isAvailable($params)) {
+            $params = [];
         }
 
-        if (!$basicAuth) {
-            $basicAuth = $this->basicAuth;
-        }
+        $headers = $this->headers;
+        $headers = Arr::mergeByKey($headers, $this->predefinedHeaders());
 
-        if ($basicAuth) {
-            $headers["authorization"] = "Basic ".base64_encode($basicAuth);
+        if (Str::isAvailable($this->basicAuth)) {
+            $headers["authorization"] = "Basic ".base64_encode($this->basicAuth);
         }
 
         $contentType = null;
-        $headersArray = [];
         foreach ($headers as $name => $value) {
-            if ($name == "content_type") {
+            if ($name === "content_type") {
                 $contentType = $value;
                 break;
             }
@@ -164,9 +159,9 @@ class HttpSender extends BaseClass implements IHttpSender
 
         $headers = $this->convertDictToHeaderFormat($headers);
 
-        if (is_array($params)) {
+        if (Arr::isAvailable($params)) {
             foreach ($params as $key => $param) {
-                if (is_string($param) && $param && $param[0] === "@") {
+                if (Str::isAvailable($param) && $param[0] === "@") {
                     $param = substr($param, 1);
                     if (is_file($param)) {
                         $params[$key] = "@{$param}";
@@ -185,26 +180,23 @@ class HttpSender extends BaseClass implements IHttpSender
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        //curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_ENCODING,"gzip");
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
         if (!empty($params)) {
-            curl_setopt($ch, CURLOPT_POST, true);
-            if (is_array($params)) {
-                $params = http_build_query($params);
+            if($method === Req::POST){
+                curl_setopt($ch, CURLOPT_POST, true);
+                if (Arr::isArray($params)) {
+                    $params = http_build_query($params);
+                }
             }
             curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         }
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
         $data = curl_exec($ch);
         curl_close($ch);
 
         return $data;
-    }
-
-    public function send($url = "", $params = [], $headers = [], $basicAuth = ""){
-        return $this->curlSend($url, $params, $headers, $basicAuth);
     }
 }
