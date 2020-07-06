@@ -15,11 +15,9 @@ use Feeler\Fl\Network\Protocols\Http;
 class HttpSender extends BaseClass implements IHttpSender
 {
     protected $timeout;
-    protected $url;
-    protected $params;
     protected $headers;
-    protected $headersArray;
     protected $basicAuth;
+    protected $postParamsCallback;
 
     protected static function constructorName() :string {
         return self::INITIALIZE;
@@ -121,16 +119,26 @@ class HttpSender extends BaseClass implements IHttpSender
         return $array;
     }
 
+    protected function setPostParamsCallback(callable $callback = null){
+        $this->postParamsCallback = $callback;
+    }
+
     protected function processPostParams(&$params):void{
         if (Arr::isAvailable($params)) {
-            foreach ($params as $key => $param) {
+            foreach ($params as $key => &$param) {
                 if (Str::isAvailable($param) && $param[0] === "@") {
                     $param = substr($param, 1);
-                    if (is_file($param)) {
-                        $params[$key] = "@{$param}";
+                    if (!is_file($param)) {
+                        unset($params[$key]);
+                        continue;
                     }
+                    $param = "@{$param}";
                 }
             }
+            unset($param);
+        }
+        if(self::isClosure($this->postParamsCallback)){
+            $params = call_user_func($this->postParamsCallback, $params);
         }
     }
 
