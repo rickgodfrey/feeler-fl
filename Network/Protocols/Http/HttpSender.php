@@ -80,7 +80,7 @@ class HttpSender extends BaseClass implements IHttpSender
         return $this;
     }
 
-    public function convertToStandardHeaderName($name) :string{
+    protected function convertToStandardHeaderName($name) :string{
         if(!Str::isAvailable($name)){
             return "";
         }
@@ -100,7 +100,7 @@ class HttpSender extends BaseClass implements IHttpSender
         return $name;
     }
 
-    public function convertDictToHeaderFormat($dict = []){
+    protected function convertDictToHeaderFormat($dict = []){
         if (!Arr::isAvailable($dict)) {
             return [];
         }
@@ -121,8 +121,21 @@ class HttpSender extends BaseClass implements IHttpSender
         return $array;
     }
 
+    protected function processPostParams(&$params):void{
+        if (Arr::isAvailable($params)) {
+            foreach ($params as $key => $param) {
+                if (Str::isAvailable($param) && $param[0] === "@") {
+                    $param = substr($param, 1);
+                    if (is_file($param)) {
+                        $params[$key] = "@{$param}";
+                    }
+                }
+            }
+        }
+    }
+
     //packaging of the original curl api
-    public function send($url = "", $method = Req::GET, $params = [])
+    public function send($url = "", $method = Req::GET, $params = [], callable $callback = null)
     {
         if (!Str::isAvailable($url)) {
             return false;
@@ -156,19 +169,8 @@ class HttpSender extends BaseClass implements IHttpSender
         }
 
         Arr::ksort($headers);
-
         $headers = $this->convertDictToHeaderFormat($headers);
-
-        if (Arr::isAvailable($params)) {
-            foreach ($params as $key => $param) {
-                if (Str::isAvailable($param) && $param[0] === "@") {
-                    $param = substr($param, 1);
-                    if (is_file($param)) {
-                        $params[$key] = "@{$param}";
-                    }
-                }
-            }
-        }
+        $method !== Req::GET and $this->processPostParams($params);
 
         $ch = curl_init();
         if (stripos($url, "https://") !== false) {
@@ -196,6 +198,9 @@ class HttpSender extends BaseClass implements IHttpSender
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $data = curl_exec($ch);
         curl_close($ch);
+        if(self::isClosure($callback)){
+            $data = call_user_func($callback, $data);
+        }
 
         return $data;
     }

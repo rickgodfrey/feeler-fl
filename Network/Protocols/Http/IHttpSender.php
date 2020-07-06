@@ -8,5 +8,5 @@
 namespace Feeler\Fl\Network\Protocols\Http;
 
 interface IHttpSender{
-	public function send($url, $method = Req::GET, $params = []);
+	public function send($url, $method = Req::GET, $params = [], callable $callback = null);
 }
