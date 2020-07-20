@@ -149,6 +149,23 @@ class HttpSender extends BaseClass implements IHttpSender
             $params = [];
         }
 
+        if($method === Req::GET && $params){
+            if(Url::hasQueryString($url)){
+                $beginSymbol = "&";
+            }
+            else{
+                $beginSymbol = "?";
+            }
+
+            $queryString = "";
+            foreach($params as $key => $param){
+                $queryString .= "&".urlencode($key)."=".urlencode($param);
+            }
+            $queryString = substr($queryString, 1);
+            $queryString = $beginSymbol.$queryString;
+            $url .= $queryString;
+        }
+
         $headers = $this->headers;
         $headers = Arr::mergeByKey($headers, $this->predefinedHeaders());
 
@@ -186,7 +203,7 @@ class HttpSender extends BaseClass implements IHttpSender
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
         if (!empty($params)) {
-            if($method === Req::POST){
+            if(in_array($method, [Req::POST, Req::PUT, Req::DELETE])){
                 curl_setopt($ch, CURLOPT_POST, true);
                 if (Arr::isArray($params)) {
                     $params = http_build_query($params);

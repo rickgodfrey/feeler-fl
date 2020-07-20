@@ -17,7 +17,7 @@ class Url{
 	
 	public $excluding = [];
 	
-	function __construct($reqPath = null, $format = "PARAM", $params = []){
+	public function __construct($reqPath = null, $format = "PARAM", $params = []){
 		$this->setReqPath($reqPath);
 		$this->setFormat($format);
 		
@@ -189,4 +189,8 @@ class Url{
 	public function delParam($param){
 		return $this->delParams([$param]);
 	}
+
+	public static function hasQueryString($string){
+	    return preg_match("/\/[^\s\?]*\?[^\s]+\=[^\s]+/", $string) ? true : false;
+    }
 }
