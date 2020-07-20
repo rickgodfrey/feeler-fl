@@ -17,7 +17,6 @@ class HttpSender extends BaseClass implements IHttpSender
     protected $timeout;
     protected $headers;
     protected $basicAuth;
-    protected $postParamsCallback;
 
     protected static function constructorName() :string {
         return self::INITIALIZE;
@@ -119,10 +118,6 @@ class HttpSender extends BaseClass implements IHttpSender
         return $array;
     }
 
-    protected function setPostParamsCallback(callable $callback = null){
-        $this->postParamsCallback = $callback;
-    }
-
     protected function processPostParams(&$params):void{
         if (Arr::isAvailable($params)) {
             foreach ($params as $key => &$param) {
@@ -137,13 +132,10 @@ class HttpSender extends BaseClass implements IHttpSender
             }
             unset($param);
         }
-        if(self::isClosure($this->postParamsCallback)){
-            $params = call_user_func($this->postParamsCallback, $params);
-        }
     }
 
     //packaging of the original curl api
-    public function send($url = "", $method = Req::GET, $params = [], callable $callback = null)
+    public function send($url = "", $method = Req::GET, $params = [])
     {
         if (!Str::isAvailable($url)) {
             return false;
@@ -206,9 +198,6 @@ class HttpSender extends BaseClass implements IHttpSender
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        if(self::isClosure($callback)){
-            $data = call_user_func($callback, $data);
-        }
 
         return $data;
     }
