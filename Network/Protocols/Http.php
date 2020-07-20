@@ -229,7 +229,7 @@ class Http
      * @param string $basicAuth
      * @return HttpSender
      */
-    public static function getSenderInstance($headers = [], $basicAuth = "")
+    public static function senderInstance($headers = [], $basicAuth = "")
     {
         return (new HttpSender())->constructor($headers, $basicAuth);
     }
