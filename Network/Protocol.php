@@ -22,12 +22,15 @@ class Protocol {
         return Http::isSecureConn() ? true : false;
     }
 
-    public static function protocol($withPrefix = false):string {
+    public static function name():string {
         if(self::isSecureHttpProtocol()){$protocol = self::PROTOCOL_HTTPS;}
         else if(self::isHttpProtocol()){$protocol = self::PROTOCOL_HTTP;}
         else{return false;}
         $protocol = strtolower($protocol);
-        if($withPrefix){$protocol .= "://";}
         return $protocol;
+    }
+
+    public static function prefix():string{
+        return ($name = self::name()) ? "{$name}://" : false;
     }
 }
