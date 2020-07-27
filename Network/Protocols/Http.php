@@ -289,6 +289,14 @@ class Http
         return (string)GlobalAccess::server("HTTP_ACCEPT");
     }
 
+    public static function hostName(){
+        return (string)GlobalAccess::server("HTTP_HOST");
+    }
+
+    public static function serverPort(){
+        return (string)GlobalAccess::server("SERVER_PORT");
+    }
+
     public static function serverName(){
         return (string)GlobalAccess::server("SERVER_NAME");
     }
