@@ -7,8 +7,6 @@
 
 namespace Feeler\Fl\Network;
 
-use Feeler\Fl\Network\Protocols\Http;
-
 class Connection {
 
 }

@@ -7,6 +7,7 @@
 
 namespace Feeler\Fl\Network;
 
+use Feeler\Base\GlobalAccess;
 use Feeler\Fl\Network\Protocols\Http;
 
 class Protocol {
