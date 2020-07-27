@@ -15,11 +15,12 @@ use Feeler\Base\Number;
 use Feeler\Base\Str;
 
 class Image extends Singleton {
-    const TYPE_MAPPINGS = [
-        "jpg" => "jpeg",
-    ];
-
+    const TYPE_MAPPINGS = ["jpg" => "jpeg"];
     const FONT_PATH = ROOT_PATH."requirements/fonts/yahei_mono.ttf";
+    const TYPE_PNG = "png";
+    const TYPE_JPEG = "jpeg";
+    const TYPE_GIF = "gif";
+    const TYPE_BMP = "bmp";
 
     protected static $instance;
 
@@ -110,6 +111,34 @@ class Image extends Singleton {
         imagesavealpha($src, true);
 
         return true;
+    }
+
+    public static function binary($res, $type = self::TYPE_PNG){
+        if(!is_resource($res)) {
+            return false;
+        }
+
+        self::revertType($type);
+
+        switch($type){
+            case "jpeg":
+                $rs = imagejpeg($res);
+                break;
+
+            case "png":
+                $rs = imagepng($res);
+                break;
+
+            case "gif":
+                $rs = imagegif($res);
+                break;
+
+            default:
+                return false;
+                break;
+        }
+
+        return $rs ? true : false;
     }
 
     public static function saveAs(string $file, $res){
