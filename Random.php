@@ -91,7 +91,7 @@ class Random extends BaseClass{
         if($max === $min){return $max;}
         $minDecimalPlaceLen = Number::decimalPlaceLength($min);
         $maxDecimalPlaceLen = Number::decimalPlaceLength($max);
-        $decimalPlaceLen = Number::maximum($minDecimalPlaceLen, $maxDecimalPlaceLen);
+        $decimalPlaceLen = (int)Number::maximum($minDecimalPlaceLen, $maxDecimalPlaceLen);
         if($decimalPlaceLen > 0){
             $min = $min * (int)("1".str_repeat("0", $decimalPlaceLen));
             $max = $max * (int)("1".str_repeat("0", $decimalPlaceLen));
