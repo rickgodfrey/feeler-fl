@@ -96,20 +96,7 @@ class Random extends BaseClass{
             $min = $min * (int)("1".str_repeat("0", $decimalPlaceLen));
             $max = $max * (int)("1".str_repeat("0", $decimalPlaceLen));
         }
-        if($max > Number::intMaximum()){
-            $minLength = strlen((string)$min);
-            $maxLength = strlen((string)$max);
-            $maxStart = (int)substr((string)$max, 0, 1);
-            $numberLength = mt_rand($minLength, $maxLength);
-            $number = self::number($numberLength);
-            $numberStart = (int)substr($number, 0, 1);
-            if($numberLength === $maxLength && $numberStart > $maxStart){
-                $number = (string)$maxStart.substr($number, 1, ($numberLength - 1));
-            }
-        }
-        else{
-            $number = mt_rand($min, $max);
-        }
+        $number = mt_rand($min, $max);
         if($decimalPlaceLen > 0){
             $number = $number / (int)("1".str_repeat("0", $decimalPlaceLen));
         }
