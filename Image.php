@@ -273,6 +273,7 @@ class Image extends Singleton {
         }
 
         $rs = imagefttext($src, $font["size"], $font["angle"], $font["x"], $font["y"], $fontColor, self::FONT_PATH, $content);
+        imageantialias($rs, true);
 
         return $rs ? true : false;
     }
