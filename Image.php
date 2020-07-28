@@ -114,11 +114,9 @@ class Image extends Singleton {
     }
 
     public static function binary($res, $type = self::TYPE_PNG){
-        if(!is_resource($res)) {
+        if(!is_resource($res) || !in_array($type, [self::TYPE_PNG, self::TYPE_JPEG, self::TYPE_GIF])) {
             return false;
         }
-
-        self::revertType($type);
 
         switch($type){
             case "jpeg":
@@ -139,6 +137,15 @@ class Image extends Singleton {
         }
 
         return $rs ? true : false;
+    }
+
+    public static function base64Encode($res, $type = self::TYPE_PNG):string {
+        if(($binary = self::binary($res, $type)) === false){
+            return "";
+        }
+        $imageInfo = self::getResInfo($res);
+        $imageInfo = isset($imageInfo["mime"]) ? $imageInfo["mime"] : "";
+        return "data:{$imageInfo};base64,".chunk_split(base64_encode($binary));
     }
 
     public static function saveAs(string $file, $res){
@@ -208,17 +215,25 @@ class Image extends Singleton {
         return imagefilledrectangle($src, $rectangle["x"], $rectangle["y"], $rectangle["x"] + $rectangle["w"], $rectangle["y"] + $rectangle["h"], $rectangle["color"]);
     }
 
-    public static function getResSize($res){
-        $imageSize = [];
-
-        $file = TEMP_PATH.Random::uuid().".png";
-        if(self::saveAs($file, $res)){
-            $imageSize = getimagesize($file);
-            $imageSize = [$imageSize[0], $imageSize[1]];
-            File::rm($file);
+    public static function getResInfo($res){
+        if(!is_resource($res)){
+            return [];
+        }
+        $imageInfo = File::tempFileCallback(function ($tempFile) use($res){
+            if(!imagejpeg($res, $tempFile, 0)){
+                return [];
+            }
+            return getimagesize($tempFile);
+        }, ".jpeg");
+        if(!$imageInfo){
+            return [];
         }
 
-        return $imageSize;
+        return [
+            "width" => isset($imageInfo[0]) ? $imageInfo[0] : 0,
+            "height" => isset($imageInfo[1]) ? $imageInfo[1] : 0,
+            "mime" => isset($imageInfo["mime"]) ? $imageInfo["mime"] : "",
+        ];
     }
 
     public static function getFileSize($file){
@@ -247,7 +262,7 @@ class Image extends Singleton {
 
     private function _sign(&$src, $content, $font = []){
         if(!is_resource($src) || !$content || !Arr::isAvailable($font, ["size", "color", "x", "y"])
-            || !Number::isInteric($fontColor = self::getColor($src, $font["color"])) || !($imageSize = self::getResSize($src)))
+            || !Number::isInteric($fontColor = self::getColor($src, $font["color"])) || !($imageSize = self::getResInfo($src)))
         {
             return false;
         }
@@ -259,7 +274,7 @@ class Image extends Singleton {
         $fontYOffset = $stringRectangleSize[1] - 3;
         [$font["w"], $font["h"]] = $stringRectangleSize;
 
-        $position = self::calcPosition($font, ["w" => $imageSize[0], "h" => $imageSize[1]]);
+        $position = self::calcPosition($font, ["w" => $imageSize["width"], "h" => $imageSize["height"]]);
         $position[1] += $fontYOffset;
         [$font["x"], $font["y"]] = $position;
 
@@ -277,15 +292,13 @@ class Image extends Singleton {
     }
 
     public static function zoom(&$src, $size){
-        if(!is_resource($src) || (!Arr::isAvailable($size) && !Number::isFloaric($size))){
+        if(!is_resource($src) || (!Arr::isAvailable($size) && !Number::isFloaric($size)) || !($srcSize = self::getResInfo($src))){
             return false;
         }
 
         $size = Number::format($size, 3);
-        $srcSize = self::getResSize($src);
-
         if(Number::isNumeric($size)){
-            $size = [Number::format($srcSize[0] * $size, 0), Number::format($srcSize[1] * $size, 0)];
+            $size = [Number::format($srcSize["width"] * $size, 0, false), Number::format($srcSize["height"] * $size, 0, false)];
         }
 
         $dest = self::create($size[0], $size[1]);
@@ -293,28 +306,25 @@ class Image extends Singleton {
         $rs = imagecopyresampled(
             $dest, $src,
             0, 0, 0, 0,
-            $size[0], $size[1], $srcSize[0], $srcSize[1]
+            $size[0], $size[1], $srcSize["width"], $srcSize["height"]
         );
 
         $src = $dest;
-
         return $rs;
     }
 
     public static function makeSquared(&$src){
-        $imageSize = self::getResSize($src);
-
-        if(!$imageSize){
+        if(!($imageSize = self::getResInfo($src))){
             return false;
         }
 
-        if($imageSize[0] == $imageSize[1]){
+        if($imageSize["width"] == $imageSize["height"]){
             return true;
         }
 
-        $size = $imageSize[0] > $imageSize[1] ? $imageSize[0] : $imageSize[1];
+        $size = $imageSize["width"] > $imageSize["height"] ? $imageSize["width"] : $imageSize["height"];
 
-        $position = self::calcPosition(["w" => $imageSize[0], "h" => $imageSize[1], "x" => "center", "y" => "center"], ["w" => $size, "h" => $size]);
+        $position = self::calcPosition(["w" => $imageSize["width"], "h" => $imageSize["height"], "x" => "center", "y" => "center"], ["w" => $size, "h" => $size]);
 
         if(!$position){
             return false;
@@ -331,7 +341,7 @@ class Image extends Singleton {
             [
                 "res" => $src,
                 "layer_num" => 2,
-                "x" => $position[0], "y" => $position[1], "w" => $imageSize[0], "h" => $imageSize[1]
+                "x" => $position[0], "y" => $position[1], "w" => $imageSize["width"], "h" => $imageSize["height"]
             ]
         ]);
 
@@ -412,7 +422,6 @@ class Image extends Singleton {
         }
 
         $params = Arr::rebuild($params, ["0", "1", "2"]);
-        $imageSize = self::getResSize($src);
 
         if(!isset($params[2])){
             $vals = Arr::rebuild($params[1], [
@@ -469,19 +478,15 @@ class Image extends Singleton {
     }
 
     public static function setBorder(&$src, $borderColor = [0, 0, 0, 1], $borderSize = 1){
-        if(!is_resource($src) || !Number::isInteric($borderSize) || $borderSize < 1){
+        if(!is_resource($src) || !Number::isInteric($borderSize) || $borderSize < 1 || !($imageSize = self::getResInfo($src))){
             return false;
         }
 
-        if(!($imageSize = self::getResSize($src))){
-            return false;
-        }
-
-        $containerSize = [$borderSize * 2 + $imageSize[0], $borderSize * 2 + $imageSize[1]];
+        $containerSize = [$borderSize * 2 + $imageSize["width"], $borderSize * 2 + $imageSize["height"]];
 
         return self::crop(
             $src,
-            ["x" => 0, "y" => 0, "w" => $imageSize[0], "h" => $imageSize[1]],
+            ["x" => 0, "y" => 0, "w" => $imageSize["width"], "h" => $imageSize["height"]],
             ["x" => $borderSize, "y" => $borderSize, "w" => $containerSize[0], "h" => $containerSize[1], "color" => $borderColor]
         );
     }
