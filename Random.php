@@ -25,7 +25,7 @@ class Random extends BaseClass{
         $uuid = self::UUID_ZONE_FLAG;
         if($macAddr = NetworkCard::getEth0MacAddr()){$uuid .= "::".md5($macAddr);}
         if($pid = Process::pid()){$uuid .= "::".md5($pid);}
-        $uuid .= "::".md5(self::string(64, false, false));
+        $uuid .= "::".md5(self::string(64, self::STRING_MIXED, false));
         $uuid .= "::".self::uniqueId();
         $uuid = strtolower(substr(sha1($uuid), 0, 32));
         if($whole){$uuid = substr($uuid, 0, 8) ."-".substr($uuid, 8, 4) ."-".substr($uuid, 12, 4) ."-".substr($uuid, 16, 4) ."-".substr($uuid, 20, 12);}
@@ -68,7 +68,7 @@ class Random extends BaseClass{
         return ($number = self::_number($length, $strict, $startWith)) ? $number
             : ((($strict = ((int)$startWith === 0 ? false : $strict)) !== null && Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")))
                 ? (preg_match("/^[{$numbers}]*({$startWith}[0-9]*)$/", ($number = self::number($length, $strict)), $matches) && ($number = (int)$matches[1]) && (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) ? ($len < $length ? $number.self::number($length - $len, false) : $number) : self::number($length, $strict, $startWith)))
-                : (($number = self::string($length, true)) !== null && $strict && ($number = (int)$number) !== null ? (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) < $length ? $number.self::string(($length - $len), true) : $number) : $number));
+                : (($number = self::string($length, self::STRING_NUMERIC)) !== null && $strict && ($number = (int)$number) !== null ? (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) < $length ? $number.self::string(($length - $len), self::STRING_NUMERIC) : $number) : $number));
     }
 
     public static function uniqueId() :string {
@@ -83,5 +83,19 @@ class Random extends BaseClass{
         $number = $startWith.$number;
         if($length > strlen($number)){$number = substr($number, 0, ($length - 1));}
         return $number;
+    }
+
+    public static function ofRange($min, $max):float{
+        if(!Number::isNumeric($min) || !Number::isNumeric($max)){return 0;}
+        $min = (float)$min;$max = (float)$max;
+        if($max < $min){return $min;}
+        if($max === $min){return $max;}
+        $minDecimalPlaceLen = Number::decimalPlaceLength($min);
+        $maxDecimalPlaceLen = Number::decimalPlaceLength($max);
+        $decimalPlaceLen = Number::maximum($minDecimalPlaceLen, $maxDecimalPlaceLen);
+        if($decimalPlaceLen === 0){return mt_rand($min, $max);}
+        $min = $min * (int)("1".str_repeat("0", $decimalPlaceLen));
+        $max = $max * (int)("1".str_repeat("0", $decimalPlaceLen));
+        return Number::format((mt_rand($min, $max) / $decimalPlaceLen), $decimalPlaceLen, false);
     }
 }
