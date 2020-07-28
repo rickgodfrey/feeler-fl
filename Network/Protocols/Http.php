@@ -62,11 +62,8 @@ class Http
             return null;
         }
 
-        if (!is_array(self::$headers) || !self::$headers) {
-            self::$headers = self::getAllHeaders();
-        }
-
-        if (!self::$headers) {
+        self::getAllHeaders();
+        if (!Arr::isAvailable(self::$headers)) {
             return null;
         }
 
