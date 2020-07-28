@@ -118,25 +118,17 @@ class Image extends Singleton {
             return false;
         }
 
-        switch($type){
-            case "jpeg":
-                $rs = imagejpeg($res);
-                break;
-
-            case "png":
-                $rs = imagepng($res);
-                break;
-
-            case "gif":
-                $rs = imagegif($res);
-                break;
-
-            default:
+        $rs = File::tempFileCallback(function ($tempFile) use($res, $type){
+            if(!$tempFile){
                 return false;
-                break;
-        }
+            }
+            if(!(self::saveAs($tempFile, $res))){
+                return false;
+            }
+            return file_get_contents($tempFile);
+        }, ".{$type}");
 
-        return $rs ? true : false;
+        return $rs;
     }
 
     public static function base64Encode($res, $type = self::TYPE_PNG):string {
@@ -152,11 +144,9 @@ class Image extends Singleton {
         if(!is_resource($res) || !Str::isAvailable($file)) {
             return false;
         }
-
         if(!File::mkdir(File::getPath($file))){
             return false;
         }
-
         $type = File::getExt($file);
         self::revertType($type);
 
