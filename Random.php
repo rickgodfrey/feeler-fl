@@ -16,7 +16,6 @@ use Feeler\Fl\System\Process;
 
 class Random extends BaseClass{
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
-
     const STRING_MIXED = "STRING_MIXED";
     const STRING_NUMERIC = "STRING_NUMERIC";
     const STRING_LETTERS = "STRING_LETTERS";
@@ -72,7 +71,7 @@ class Random extends BaseClass{
     }
 
     public static function uniqueId() :string {
-        return md5(uniqid(mt_rand((int)((double)Time::microSecond() * 100000000), (int)9223372036854775807), true));
+        return md5(uniqid(mt_rand((int)((double)Time::microSecond() * 100000000), Number::INT_MAXIMUM), true));
     }
 
     private static function _number($length, bool $strict = true, $startWith = null) :string {
@@ -85,7 +84,7 @@ class Random extends BaseClass{
         return $number;
     }
 
-    public static function ofRange($min, $max):float{
+    public static function numberOfRange($min, $max):string {
         if(!Number::isNumeric($min) || !Number::isNumeric($max)){return 0;}
         $min = (float)$min;$max = (float)$max;
         if($max < $min){return $min;}
@@ -93,9 +92,29 @@ class Random extends BaseClass{
         $minDecimalPlaceLen = Number::decimalPlaceLength($min);
         $maxDecimalPlaceLen = Number::decimalPlaceLength($max);
         $decimalPlaceLen = Number::maximum($minDecimalPlaceLen, $maxDecimalPlaceLen);
-        if($decimalPlaceLen === 0){return mt_rand($min, $max);}
-        $min = $min * (int)("1".str_repeat("0", $decimalPlaceLen));
-        $max = $max * (int)("1".str_repeat("0", $decimalPlaceLen));
-        return Number::format((mt_rand($min, $max) / $decimalPlaceLen), $decimalPlaceLen, false);
+        if($decimalPlaceLen > 0){
+            $min = $min * (int)("1".str_repeat("0", $decimalPlaceLen));
+            $max = $max * (int)("1".str_repeat("0", $decimalPlaceLen));
+        }
+        if($max > Number::INT_MAXIMUM){
+            $minLength = strlen((string)$min);
+            $maxLength = strlen((string)$max);
+            $maxStart = (int)substr((string)$max, 0, 1);
+            $numberLength = mt_rand($minLength, $maxLength);
+            $number = self::number($numberLength);
+            $numberStart = (int)substr($number, 0, 1);
+            if($numberLength === $maxLength && $numberStart > $maxStart){
+                $number = (string)$maxStart.substr($number, 1, ($numberLength - 1));
+            }
+        }
+        else{
+            $number = mt_rand($min, $max);
+        }
+        if($decimalPlaceLen > 0){
+            $number = $number / (int)("1".str_repeat("0", $decimalPlaceLen));
+        }
+        $number = Number::format($number, $decimalPlaceLen, false);
+        $number = (string)$number;
+        return $number;
     }
 }
