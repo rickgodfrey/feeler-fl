@@ -71,7 +71,7 @@ class Random extends BaseClass{
     }
 
     public static function uniqueId() :string {
-        return md5(uniqid(mt_rand((int)((double)Time::microSecond() * 100000000), Number::INT_MAXIMUM), true));
+        return md5(uniqid(mt_rand((int)((double)Time::microSecond() * 100000000), Number::intMaximum()), true));
     }
 
     private static function _number($length, bool $strict = true, $startWith = null) :string {
