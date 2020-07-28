@@ -96,7 +96,7 @@ class Random extends BaseClass{
             $min = $min * (int)("1".str_repeat("0", $decimalPlaceLen));
             $max = $max * (int)("1".str_repeat("0", $decimalPlaceLen));
         }
-        if($max > Number::INT_MAXIMUM){
+        if($max > Number::intMaximum()){
             $minLength = strlen((string)$min);
             $maxLength = strlen((string)$max);
             $maxStart = (int)substr((string)$max, 0, 1);
