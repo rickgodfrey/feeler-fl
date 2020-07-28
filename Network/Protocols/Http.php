@@ -72,6 +72,10 @@ class Http
 
         $val = Arr::getVal(self::$headers, $key, $dataKey);
 
+        if($dataKey == null){
+            return null;
+        }
+
         return [$dataKey => $val];
     }
 
