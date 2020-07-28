@@ -88,7 +88,10 @@ class Http
         $headers = [];
         foreach ($keys as $key) {
             $rs = self::getHeader($key);
-            $headers[key($rs)] = current($rs);
+            if(($key = Arr::key($rs)) == null){
+                continue;
+            }
+            $headers[$key] = Arr::current($rs);
         }
 
         return $headers;
