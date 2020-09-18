@@ -10,6 +10,7 @@
     "require": {
         "php": ">=7.3",
         "ext-mbstring": "*",
+        "ext-json": "*",
         "ext-curl": "*",
         "feeler/base": "dev-master"
     },
