@@ -12,7 +12,7 @@
         "ext-mbstring": "*",
         "ext-json": "*",
         "ext-curl": "*",
-        "feeler/base": "0.2.0-beta"
+        "feeler/base": "*"
     },
     "license": "MIT",
     "authors": [
