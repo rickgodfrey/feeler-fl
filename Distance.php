@@ -61,8 +61,8 @@ class Distance{
             return false;
         }
 
-        // 将角度转为狐度
-        $radLat1 = deg2rad($this->location1Lat); //deg2rad()函数将角度转换为弧度
+        // Convert angle to radians
+        $radLat1 = deg2rad($this->location1Lat);
         $radLat2 = deg2rad($this->location2Lat);
         $radLng1 = deg2rad($this->location1Lng);
         $radLng2 = deg2rad($this->location2Lng);
