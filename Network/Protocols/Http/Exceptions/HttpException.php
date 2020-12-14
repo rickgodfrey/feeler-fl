@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl\Network\Protocols\Exceptions;
+namespace Feeler\Fl\Network\Protocols\Http\Exceptions;
 
 use Feeler\Fl\Exceptions\BaseException;
 use Feeler\Base\Errno;

@@ -243,8 +243,8 @@ class Http
         $ip = null;
 
         if (GlobalAccess::server("HTTP_X_FORWARDED_FOR")) {
-            $arr = explode(',', GlobalAccess::server("HTTP_X_FORWARDED_FOR"));
-            $pos = array_search('unknown', $arr);
+            $arr = explode(",", GlobalAccess::server("HTTP_X_FORWARDED_FOR"));
+            $pos = array_search("unknown", $arr);
             if ($pos !== false) {
                 unset($arr[$pos]);
             }
@@ -269,7 +269,7 @@ class Http
         elseif (GlobalAccess::server("REQUEST_SCHEME") === "https") {
             $isSecureConn = true;
         }
-        elseif (GlobalAccess::server("SERVER_PORT") == "443") {
+        elseif (GlobalAccess::server("SERVER_PORT") == 443) {
             $isSecureConn = true;
         }
         elseif (GlobalAccess::server("HTTP_X_FORWARDED_PROTO") === "https") {
