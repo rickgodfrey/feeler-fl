@@ -287,9 +287,9 @@ class Image extends Singleton {
             return false;
         }
 
-        $size = Number::format($size, 3);
+        $size = Number::decimalFormat($size, 3);
         if(Number::isNumeric($size)){
-            $size = [Number::format($srcSize["width"] * $size, 0, false), Number::format($srcSize["height"] * $size, 0, false)];
+            $size = [Number::decimalFormat($srcSize["width"] * $size, 0, false), Number::decimalFormat($srcSize["height"] * $size, 0, false)];
         }
 
         $dest = self::create($size[0], $size[1]);
@@ -362,17 +362,17 @@ class Image extends Singleton {
             }
 
             if(Number::isNumeric($val)){
-                $elementInfo["x"] += Number::format($val, 1);
+                $elementInfo["x"] += Number::decimalFormat($val, 1);
             }
             else{
                 if($val == "left"){
                     $elementInfo["x"] += 0;
                 }
                 else if($val == "center"){
-                    $elementInfo["x"] += Number::format(($containerInfo["w"] - $elementInfo["w"]) / 2, 1);
+                    $elementInfo["x"] += Number::decimalFormat(($containerInfo["w"] - $elementInfo["w"]) / 2, 1);
                 }
                 else if($val == "right"){
-                    $elementInfo["x"] += Number::format($containerInfo["w"] - $elementInfo["w"], 1);
+                    $elementInfo["x"] += Number::decimalFormat($containerInfo["w"] - $elementInfo["w"], 1);
                 }
             }
         }
@@ -384,17 +384,17 @@ class Image extends Singleton {
             }
 
             if(Number::isNumeric($val)){
-                $elementInfo["y"] += Number::format($val, 1);
+                $elementInfo["y"] += Number::decimalFormat($val, 1);
             }
             else{
                 if($val == "top"){
                     $elementInfo["y"] += 0;
                 }
                 else if($val == "center"){
-                    $elementInfo["y"] += Number::format(($containerInfo["h"] - $elementInfo["h"]) / 2, 1);
+                    $elementInfo["y"] += Number::decimalFormat(($containerInfo["h"] - $elementInfo["h"]) / 2, 1);
                 }
                 else if($val == "bottom"){
-                    $elementInfo["y"] += Number::format($containerInfo["h"] - $elementInfo["h"], 1);
+                    $elementInfo["y"] += Number::decimalFormat($containerInfo["h"] - $elementInfo["h"], 1);
                 }
             }
         }

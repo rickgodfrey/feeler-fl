@@ -100,7 +100,7 @@ class Random extends BaseClass{
         if($decimalPlaceLen > 0){
             $number = $number / (int)("1".str_repeat("0", $decimalPlaceLen));
         }
-        $number = Number::format($number, $decimalPlaceLen, false);
+        $number = Number::decimalFormat($number, $decimalPlaceLen, false);
         $number = (string)$number;
         return $number;
     }
