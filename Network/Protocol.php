@@ -11,9 +11,9 @@ use Feeler\Base\GlobalAccess;
 use Feeler\Fl\Network\Protocols\Http;
 
 class Protocol {
-    const PROTOCOL_HTTP = "HTTP";
-    const PROTOCOL_HTTPS = "HTTPS";
-    const PROTOCOL_UNKNOWN = "UNKNOWN";
+    const PROTOCOL_HTTP = "http";
+    const PROTOCOL_HTTPS = "https";
+    const PROTOCOL_UNKNOWN = "unknown";
 
     public static function isHttpProtocol():bool{
         return stripos((string)GlobalAccess::server("SERVER_PROTOCOL"), "http") === 0 ? true : false;
@@ -26,8 +26,7 @@ class Protocol {
     public static function name():string {
         if(self::isSecureHttpProtocol()){$protocol = self::PROTOCOL_HTTPS;}
         else if(self::isHttpProtocol()){$protocol = self::PROTOCOL_HTTP;}
-        else{return false;}
-        $protocol = strtolower($protocol);
+        else{return "";}
         return $protocol;
     }
 

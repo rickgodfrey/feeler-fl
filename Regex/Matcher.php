@@ -11,8 +11,8 @@ use Feeler\Base\BaseClass;
 use Feeler\Base\Str;
 
 class Matcher extends BaseClass {
-    const DOMAIN_NAME = "DOMAIN_NAME";
-    const EMAIL = "EMAIL";
+    const DOMAIN_NAME = "domain_name";
+    const EMAIL = "email";
 
     protected static function match($string, string $kind, &$matches, bool $strict = true){
         if(!Str::isAvailable($string)){

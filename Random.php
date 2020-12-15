@@ -16,9 +16,9 @@ use Feeler\Fl\System\Process;
 
 class Random extends BaseClass{
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
-    const STRING_MIXED = "STRING_MIXED";
-    const STRING_NUMERIC = "STRING_NUMERIC";
-    const STRING_LETTERS = "STRING_LETTERS";
+    const STRING_MIXED = "string_mixed";
+    const STRING_NUMERIC = "string_numeric";
+    const STRING_LETTERS = "string_letters";
 
     public static function uuid(bool $whole = false): string {
         $uuid = self::UUID_ZONE_FLAG;

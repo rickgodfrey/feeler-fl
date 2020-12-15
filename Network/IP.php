@@ -11,55 +11,37 @@ use Feeler\Base\Number;
 use Feeler\Base\Str;
 
 class IP {
-    const IP_V4 = "IP_V4";
-    const IP_V6 = "IP_V6";
-    const IP_INVALID = "IP_INVALID";
+    const IP_V4 = "ip_v4";
+    const IP_V6 = "ip_v6";
+    const IP_INVALID = "ip_invalid";
 
-    public static function isIpAddr($ipAddr)
-    {
-        if (!Str::isAvailable($ipAddr)) {
-            return self::IP_INVALID;
+    public static function ipVersion($ipAddr){
+        if(self::isIpV6($ipAddr)){
+            return self::IP_V6;
         }
-
-        $ipAddr = explode(".", $ipAddr, 4);
-
-        $i = 1;
-        foreach($ipAddr as $seg){
-            if(!Number::isInteric($seg)){
-                return self::IP_INVALID;
-            }
-
-            if((int)$seg > 255 || (int)$seg < 0){
-                return self::IP_INVALID;
-            }
-
-            if($i > 4){
-                return self::IP_INVALID;
-            }
-
-            $i++;
+        if(self::isIpV4($ipAddr)){
+            return self::IP_V4;
         }
+        return self::IP_INVALID;
+    }
 
-        return self::IP_V4;
+    public static function isValid($ipAddr) : bool{
+        return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP) ? true : false;
     }
 
     public static function isIpV4($ipAddr) : bool{
-        return (self::isIpAddr($ipAddr) === self::IP_V4) ? true : false;
+        return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? true : false;
+    }
+
+    public static function isIpV6($ipAddr) : bool{
+        return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) ? true : false;
     }
 
     public static function ipToNumber($ipAddr) : int{
-        if (!Str::isAvailable($ipAddr)) {
-            return false;
-        }
-
-        return ip2long($ipAddr);
+        return Str::isAvailable($ipAddr) ? ip2long($ipAddr) : false;
     }
 
     public static function numberToIp($number) : string{
-        if(!Number::isInteric($number)){
-            return "";
-        }
-
-        return ($rs = long2ip($number)) ? $rs : "";
+        return (Number::isInteric($number) ? ($rs = long2ip($number)) : "") ?: "";
     }
 }

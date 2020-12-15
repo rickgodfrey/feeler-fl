@@ -17,10 +17,6 @@ use Feeler\Fl\Network\Protocols\Http\HttpSender;
 
 class Http
 {
-    const IP_V4 = "IP_V4";
-    const IP_V6 = "IP_V6";
-    const IP_INVALID = "IP_INVALID";
-
     public static $headers;
     public static $pathParams = [];
 
@@ -139,38 +135,6 @@ class Http
         return (string)GlobalAccess::server("REQUEST_METHOD");
     }
 
-    public static function isIpAddr($ipAddr)
-    {
-        if (!Str::isAvailable($ipAddr)) {
-            return self::IP_INVALID;
-        }
-
-        $ipAddr = explode(".", $ipAddr, 4);
-
-        $i = 1;
-        foreach($ipAddr as $seg){
-            if(!Number::isInteric($seg)){
-                return self::IP_INVALID;
-            }
-
-            if((int)$seg > 255 || (int)$seg < 0){
-                return self::IP_INVALID;
-            }
-
-            if($i > 4){
-                return self::IP_INVALID;
-            }
-
-            $i++;
-        }
-
-        return self::IP_V4;
-    }
-
-    public static function ipToNumber($ipAddr) : int{
-        return IP::ipToNumber($ipAddr);
-    }
-
     /**
      * @param $ipAddrPattern
      * @return bool
@@ -183,14 +147,14 @@ class Http
         }
 
         $ipAddr = self::clientIpAddr();
-        $ipVersion = self::IP_V4;
+        $ipVersion = IP::IP_V4;
         $ipv4AddrRegex = "/^\s*?([0-9]{1,3}|\*)((?:\.(?:[0-9]{1,3}|\*)){1,3})\s*$/i";
 
         if (!preg_match($ipv4AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
-            $ipVersion = self::IP_V6;
+            $ipVersion = IP::IP_V6;
         }
 
-        if ($ipVersion == self::IP_V4) {
+        if ($ipVersion == IP::IP_V4) {
             $array = explode(".", $ipAddrPatternSegs[2]);
             foreach ($array as $key => $val) {
                 if ($val == "") {
@@ -218,9 +182,8 @@ class Http
 
             return true;
         }
-        else if($ipVersion == self::IP_V6){
+        else if($ipVersion == IP::IP_V6){
             $ipv6Addr = "::1";
-
             return $ipAddr === $ipv6Addr ? true : false;
         }
         else{

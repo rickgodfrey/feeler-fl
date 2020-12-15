@@ -11,7 +11,7 @@ use Feeler\Base\Number;
 use Feeler\Base\Str;
 
 class Time{
-    const TIME_STAMP_NOW = "TIME_STAMP_NOW";
+    const TIME_STAMP_NOW = "time_stamp_now";
 
 	protected static $theDay;
 	protected static $datetimeObj;

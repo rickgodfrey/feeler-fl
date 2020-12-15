@@ -10,8 +10,8 @@ namespace Feeler\Fl;
 use Feeler\Base\Number;
 
 class Validator{
-    const LOCALE_COMPATIBLE = "COMPATIBLE";
-    const LOCALE_CN = "CN";
+    const LOCALE_COMPATIBLE = "compatible";
+    const LOCALE_CN = "cn";
 
 	//test the legality of the mail address
 	public static function testMail($mail, &$parts = null){
