@@ -19,7 +19,7 @@ class HttpSender extends BaseClass implements IHttpSender
     protected $basicAuth;
 
     protected static function constructorName() :string {
-        return self::INITIALIZE;
+        return self::INITIALIZE_METHOD;
     }
 
     public function initialize($headers = [], $basicAuth = null, $timeout = 5)

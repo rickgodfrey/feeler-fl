@@ -11,10 +11,10 @@ use Feeler\Base\Arr;
 use Feeler\Base\GlobalAccess;
 
 class Req{
-    const GET = "get";
-    const POST = "post";
-    const PUT = "put";
-    const DELETE = "delete";
+    const GET = "GET";
+    const POST = "POST";
+    const PUT = "PUT";
+    const DELETE = "DELETE";
 
     protected static $input;
 
