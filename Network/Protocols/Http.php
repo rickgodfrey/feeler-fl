@@ -12,8 +12,10 @@ use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Base\GlobalAccess;
 use Feeler\Fl\Network\IP;
-use Feeler\Fl\Network\Protocols\Exceptions\HttpException;
+use Feeler\Fl\Network\Protocol;
+use Feeler\Fl\Network\Protocols\Http\Exceptions\HttpException;
 use Feeler\Fl\Network\Protocols\Http\HttpSender;
+use Feeler\Fl\Network\Protocols\Http\Req;
 
 class Http
 {
@@ -123,16 +125,11 @@ class Http
 
     public static function allowRequestMethods($toCheckAllowedMethods = [])
     {
-        $requestMethod = GlobalAccess::server("REQUEST_METHOD");
+        $requestMethod = Req::method();
 
         if (Arr::isAvailable($toCheckAllowedMethods) && !in_array($requestMethod, $toCheckAllowedMethods)) {
             throw new HttpException("REQUEST_METHOD_ERROR", 1003);
         }
-    }
-
-    public static function requestMethod()
-    {
-        return (string)GlobalAccess::server("REQUEST_METHOD");
     }
 
     /**
@@ -201,44 +198,12 @@ class Http
         return (new HttpSender())->constructor($headers, $basicAuth);
     }
 
-    public static function clientIpAddr()
-    {
-        $ip = null;
-
-        if (GlobalAccess::server("HTTP_X_FORWARDED_FOR")) {
-            $arr = explode(",", GlobalAccess::server("HTTP_X_FORWARDED_FOR"));
-            $pos = array_search("unknown", $arr);
-            if ($pos !== false) {
-                unset($arr[$pos]);
-            }
-
-            $ip = trim($arr[0]);
-        }
-        else if (GlobalAccess::server("HTTP_CLIENT_IP")) {
-            $ip = GlobalAccess::server("HTTP_CLIENT_IP");
-        }
-        else if (GlobalAccess::server("REMOTE_ADDR")) {
-            $ip = GlobalAccess::server("REMOTE_ADDR");
-        }
-
-        return $ip;
+    public static function clientIpAddr(){
+        return Protocol::clientIpAddr();
     }
 
     public static function isSecureConn(){
-        $isSecureConn = false;
-        if ((GlobalAccess::server("HTTPS") == "1" || strtolower(GlobalAccess::server("HTTPS")) === "on")) {
-            $isSecureConn = true;
-        }
-        elseif (GlobalAccess::server("REQUEST_SCHEME") === "https") {
-            $isSecureConn = true;
-        }
-        elseif (GlobalAccess::server("SERVER_PORT") == 443) {
-            $isSecureConn = true;
-        }
-        elseif (GlobalAccess::server("HTTP_X_FORWARDED_PROTO") === "https") {
-            $isSecureConn = true;
-        }
-        return $isSecureConn;
+        return Protocol::scheme() === "https" ? true : false;
     }
 
     public static function responseCode($code = 200){

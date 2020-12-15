@@ -72,4 +72,8 @@ class Req{
 
         return $value;
     }
+
+    public static function method():string{
+        return (string)GlobalAccess::server("REQUEST_METHOD");
+    }
 }
