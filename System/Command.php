@@ -7,23 +7,43 @@
 
 namespace Feeler\Fl\System;
 
-class Command {
+use Feeler\Base\BaseClass;
+use Feeler\Base\Str;
+
+class Command extends BaseClass {
     const UNIX_NETWORK_DETAIL = "ifconfig -a";
+    const UNIX_OS_DETAIL = "lsb_release -a";
     const WINNT_NETWORK_DETAIL = "ipconfig /all";
 
-    public static function networkDetail(){
-        switch(OS::family()){
-            case "unix":
-                return self::UNIX_NETWORK_DETAIL;
-                break;
+    protected static function detailInternal(string $needle){
+        $osFamily = OS::family();
+        $osFamily = strtoupper($osFamily);
+        $needle = strtoupper($needle);
 
-            case "winnt":
-                return self::WINNT_NETWORK_DETAIL;
-                break;
+        return (string)self::constValue("{$osFamily}_{$needle}_DETAIL");
+    }
 
-            default:
-                return "";
-                break;
+    public static function exec(string $command):string{
+        if(!Str::isAvailable($command)){
+            return "";
         }
+
+        return (string)@shell_exec($command);
+    }
+
+    protected static function osDetailCommand(){
+        return self::detailInternal("os");
+    }
+
+    protected static function networkDetailCommand(){
+        return self::detailInternal("network");
+    }
+
+    public static function osDetail(){
+        return self::exec(self::osDetailCommand());
+    }
+
+    public static function networkDetail(){
+        return self::exec(self::networkDetailCommand());
     }
 }

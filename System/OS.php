@@ -24,7 +24,7 @@ class OS extends BaseClass {
     const LINUX_MAC_ADDR_INFO_BEGIN_WITH = self::UNIX_MAC_ADDR_INFO_BEGIN_WITH;
     const DARWIN_MAC_ADDR_INFO_BEGIN_WITH = self::UNIX_MAC_ADDR_INFO_BEGIN_WITH;
 
-    protected static $lsb;
+    protected static $detail;
 
     public static function name(){
         $name = strtolower(self::OS_NAME);
@@ -51,7 +51,7 @@ class OS extends BaseClass {
     public static function distribution() : string {
         switch(self::name()){
             case "linux":
-                return self::arrayAccessStatic(self::KEY_DISTRIBUTION_NAME, "lsbInfo");
+                return self::arrayAccessStatic(self::KEY_DISTRIBUTION_NAME, "osDetail");
                 break;
 
             case "macos":
@@ -65,35 +65,35 @@ class OS extends BaseClass {
         }
     }
 
-    public static function lsbInfo() : array {
-        if(!self::$lsb){
-            self::$lsb = [
+    public static function detail() : array {
+        if(!self::$detail){
+            self::$detail = [
                 self::KEY_DISTRIBUTION_NAME => "",
                 self::KEY_DISTRIBUTION_VERSION => "",
             ];
 
             if(OS::name() !== "linux"){
-                return self::$lsb;
+                return self::$detail;
             }
 
-            @exec("lsb_release -a", $rs);
+            $rs = Command::osDetail();
             if(Arr::isAvailable($rs)){
                 foreach($rs as $info){
                     if(!Str::isAvailable($info)){
                         continue;
                     }
 
-                    if(!Str::isAvailable(self::$lsb[self::KEY_DISTRIBUTION_NAME])){
+                    if(!Str::isAvailable(self::$detail[self::KEY_DISTRIBUTION_NAME])){
                         $matched = preg_match("/".self::REGEX_DESTRIBUTION_NAME."/i", $info, $matches);
                         if($matched){
-                            self::$lsb[self::KEY_DISTRIBUTION_NAME] = strtolower($matches[1]);
+                            self::$detail[self::KEY_DISTRIBUTION_NAME] = strtolower($matches[1]);
                             continue;
                         }
                     }
-                    if(!Str::isAvailable(self::$lsb[self::KEY_DISTRIBUTION_VERSION])){
+                    if(!Str::isAvailable(self::$detail[self::KEY_DISTRIBUTION_VERSION])){
                         $matched = preg_match("/".self::REGEX_DESTRIBUTION_VERSION."/i", $info, $matches);
                         if($matched){
-                            self::$lsb[self::KEY_DISTRIBUTION_VERSION] = strtolower($matches[1]);
+                            self::$detail[self::KEY_DISTRIBUTION_VERSION] = strtolower($matches[1]);
                             continue;
                         }
                     }
@@ -101,6 +101,6 @@ class OS extends BaseClass {
             }
         }
 
-        return self::$lsb;
+        return self::$detail;
     }
 }

@@ -52,7 +52,7 @@ class NetworkCard {
         if(!self::$eth0Info){
             if(($cardName = self::getCardPrefix())){
                 $cardName .= "0";
-                @exec(Command::networkDetail(), $rs);
+                $rs = Command::networkDetail();
                 $firstRowMatched = false;
                 $endFlagCrossedRows = 0;
                 $cardInfo = [];
