@@ -25,7 +25,7 @@ class IP {
         return self::IP_INVALID;
     }
 
-    public static function isValid($ipAddr) : bool{
+    public static function isValidIp($ipAddr) : bool{
         return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP) ? true : false;
     }
 
