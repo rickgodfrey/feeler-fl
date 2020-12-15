@@ -15,7 +15,7 @@ class IP {
     const IP_V6 = "ip_v6";
     const IP_INVALID = "ip_invalid";
 
-    public static function ipVersion($ipAddr){
+    public static function version($ipAddr){
         if(self::isIpV6($ipAddr)){
             return self::IP_V6;
         }
