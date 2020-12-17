@@ -15,8 +15,8 @@ class Http
     /**
      * @return mixed
      */
-    public static function receiver():HttpReceiver{
-        return (new HttpReceiver())->constructor();
+    public static function receiverInstance():HttpReceiver{
+        return HttpReceiver::instance();
     }
 
     /**
@@ -24,7 +24,7 @@ class Http
      * @param string $basicAuth
      * @return HttpSender
      */
-    public static function sender($headers = [], $basicAuth = ""):HttpSender{
-        return (new HttpSender())->constructor($headers, $basicAuth);
+    public static function senderInstance():HttpSender{
+        return HttpSender::instance();
     }
 }

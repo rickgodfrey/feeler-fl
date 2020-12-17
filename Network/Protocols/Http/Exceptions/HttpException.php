@@ -59,7 +59,7 @@ class HttpException extends BaseException {
 		call_user_func($outputCallback, $output);
         $contentLength = strlen($output);
 
-        Http::responseCode(200);
+        Http::receiverInstance()->responseCode(200);
         ob_end_clean();
         header("Content-Type: application/json; charset=utf-8");
         header("Content-Length: {$contentLength}");

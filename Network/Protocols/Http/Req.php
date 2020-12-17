@@ -75,6 +75,6 @@ class Req{
     }
 
     public static function method():string{
-        return Http::requestMethod();
+        return Http::receiverInstance()->requestMethod();
     }
 }
