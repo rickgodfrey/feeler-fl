@@ -27,7 +27,7 @@ class Protocol extends BaseClass {
     }
 
     public static function brief():string{
-        return (string)GlobalAccess::server("SERVER_PROTOCOL");
+        return ($brief = (string)GlobalAccess::server("SERVER_PROTOCOL")) ? strtolower($brief) : "";
     }
 
     public static function name():string {
@@ -46,38 +46,7 @@ class Protocol extends BaseClass {
         return self::scheme() ? self::scheme() . "://" : "";
     }
 
-    public static function serverIpAddr():string{
-        return (string)GlobalAccess::server("SERVER_ADDR");
-    }
-
-    public static function remoteIpAddr():string{
-        return (string)GlobalAccess::server("REMOTE_ADDR");
-    }
-
-    public static function clientIpAddr():string{
-        if (GlobalAccess::server("HTTP_X_FORWARDED_FOR")) {
-            $array = explode(",", GlobalAccess::server("HTTP_X_FORWARDED_FOR"));
-            $index = array_search("unknown", $array);
-            if ($index !== false) {unset($array[$index]);}
-            if(isset($array[0])){$ipAddr = trim($array[0]);return $ipAddr;}
-            else{return "";}
-        }
-        else if (GlobalAccess::server("HTTP_CLIENT_IP")) {
-            return GlobalAccess::server("HTTP_CLIENT_IP");
-        }
-        else if (GlobalAccess::server("REMOTE_ADDR")) {
-            return GlobalAccess::server("REMOTE_ADDR");
-        }
-        else{
-            return "";
-        }
-    }
-
-    public static function serverPort():int{
-        return (int)GlobalAccess::server("SERVER_PORT");
-    }
-
-    public static function remotePort():int{
-        return (int)GlobalAccess::server("REMOTE_PORT");
+    public static function isHttp():bool{
+        return strpos(self::scheme(), "http") === 0 ? true : false;
     }
 }

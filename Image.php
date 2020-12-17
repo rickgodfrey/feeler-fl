@@ -8,11 +8,11 @@
 namespace Feeler\Fl;
 
 use Feeler\Base\Arr;
-use Feeler\Base\Singleton;
 use Feeler\Base\Table;
 use Feeler\Base\File;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
+use Feeler\Base\Singleton;
 
 class Image extends Singleton {
     const TYPE_MAPPINGS = ["jpg" => "jpeg"];

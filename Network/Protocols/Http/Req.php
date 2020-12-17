@@ -9,6 +9,7 @@ namespace Feeler\Fl\Network\Protocols\Http;
 
 use Feeler\Base\Arr;
 use Feeler\Base\GlobalAccess;
+use Feeler\Fl\Network\Protocols\Http;
 
 class Req{
     const GET = "GET";
@@ -74,6 +75,6 @@ class Req{
     }
 
     public static function method():string{
-        return (string)GlobalAccess::server("REQUEST_METHOD");
+        return Http::requestMethod();
     }
 }

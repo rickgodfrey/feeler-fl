@@ -12,12 +12,10 @@ use Feeler\Base\Exceptions\InvalidMethodException;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Base\Arr;
-use Feeler\Base\TFactory;
+use Feeler\Base\TMultiton;
 
 class Redis extends \Redis {
-    use TFactory;
-
-    const DEFAULT_INSTANCE = "default_instance";
+    use TMultiton;
 
     protected static $prefix = "";
     protected static $expiration = null;
@@ -80,19 +78,17 @@ class Redis extends \Redis {
             return false;
         }
 
-        $instance = new self();
-        static::setUsingInstance($instanceName, $instance);
-        static::setInstance($instanceName, $instance);
+        static::instance();
 
         if($serviceObject->isPersistent == true){
-            static::$usingInstance->pconnect($serviceObject->ipAddr, $serviceObject->port);
+            static::usingInstance()->pconnect($serviceObject->ipAddr, $serviceObject->port);
         }
-        else{
-            static::$usingInstance->connect($serviceObject->ipAddr, $serviceObject->port);
+        else {
+            static::usingInstance()->connect($serviceObject->ipAddr, $serviceObject->port);
         }
 
         if(Str::isAvailable($serviceObject->password)){
-            static::$usingInstance->auth($serviceObject->password);
+            static::usingInstance()->auth($serviceObject->password);
         }
 
         static::setPrefix($serviceObject->prefix);

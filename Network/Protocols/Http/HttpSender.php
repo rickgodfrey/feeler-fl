@@ -10,16 +10,17 @@ namespace Feeler\Fl\Network\Protocols\Http;
 use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
+use Feeler\Base\Multiton;
 use Feeler\Fl\Network\Protocols\Http;
 
-class HttpSender extends BaseClass implements IHttpSender
+class HttpSender extends Multiton
 {
     protected $timeout;
     protected $headers;
     protected $basicAuth;
 
     protected static function constructorName() :string {
-        return self::INITIALIZE_METHOD;
+        return "initialize";
     }
 
     public function initialize($headers = [], $basicAuth = null, $timeout = 5)

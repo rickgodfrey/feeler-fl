@@ -5,8 +5,8 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl\Network\Protocols\Http;
+namespace Feeler\Fl\Models;
 
-interface IHttpSender{
-	public function send($url, $method = Req::GET, $params = []);
+class Service {
+
 }
