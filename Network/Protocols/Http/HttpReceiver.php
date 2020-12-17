@@ -7,18 +7,17 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
-use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Base\GlobalAccess;
-use Feeler\Base\Multiton;
+use Feeler\Base\Singleton;
 use Feeler\Fl\Network\Connection;
 use Feeler\Fl\Network\IP;
 use Feeler\Fl\Network\Protocol;
 use Feeler\Fl\Network\Protocols\Http\Exceptions\HttpException;
 
-class HttpReceiver extends Multiton
+class HttpReceiver extends Singleton
 {
     protected $headers;
     protected $pathParams = [];
@@ -129,7 +128,7 @@ class HttpReceiver extends Multiton
 
     public function allowRequestMethods($toCheckAllowedMethods = [])
     {
-        $requestMethod = Req::method();
+        $requestMethod = $this->requestMethod();
 
         if (Arr::isAvailable($toCheckAllowedMethods) && !in_array($requestMethod, $toCheckAllowedMethods)) {
             throw new HttpException("REQUEST_METHOD_ERROR", 1003);

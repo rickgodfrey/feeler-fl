@@ -7,13 +7,12 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
-use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
-use Feeler\Base\Multiton;
+use Feeler\Base\Singleton;
 use Feeler\Fl\Network\Protocols\Http;
 
-class HttpSender extends Multiton
+class HttpSender extends Singleton
 {
     protected $timeout;
     protected $headers;
