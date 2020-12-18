@@ -8,6 +8,7 @@
 namespace Feeler\Fl\Network;
 
 use Feeler\Base\Number;
+use Feeler\Base\GlobalAccess;
 
 class Connection {
     protected static function checkPort(&$port):bool{
