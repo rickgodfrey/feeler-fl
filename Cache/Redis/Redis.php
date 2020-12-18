@@ -73,22 +73,16 @@ class Redis extends \Redis {
      * @param ServiceObject $serviceObject
      * @return bool
      */
-    public static function init(string $instanceName, ServiceObject $serviceObject){
-        if(!Str::isAvailable($instanceName)){
-            return false;
-        }
-
-        static::instance();
-
+    public static function init(ServiceObject $serviceObject, string $instanceName = ""){
         if($serviceObject->isPersistent == true){
-            static::usingInstance()->pconnect($serviceObject->ipAddr, $serviceObject->port);
+            static::instance($instanceName)->pconnect($serviceObject->ipAddr, $serviceObject->port);
         }
         else {
-            static::usingInstance()->connect($serviceObject->ipAddr, $serviceObject->port);
+            static::instance($instanceName)->connect($serviceObject->ipAddr, $serviceObject->port);
         }
 
         if(Str::isAvailable($serviceObject->password)){
-            static::usingInstance()->auth($serviceObject->password);
+            static::instance($instanceName)->auth($serviceObject->password);
         }
 
         static::setPrefix($serviceObject->prefix);
