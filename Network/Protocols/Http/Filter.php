@@ -7,6 +7,9 @@
 
 namespace Feeler\Fl\Network\Protocols\Http;
 
+use Feeler\Base\BaseClass;
+use Feeler\Base\Arr;
+
 class Filter{
     const INT = "int";
     const FLOAT = "float";
@@ -30,7 +33,7 @@ class Filter{
 	
 	//the filter act
 	public static function act($data, $type = self::HTML_ESCAPED, $len = -1){
-		if(is_array($data)){
+		if(Arr::isArray($data)){
 			foreach($data as $key => $val){
 				$data[$key] = self::act($val);
 			}

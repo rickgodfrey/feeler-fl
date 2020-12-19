@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl;
+namespace Feeler\Fl\Network\Protocols\Http;
 
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
@@ -51,7 +51,7 @@ class Uploader{
 			if(!isset($file["name"]) || !Str::isAvailable($file["name"]))
 				continue;
 
-			if(is_array($file["name"])){
+			if(Arr::isArray($file["name"])){
 				$keys = array_keys($file["name"]);
 
 				foreach($keys as $key){
@@ -65,13 +65,13 @@ class Uploader{
 						}
 
 						if($this->allowTypes !== "*"){
-							if(!is_array($this->allowTypes)){
+							if(!Arr::isArray($this->allowTypes)){
 								$filesInfo[$field][$key]["code"] = $this->_getErrorCode(1);
 							}
-							else if(is_array($fileExt) && !array_intersect($fileExt, $this->allowTypes)){
+							else if(Arr::isArray($fileExt) && !array_intersect($fileExt, $this->allowTypes)){
 								$filesInfo[$field][$key]["code"] = $this->_getErrorCode(1);
 							}
-							else if(!is_array($fileExt) && !in_array($fileExt, $this->allowTypes)){
+							else if(!Arr::isArray($fileExt) && !in_array($fileExt, $this->allowTypes)){
 								$filesInfo[$field][$key]["code"] = $this->_getErrorCode(1);
 							}
 						}
@@ -80,7 +80,7 @@ class Uploader{
 						}
 
 						if($filesInfo[$field][$key]["code"] == 0 && is_uploaded_file($file["tmp_name"][$key])){
-							if(is_array($fileExt))
+							if(Arr::isArray($fileExt))
 								$fileExt = Arr::current($fileExt);
 
 							$filesInfo[$field][$key]["md5"] = md5_file($file["tmp_name"][$key]);
@@ -114,13 +114,13 @@ class Uploader{
 					}
 
 					if($this->allowTypes !== "*"){
-						if(!is_array($this->allowTypes)){
+						if(!Arr::isArray($this->allowTypes)){
 							$filesInfo[$field][0]["code"] = $this->_getErrorCode(1);
 						}
-						else if(is_array($fileExt) && !array_intersect($fileExt, $this->allowTypes)){
+						else if(Arr::isArray($fileExt) && !array_intersect($fileExt, $this->allowTypes)){
 							$filesInfo[$field][0]["code"] = $this->_getErrorCode(1);
 						}
-						else if(!is_array($fileExt) && !in_array($fileExt, $this->allowTypes)){
+						else if(!Arr::isArray($fileExt) && !in_array($fileExt, $this->allowTypes)){
 							$filesInfo[$field][0]["code"] = $this->_getErrorCode(1);
 						}
 					}
@@ -129,7 +129,7 @@ class Uploader{
 					}
 
 					if($filesInfo[$field][0]["code"] == 0 && is_uploaded_file($file["tmp_name"])){
-						if(is_array($fileExt))
+						if(Arr::isArray($fileExt))
 							$fileExt = Arr::current($fileExt);
 
 						$filesInfo[$field][0]["md5"] = md5_file($file["tmp_name"]);

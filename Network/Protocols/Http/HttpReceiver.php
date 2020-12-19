@@ -79,7 +79,7 @@ class HttpReceiver extends Singleton
 
     public function getHeaders($keys)
     {
-        if (!is_array($keys) || !$keys) {
+        if (!Arr::isArray($keys) || !$keys) {
             return [];
         }
 
