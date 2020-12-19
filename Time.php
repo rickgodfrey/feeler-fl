@@ -9,6 +9,7 @@ namespace Feeler\Fl;
 
 use Feeler\Base\Number;
 use Feeler\Base\Str;
+use Feeler\Base\Obj;
 
 class Time{
     const TIME_STAMP_NOW = "time_stamp_now";
@@ -19,7 +20,7 @@ class Time{
 	protected static $timezone;
 
 	public static function datetimeInstance(){
-		if(!is_object(self::$datetimeObj)){
+		if(!Obj::isObject(self::$datetimeObj)){
 			self::$datetimeObj = new \DateTime();
 		}
 

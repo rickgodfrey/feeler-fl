@@ -7,8 +7,9 @@
 
 namespace Feeler\Fl\Network\Protocols\Http\Exceptions;
 
-use Feeler\Fl\Exceptions\BaseException;
+use Feeler\Base\Obj;
 use Feeler\Base\Errno;
+use Feeler\Fl\Exceptions\BaseException;
 use Feeler\Fl\Network\Protocols\Http;
 
 
@@ -23,7 +24,7 @@ class HttpException extends BaseException {
 
     public function renderException($e){
         if($this->type == "JSON") {
-            if (!is_object($e)) {
+            if (!Obj::isObject($e)) {
                 self::output("1", "An error has occurred.");
             }
 
