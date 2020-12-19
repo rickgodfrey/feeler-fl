@@ -9,6 +9,7 @@ namespace Feeler\Fl\Network\Protocols\Http;
 
 use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
+use Feeler\Base\Str;
 
 class Filter{
     const INT = "int";
@@ -39,7 +40,7 @@ class Filter{
 			}
 		}
 		else{
-			if(is_string($data)){
+			if(Str::isString($data)){
 				$data = trim($data);
 				$data = self::sliceStr($data, $len);
 			}
@@ -62,7 +63,7 @@ class Filter{
 				break;
 
                 case self::HTML_ESCAPED:
-                    if(is_string($data)){
+                    if(Str::isString($data)){
                         $data = htmlspecialchars($data, ENT_QUOTES);
                     }
 					break;

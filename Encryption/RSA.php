@@ -7,6 +7,8 @@
 
 namespace Feeler\Fl\Encryption;
 
+use Feeler\Base\Str;
+
 class RSA
 {
     private static $PRIVATE_KEY = 'rsa_private_key.pem 内容';
@@ -39,7 +41,7 @@ class RSA
      */
     public function createSign($data = '')
     {
-        if (!is_string($data)) {
+        if (!Str::isString($data)) {
             return null;
         }
         return openssl_sign(
@@ -58,7 +60,7 @@ class RSA
      */
     public function verifySign($data = '', $sign = '')
     {
-        if (!is_string($sign) || !is_string($sign)) {
+        if (!Str::isString($sign) || !Str::isString($sign)) {
             return false;
         }
         return (bool)openssl_verify(

@@ -142,7 +142,7 @@ class HttpReceiver extends Singleton
      */
     public function isAllowedIpAddr($ipAddrPattern)
     {
-        if (!$ipAddrPattern || !is_string($ipAddrPattern)) {
+        if (!$ipAddrPattern || !Str::isString($ipAddrPattern)) {
             throw new HttpException("ILLEGAL_IP_ADDR", 1003);
         }
 

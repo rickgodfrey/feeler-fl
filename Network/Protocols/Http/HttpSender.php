@@ -67,7 +67,7 @@ class HttpSender extends Singleton
 
     public function setBasicAuth($basicAuth)
     {
-        if (!$basicAuth || !is_string($basicAuth)) {
+        if (!$basicAuth || !Str::isString($basicAuth)) {
             $this->basicAuth = "";
             return $this;
         }
@@ -181,7 +181,7 @@ class HttpSender extends Singleton
             }
         }
 
-        if (in_array($contentType, ["application/json", "text/json", "application/xml", "text/xml"]) && is_string($params)) {
+        if (in_array($contentType, ["application/json", "text/json", "application/xml", "text/xml"]) && Str::isString($params)) {
             $headers["content_length"] = strlen($params);
         }
 
