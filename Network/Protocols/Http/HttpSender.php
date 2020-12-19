@@ -18,21 +18,6 @@ class HttpSender extends Singleton
     protected $headers;
     protected $basicAuth;
 
-    protected static function constructorName() :string {
-        return "initialize";
-    }
-
-    public function initialize($headers = [], $basicAuth = null, $timeout = 5)
-    {
-        $this->setHeaders($headers);
-        $this->setBasicAuth($basicAuth);
-        if (!is_int($timeout) || $timeout < 1) {
-            $timeout = 5;
-        }
-        $this->timeout = $timeout;
-        return $this;
-    }
-
     protected function predefinedHeaders()
     {
         return [

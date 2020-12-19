@@ -22,14 +22,6 @@ class HttpReceiver extends Singleton
     protected $headers;
     protected $pathParams = [];
 
-    protected static function constructorName() :string {
-        return "initialize";
-    }
-
-    public function initialize(){
-        return $this;
-    }
-
     public function getAllHeaders(){
         if (!Arr::isAvailable($this->headers)) {
             $headers = [];
