@@ -19,10 +19,6 @@ class Redis extends \Redis {
 
     protected static $prefix = "";
     protected static $expiration = null;
-    /**
-     * @var \Redis
-     */
-    protected static $usingInstance;
 
     public function __construct()
     {
@@ -34,7 +30,7 @@ class Redis extends \Redis {
      */
     public function prefix(): string
     {
-        return self::$prefix;
+        return static::$prefix;
     }
 
     /**
@@ -43,7 +39,7 @@ class Redis extends \Redis {
     public static function setPrefix($prefix): void
     {
         if(Str::isAvailable($prefix)){
-            self::$prefix = $prefix;
+            static::$prefix = $prefix;
         }
     }
 
@@ -52,12 +48,12 @@ class Redis extends \Redis {
      */
     public static function setExpiration($expiration){
         if(Number::isPosiInteric($expiration)){
-            self::$expiration = (int)$expiration;
+            static::$expiration = (int)$expiration;
         }
     }
 
     public function expiration(){
-        return self::$expiration;
+        return static::$expiration;
     }
 
     public function genKey($key) : string {
@@ -75,14 +71,14 @@ class Redis extends \Redis {
      */
     public static function init(ServiceObject $serviceObject, string $instanceName = ""){
         if($serviceObject->isPersistent == true){
-            static::instance($instanceName)->pconnect($serviceObject->ipAddr, $serviceObject->port);
+            static::instance(static::instanceName($instanceName))->pconnect($serviceObject->ipAddr, $serviceObject->port);
         }
         else {
-            static::instance($instanceName)->connect($serviceObject->ipAddr, $serviceObject->port);
+            static::instance(static::instanceName($instanceName))->connect($serviceObject->ipAddr, $serviceObject->port);
         }
 
         if(Str::isAvailable($serviceObject->password)){
-            static::instance($instanceName)->auth($serviceObject->password);
+            static::instance(static::instanceName($instanceName))->auth($serviceObject->password);
         }
 
         static::setPrefix($serviceObject->prefix);
