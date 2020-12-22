@@ -118,25 +118,38 @@ class HttpReceiver extends Singleton
         return $this->pathParams;
     }
 
-    public function setBasicAuth(string $username, string $password, string $msg = "") :bool{
-        if(!Str::isAvailable($username) || !Str::isAvailable($password)){
-            throw new HttpException("Illegal setting of basic auth");
+    public function setBasicAuth(string $username, string $password, string $msg = "") :void{
+        $setted = 0;
+        if(Str::isAvailable($username)){
+            $setted += 01;
+        }
+        if(Str::isAvailable($password)){
+            $setted += 02;
         }
 
-        if(!Str::isAvailable($msg)){
+        if(Str::isAvailable($msg)){
+            $setted += 04;
+        }
+        else{
             $msg = "";
         }
 
-        $inputUsername = isset($_SERVER["PHP_AUTH_USER"]) ? $_SERVER["PHP_AUTH_USER"] : "";
-        $inputPassword = isset($_SERVER["PHP_AUTH_PW"]) ? $_SERVER["PHP_AUTH_PW"] : "";
+        if($setted === 0){
+            return;
+        }
+        if($setted < 03) {
+            throw new HttpException("Illegal setting of basic auth");
+        }
 
-        if(!isset($_SERVER["PHP_AUTH_USER"]) || ($inputUsername !== $username || $inputPassword !== $password)){
+        $inputUsername = GlobalAccess::server("PHP_AUTH_USER");
+        $inputPassword = GlobalAccess::server("PHP_AUTH_PW");
+
+        if(($inputUsername !== $username || $inputPassword !== $password))
+        {
             header("WWW-Authenticate: Basic realm=\"{$msg}\"");
             header("HTTP/".self::version()." 401 Unauthorized");
             exit();
         }
-
-        return true;
     }
 
     public function allowRequestMethods($toCheckAllowedMethods = [])
