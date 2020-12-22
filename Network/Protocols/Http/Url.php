@@ -14,11 +14,11 @@ class Url{
     const FORMAT_PATH = "path";
     const FORMAT_PATH_INFO = "path_info";
 
-	protected $get;
-	protected $reqPath;
-	protected $params;
+    protected $get;
+    protected $reqPath;
+    protected $params;
 
-	public static function hasQueryString($string){
-	    return preg_match("/\/[^\s\?]*\?[^\s]+\=[^\s]+/", $string) ? true : false;
+    public static function hasQueryString($string){
+        return preg_match("/\/[^\s\?]*\?[^\s]+\=[^\s]+/", $string) ? true : false;
     }
 }
