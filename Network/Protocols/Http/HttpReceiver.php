@@ -118,7 +118,7 @@ class HttpReceiver extends Singleton
         return $this->pathParams;
     }
 
-    public function setBasicAuth(string $username, string $password, string $msg = "") :void{
+    public function setBasicAuth(string $username = "", string $password = "", string $msg = "") :void{
         $setted = 0;
         if(Str::isAvailable($username)){
             $setted += 01;
