@@ -13,7 +13,7 @@ use Feeler\Base\Str;
 use Feeler\Base\GlobalAccess;
 use Feeler\Base\Singleton;
 use Feeler\Fl\Network\Connection;
-use Feeler\Fl\Network\IP;
+use Feeler\Fl\Network\IP_Checker;
 use Feeler\Fl\Network\Protocol;
 use Feeler\Fl\Network\Protocols\Http\Exceptions\HttpException;
 
@@ -160,14 +160,14 @@ class HttpReceiver extends Singleton
         }
 
         $ipAddr = $this->clientIpAddr();
-        $ipVersion = IP::IP_V4;
+        $ipVersion = IP_Checker::IP_V4;
         $ipv4AddrRegex = "/^\s*?([0-9]{1,3}|\*)((?:\.(?:[0-9]{1,3}|\*)){1,3})\s*$/i";
 
         if (!preg_match($ipv4AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
-            $ipVersion = IP::IP_V6;
+            $ipVersion = IP_Checker::IP_V6;
         }
 
-        if ($ipVersion == IP::IP_V4) {
+        if ($ipVersion == IP_Checker::IP_V4) {
             $array = explode(".", $ipAddrPatternSegs[2]);
             foreach ($array as $key => $val) {
                 if ($val == "") {
@@ -195,7 +195,7 @@ class HttpReceiver extends Singleton
 
             return true;
         }
-        else if($ipVersion == IP::IP_V6){
+        else if($ipVersion == IP_Checker::IP_V6){
             $ipv6Addr = "::1";
             return $ipAddr === $ipv6Addr ? true : false;
         }

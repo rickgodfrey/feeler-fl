@@ -10,16 +10,16 @@ namespace Feeler\Fl\Network;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 
-class IP {
+class IP_Checker {
     const IP_V4 = "ip_v4";
     const IP_V6 = "ip_v6";
     const IP_INVALID = "ip_invalid";
 
     public static function version($ipAddr){
-        if(self::isIpV6($ipAddr)){
+        if(self::isIPv6($ipAddr)){
             return self::IP_V6;
         }
-        if(self::isIpV4($ipAddr)){
+        if(self::isIPv4($ipAddr)){
             return self::IP_V4;
         }
         return self::IP_INVALID;
@@ -29,11 +29,11 @@ class IP {
         return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP) ? true : false;
     }
 
-    public static function isIpV4($ipAddr) : bool{
+    public static function isIPv4($ipAddr) : bool{
         return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? true : false;
     }
 
-    public static function isIpV6($ipAddr) : bool{
+    public static function isIPv6($ipAddr) : bool{
         return Str::isAvailable($ipAddr) && filter_var($ipAddr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) ? true : false;
     }
 

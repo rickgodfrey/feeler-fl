@@ -11,7 +11,7 @@ use Feeler\Base\Number;
 use Feeler\Base\GlobalAccess;
 
 class Connection {
-    protected static function checkPort(&$port):bool{
+    protected static function isValidPort(&$port):bool{
         if(!Number::isInteric($port)){
             return false;
         }
@@ -24,7 +24,7 @@ class Connection {
 
     public static function selfPort():int{
         $port = GlobalAccess::server("SERVER_PORT");
-        return self::checkPort($port) ? $port : false;
+        return self::isValidPort($port) ? $port : false;
     }
 
     public static function selfIpAddr():string{
@@ -33,7 +33,7 @@ class Connection {
 
     public static function remotePort():int{
         $port = GlobalAccess::server("REMOTE_PORT");
-        return self::checkPort($port) ? $port : false;
+        return self::isValidPort($port) ? $port : false;
     }
 
     public static function remoteIpAddr(bool $getRealIp = true):string{
