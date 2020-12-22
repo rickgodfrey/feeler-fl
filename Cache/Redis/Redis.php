@@ -71,14 +71,14 @@ class Redis extends \Redis {
      */
     public static function init(ServiceObject $serviceObject, string $instanceName = ""){
         if($serviceObject->isPersistent == true){
-            static::instance(static::instanceName($instanceName))->pconnect($serviceObject->ipAddr, $serviceObject->port);
+            static::instance()->pconnect($serviceObject->ipAddr, $serviceObject->port);
         }
         else {
-            static::instance(static::instanceName($instanceName))->connect($serviceObject->ipAddr, $serviceObject->port);
+            static::instance()->connect($serviceObject->ipAddr, $serviceObject->port);
         }
 
         if(Str::isAvailable($serviceObject->password)){
-            static::instance(static::instanceName($instanceName))->auth($serviceObject->password);
+            static::instance()->auth($serviceObject->password);
         }
 
         static::setPrefix($serviceObject->prefix);
