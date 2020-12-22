@@ -11,9 +11,9 @@ use Feeler\Base\Number;
 use Feeler\Base\Str;
 
 class IP_Checker {
-    const IP_V4 = "ip_v4";
-    const IP_V6 = "ip_v6";
-    const IP_INVALID = "ip_invalid";
+    const IP_V4 = "IPv4";
+    const IP_V6 = "IPv6";
+    const IP_INVALID = "IP_invalid";
 
     public static function version($ipAddr){
         if(self::isIPv6($ipAddr)){
