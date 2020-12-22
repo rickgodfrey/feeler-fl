@@ -20,11 +20,11 @@ class RequestReceiver extends Singleton {
 
     protected $input;
 
-    public function filter($data, $type = Filter::HTML_ESCAPED, $len = -1){
+    public function filter($data, $type = Filter::HTML_ESCAPED, int $len = -1){
         return Filter::act($data, $type, $len);
     }
 
-    public function get($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public function get($field = null, $type = Filter::HTML_ESCAPED, int $len = -1){
         if($field === null){
             return $this->filter(GlobalAccess::get(), $type, $len);
         }
@@ -35,7 +35,7 @@ class RequestReceiver extends Singleton {
         return $value;
     }
 
-    public function post($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public function post($field = null, $type = Filter::HTML_ESCAPED, int $len = -1){
         if($field === null){
             return $this->filter(GlobalAccess::post(), $type, $len);
         }
@@ -46,7 +46,7 @@ class RequestReceiver extends Singleton {
         return $value;
     }
 
-    public function both($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public function both($field = null, $type = Filter::HTML_ESCAPED, int $len = -1){
         if($field == null){
             return Arr::mergeByKey($this->get(null, $type, $len), $this->post(null, $type, $len));
         }
@@ -56,7 +56,7 @@ class RequestReceiver extends Singleton {
         return $rs;
     }
 
-    public function input($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public function input($field = null, $type = Filter::HTML_ESCAPED, int $len = -1){
         if(!$this->input){
             parse_str(file_get_contents("php://input"), $this->input);
         }

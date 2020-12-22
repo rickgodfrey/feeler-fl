@@ -33,7 +33,7 @@ class Filter{
 	}
 	
 	//the filter act
-	public static function act($data, $type = self::HTML_ESCAPED, $len = -1){
+	public static function act($data, $type = self::HTML_ESCAPED, int $len = -1){
 		if(Arr::isArray($data)){
 			foreach($data as $key => $val){
 				$data[$key] = self::act($val);
