@@ -118,12 +118,33 @@ class HttpReceiver extends Singleton
         return $this->pathParams;
     }
 
+    public function setBasicAuth(string $username, string $password, string $msg = "") :bool{
+        if(!Str::isAvailable($username) || !Str::isAvailable($password)){
+            throw new HttpException("Illegal setting of basic auth");
+        }
+
+        if(!Str::isAvailable($msg)){
+            $msg = "";
+        }
+
+        $inputUsername = isset($_SERVER["PHP_AUTH_USER"]) ? $_SERVER["PHP_AUTH_USER"] : "";
+        $inputPassword = isset($_SERVER["PHP_AUTH_PW"]) ? $_SERVER["PHP_AUTH_PW"] : "";
+
+        if(!isset($_SERVER["PHP_AUTH_USER"]) || ($inputUsername !== $username || $inputPassword !== $password)){
+            header("WWW-Authenticate: Basic realm=\"{$msg}\"");
+            header("HTTP/".self::version()." 401 Unauthorized");
+            exit();
+        }
+
+        return true;
+    }
+
     public function allowRequestMethods($toCheckAllowedMethods = [])
     {
         $requestMethod = $this->requestMethod();
 
         if (Arr::isAvailable($toCheckAllowedMethods) && !in_array($requestMethod, $toCheckAllowedMethods)) {
-            throw new HttpException("REQUEST_METHOD_ERROR", 1003);
+            throw new HttpException("Request method error");
         }
     }
 
@@ -181,6 +202,10 @@ class HttpReceiver extends Singleton
         else{
             return false;
         }
+    }
+
+    public function version(){
+        return Protocol::version();
     }
 
     public function isSecureConn(){

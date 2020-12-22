@@ -31,7 +31,11 @@ class Protocol extends BaseClass {
     }
 
     public static function name():string {
-        return preg_match("/^([a-zA-Z-_]+)\s*\/?\s*([0-9\.]+)$/", self::brief(), $matches) ? $matches[1] : static::UNKNOWN_PROTOCOL;
+        return preg_match("/^([a-zA-Z-_]+)\s*\/?\s*[vV]([0-9\.]+)$/", self::brief(), $matches) ? $matches[1] : static::UNKNOWN_PROTOCOL;
+    }
+
+    public static function version():string{
+        return preg_match("/^([a-zA-Z-_]+)\s*\/?\s*[vV]([0-9\.]+)$/", self::brief(), $matches) ? $matches[2] : static::UNKNOWN_PROTOCOL;
     }
 
     public static function scheme():string{
