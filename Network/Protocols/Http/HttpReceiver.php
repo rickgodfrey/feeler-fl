@@ -27,54 +27,60 @@ class HttpReceiver extends Singleton
         if (!Arr::isAvailable($this->headers)) {
             $headers = [];
             if(ServiceEnv::platform() === "apache"){
-                foreach (GlobalAccess::server() as $name => $value) {
-                    if (substr($name, 0, 5) === "HTTP_") {
-                        $name = substr($name, 5);
-                        $name = str_replace("_", " ", $name);
-                        $name = str_replace(" ", "-", $name);
-                        $name = strtolower($name);
-                        $nameArr = explode("-", $name);
-                        $name = "";
-                        foreach($nameArr as $str){
-                            $name .= "-".ucfirst($str);
-                        }
-                        $name = substr($name, 1);
+                if(Arr::isAvailable(GlobalAccess::server())){
+                    foreach (GlobalAccess::server() as $name => $value) {
+                        if (substr($name, 0, 5) === "HTTP_") {
+                            $name = substr($name, 5);
+                            $name = str_replace("_", " ", $name);
+                            $name = str_replace(" ", "-", $name);
+                            $name = strtolower($name);
+                            $nameArr = explode("-", $name);
+                            $name = "";
+                            foreach($nameArr as $str){
+                                $name .= "-".ucfirst($str);
+                            }
+                            $name = substr($name, 1);
 
-                        $headers[$name] = $value;
-                        $headers[strtolower(str_replace("-", "_", $name))] = $value;
+                            $headers[$name] = $value;
+                            $headers[strtolower(str_replace("-", "_", $name))] = $value;
+                        }
                     }
-                    else if($name === "REDIRECT_STATUS"){
+
+                    if(isset(GlobalAccess::server()["REDIRECT_STATUS"]) && !isset(GlobalAccess::server()["STATUS"])){
                         $key = "STATUS";
+                        $value = GlobalAccess::server()["REDIRECT_STATUS"];
                         $headers[$key] = $value;
                         GlobalAccess::server($key, $value);
                     }
-                    else if($name === "REDIRECT_HTTP_AUTHORIZATION"){
+
+                    if(isset(GlobalAccess::server()["REDIRECT_HTTP_AUTHORIZATION"]) && (!isset(GlobalAccess::server()["PHP_AUTH_USER"]) || !isset(GlobalAccess::server()["PHP_AUTH_PW"]))){
                         $key = "HTTP_AUTHORIZATION";
+                        $value = GlobalAccess::server()["REDIRECT_HTTP_AUTHORIZATION"];
                         $authMethod = explode(" ", $value);
                         if(!isset($authMethod[1])){
-                            continue;
+                            return $this->headers = $headers;
                         }
                         $authType = $authMethod[0];
                         $authInfo = $authMethod[1];
                         if(!Str::isAvailable($authType) || !Str::isAvailable($authInfo)){
-                            continue;
+                            return $this->headers = $headers;
                         }
                         $authType = strtolower($authType);
                         if($authType !== "basic"){
-                            continue;
+                            return $this->headers = $headers;
                         }
                         $authInfo = base64_decode($authInfo);
                         if(!Str::isAvailable($authInfo)){
-                            continue;
+                            return $this->headers = $headers;
                         }
                         $authInfo = explode(":", $authInfo);
                         if(!isset($authInfo[1])){
-                            continue;
+                            return $this->headers = $headers;
                         }
                         $authUsername = $authInfo[0];
                         $authPassword = $authInfo[1];
                         if(!Str::isAvailable($authUsername) || !Str::isAvailable($authPassword)){
-                            continue;
+                            return $this->headers = $headers;
                         }
 
                         $headers[$key] = $value;
