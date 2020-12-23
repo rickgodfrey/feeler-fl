@@ -53,6 +53,10 @@ class NetworkCard {
             if(($cardName = self::getCardPrefix())){
                 $cardName .= "0";
                 $rs = Command::networkDetail();
+                $rs = Arr::explode(PHP_EOL, $rs);
+                if(!$rs){
+                    return [];
+                }
                 $firstRowMatched = false;
                 $endFlagCrossedRows = 0;
                 $cardInfo = [];

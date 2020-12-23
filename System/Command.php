@@ -15,7 +15,7 @@ class Command extends BaseClass {
     const UNIX_OS_DETAIL = "lsb_release -a";
     const WINNT_NETWORK_DETAIL = "ipconfig /all";
 
-    protected static function detailInternal(string $needle){
+    protected static function detailInternal(string $needle):string{
         $osFamily = OS::family();
         $osFamily = strtoupper($osFamily);
         $needle = strtoupper($needle);
@@ -31,19 +31,19 @@ class Command extends BaseClass {
         return (string)@shell_exec($command);
     }
 
-    protected static function osDetailCommand(){
+    protected static function osDetailCommand():string{
         return self::detailInternal("os");
     }
 
-    protected static function networkDetailCommand(){
+    protected static function networkDetailCommand():string{
         return self::detailInternal("network");
     }
 
-    public static function osDetail(){
+    public static function osDetail():string{
         return self::exec(self::osDetailCommand());
     }
 
-    public static function networkDetail(){
+    public static function networkDetail():string{
         return self::exec(self::networkDetailCommand());
     }
 }
