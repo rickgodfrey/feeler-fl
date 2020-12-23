@@ -16,6 +16,7 @@ use Feeler\Fl\Network\Connection;
 use Feeler\Fl\Network\IP_Checker;
 use Feeler\Fl\Network\Protocol;
 use Feeler\Fl\Network\Protocols\Http\Exceptions\HttpException;
+use Feeler\Fl\Service\ServiceEnv;
 
 class HttpReceiver extends Singleton
 {
@@ -25,21 +26,83 @@ class HttpReceiver extends Singleton
     public function getAllHeaders(){
         if (!Arr::isAvailable($this->headers)) {
             $headers = [];
-            foreach (GlobalAccess::server() as $name => $value) {
-                if (substr($name, 0, 5) == "HTTP_") {
-                    $name = substr($name, 5);
-                    $name = str_replace("_", " ", $name);
-                    $name = str_replace(" ", "-", $name);
-                    $name = strtolower($name);
-                    $nameArr = explode("-", $name);
-                    $name = "";
-                    foreach($nameArr as $str){
-                        $name .= "-".ucfirst($str);
-                    }
-                    $name = substr($name, 1);
+            if(ServiceEnv::platform() === "apache"){
+                foreach (GlobalAccess::server() as $name => $value) {
+                    if (substr($name, 0, 5) === "HTTP_") {
+                        $name = substr($name, 5);
+                        $name = str_replace("_", " ", $name);
+                        $name = str_replace(" ", "-", $name);
+                        $name = strtolower($name);
+                        $nameArr = explode("-", $name);
+                        $name = "";
+                        foreach($nameArr as $str){
+                            $name .= "-".ucfirst($str);
+                        }
+                        $name = substr($name, 1);
 
-                    $headers[$name] = $value;
-                    $headers[strtolower(str_replace("-", "_", $name))] = $value;
+                        $headers[$name] = $value;
+                        $headers[strtolower(str_replace("-", "_", $name))] = $value;
+                    }
+                    else if($name === "REDIRECT_STATUS"){
+                        $key = "STATUS";
+                        $headers[$key] = $value;
+                        GlobalAccess::server($key, $value);
+                    }
+                    else if($name === "REDIRECT_HTTP_AUTHORIZATION"){
+                        $key = "HTTP_AUTHORIZATION";
+                        $authMethod = explode(" ", $value);
+                        if(!isset($authMethod[1])){
+                            continue;
+                        }
+                        $authType = $authMethod[0];
+                        $authInfo = $authMethod[1];
+                        if(!Str::isAvailable($authType) || !Str::isAvailable($authInfo)){
+                            continue;
+                        }
+                        $authType = strtolower($authType);
+                        if($authType !== "basic"){
+                            continue;
+                        }
+                        $authInfo = base64_decode($authInfo);
+                        if(!Str::isAvailable($authInfo)){
+                            continue;
+                        }
+                        $authInfo = explode(":", $authInfo);
+                        if(!isset($authInfo[1])){
+                            continue;
+                        }
+                        $authUsername = $authInfo[0];
+                        $authPassword = $authInfo[1];
+                        if(!Str::isAvailable($authUsername) || !Str::isAvailable($authPassword)){
+                            continue;
+                        }
+
+                        $headers[$key] = $value;
+                        $headers["PHP_AUTH_USER"] = $authUsername;
+                        $headers["PHP_AUTH_PW"] = $authPassword;
+                        GlobalAccess::server($key, $value);
+                        GlobalAccess::server("PHP_AUTH_USER", $authUsername);
+                        GlobalAccess::server("PHP_AUTH_PW", $authPassword);
+                    }
+                }
+            }
+            else{
+                foreach (GlobalAccess::server() as $name => $value) {
+                    if (substr($name, 0, 5) === "HTTP_") {
+                        $name = substr($name, 5);
+                        $name = str_replace("_", " ", $name);
+                        $name = str_replace(" ", "-", $name);
+                        $name = strtolower($name);
+                        $nameArr = explode("-", $name);
+                        $name = "";
+                        foreach($nameArr as $str){
+                            $name .= "-".ucfirst($str);
+                        }
+                        $name = substr($name, 1);
+
+                        $headers[$name] = $value;
+                        $headers[strtolower(str_replace("-", "_", $name))] = $value;
+                    }
                 }
             }
 
@@ -146,8 +209,8 @@ class HttpReceiver extends Singleton
 
         if($inputUsername !== $username || $inputPassword !== $password)
         {
-            http_response_code(401);
             header("WWW-Authenticate: Basic realm=\"{$msg}\"");
+            header("HTTP/".self::version()." 401 Unauthorized");
             exit();
         }
     }
