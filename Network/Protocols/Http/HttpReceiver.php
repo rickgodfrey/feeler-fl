@@ -34,28 +34,29 @@ class HttpReceiver extends Singleton
                             $name = str_replace("_", " ", $name);
                             $name = str_replace(" ", "-", $name);
                             $name = strtolower($name);
-                            $nameArr = explode("-", $name);
-                            $name = "";
-                            foreach($nameArr as $str){
-                                $name .= "-".ucfirst($str);
+                            $nameArr = Arr::explode("-", $name);
+                            if($nameArr){
+                                $name = "";
+                                foreach($nameArr as $str){
+                                    $name .= "-".ucfirst($str);
+                                }
+                                $name = substr($name, 1);
                             }
-                            $name = substr($name, 1);
-
                             $headers[$name] = $value;
                             $headers[strtolower(str_replace("-", "_", $name))] = $value;
                         }
                     }
 
-                    if(isset(GlobalAccess::server()["REDIRECT_STATUS"]) && !isset(GlobalAccess::server()["STATUS"])){
+                    if(GlobalAccess::server("REDIRECT_STATUS") !== null && GlobalAccess::server("STATUS") === null){
                         $key = "STATUS";
-                        $value = GlobalAccess::server()["REDIRECT_STATUS"];
+                        $value = GlobalAccess::server("REDIRECT_STATUS");
                         $headers[$key] = $value;
                         GlobalAccess::server($key, $value);
                     }
 
-                    if(isset(GlobalAccess::server()["REDIRECT_HTTP_AUTHORIZATION"]) && (!isset(GlobalAccess::server()["PHP_AUTH_USER"]) || !isset(GlobalAccess::server()["PHP_AUTH_PW"]))){
+                    if(GlobalAccess::server("REDIRECT_HTTP_AUTHORIZATION") !== null && (GlobalAccess::server("PHP_AUTH_USER") === null || GlobalAccess::server("PHP_AUTH_PW") === null)){
                         $key = "HTTP_AUTHORIZATION";
-                        $value = GlobalAccess::server()["REDIRECT_HTTP_AUTHORIZATION"];
+                        $value = GlobalAccess::server("REDIRECT_HTTP_AUTHORIZATION");
                         $authMethod = explode(" ", $value);
                         if(!isset($authMethod[1])){
                             return ($this->headers = $headers);
@@ -99,12 +100,14 @@ class HttpReceiver extends Singleton
                         $name = str_replace("_", " ", $name);
                         $name = str_replace(" ", "-", $name);
                         $name = strtolower($name);
-                        $nameArr = explode("-", $name);
-                        $name = "";
-                        foreach($nameArr as $str){
-                            $name .= "-".ucfirst($str);
+                        $nameArr = Arr::explode("-", $name);
+                        if($nameArr){
+                            $name = "";
+                            foreach($nameArr as $str){
+                                $name .= "-".ucfirst($str);
+                            }
+                            $name = substr($name, 1);
                         }
-                        $name = substr($name, 1);
 
                         $headers[$name] = $value;
                         $headers[strtolower(str_replace("-", "_", $name))] = $value;
