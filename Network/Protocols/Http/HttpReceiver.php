@@ -144,10 +144,10 @@ class HttpReceiver extends Singleton
         $inputUsername = GlobalAccess::server("PHP_AUTH_USER");
         $inputPassword = GlobalAccess::server("PHP_AUTH_PW");
 
-        if(($inputUsername !== $username || $inputPassword !== $password))
+        if($inputUsername !== $username || $inputPassword !== $password)
         {
+            http_response_code(401);
             header("WWW-Authenticate: Basic realm=\"{$msg}\"");
-            header("HTTP/".self::version()." 401 Unauthorized");
             exit();
         }
     }

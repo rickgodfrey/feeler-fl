@@ -70,19 +70,17 @@ class HttpSender extends Singleton
         $name = str_replace("_", "-", $name);
         $name = str_replace(" ", "-", $name);
 
-        if(strpos($name, "-") !== false){
-            $nameArr = explode("-", $name);
-            $name = "";
-            foreach($nameArr as $str){
-                $name .= "-".ucfirst(strtolower($str));
-            }
-            $name = substr($name, 1);
+        $nameArr = explode("-", $name);
+        $name = "";
+        foreach($nameArr as $str){
+            $name .= "-".ucfirst(strtolower($str));
         }
+        $name = substr($name, 1);
 
         return $name;
     }
 
-    protected function convertDictToHeaderFormat($dict = []){
+    protected function convertDictToHeaderFormat(array $dict = []):array{
         if (!Arr::isAvailable($dict)) {
             return [];
         }
@@ -90,13 +88,9 @@ class HttpSender extends Singleton
         $array = [];
 
         foreach($dict as $name => $value){
-            $name = trim($name);
-            if(!$name) {
+            if(!($name = $this->convertToStandardHeaderName($name))) {
                 continue;
             }
-
-            $name = $this->convertToStandardHeaderName($name);
-
             $array[] = $name.": ".trim($value);
         }
 
@@ -200,7 +194,6 @@ class HttpSender extends Singleton
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $data = curl_exec($ch);
         curl_close($ch);
-
         return $data;
     }
 }
