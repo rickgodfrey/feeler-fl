@@ -17,6 +17,6 @@ class ServiceEnv extends BaseClass {
     }
 
     public static function runningMode():string {
-        return defined("PHP_SAPI") && Str::isAvailable(PHP_SAPI) ? PHP_SAPI : "";
+        return defined("PHP_SAPI") && ($runningMode = PHP_SAPI) && Str::isAvailable($runningMode) ? $runningMode : "";
     }
 }
