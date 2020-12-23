@@ -58,29 +58,29 @@ class HttpReceiver extends Singleton
                         $value = GlobalAccess::server()["REDIRECT_HTTP_AUTHORIZATION"];
                         $authMethod = explode(" ", $value);
                         if(!isset($authMethod[1])){
-                            return $this->headers = $headers;
+                            return ($this->headers = $headers);
                         }
                         $authType = $authMethod[0];
                         $authInfo = $authMethod[1];
                         if(!Str::isAvailable($authType) || !Str::isAvailable($authInfo)){
-                            return $this->headers = $headers;
+                            return ($this->headers = $headers);
                         }
                         $authType = strtolower($authType);
                         if($authType !== "basic"){
-                            return $this->headers = $headers;
+                            return ($this->headers = $headers);
                         }
                         $authInfo = base64_decode($authInfo);
                         if(!Str::isAvailable($authInfo)){
-                            return $this->headers = $headers;
+                            return ($this->headers = $headers);
                         }
                         $authInfo = explode(":", $authInfo);
                         if(!isset($authInfo[1])){
-                            return $this->headers = $headers;
+                            return ($this->headers = $headers);
                         }
                         $authUsername = $authInfo[0];
                         $authPassword = $authInfo[1];
                         if(!Str::isAvailable($authUsername) || !Str::isAvailable($authPassword)){
-                            return $this->headers = $headers;
+                            return ($this->headers = $headers);
                         }
 
                         $headers[$key] = $value;
