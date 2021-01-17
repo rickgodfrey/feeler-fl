@@ -18,6 +18,10 @@ class HttpSender extends Singleton
     protected $headers;
     protected $basicAuth;
 
+    public function __construct(){
+        $this->setHeaders();
+    }
+
     protected function predefinedHeaders()
     {
         return [
@@ -32,7 +36,7 @@ class HttpSender extends Singleton
         ];
     }
 
-    public function setHeaders($headers)
+    public function setHeaders(array $headers = [])
     {
         if (!Arr::isAvailable($headers)) {
             $this->headers = $this->predefinedHeaders();
