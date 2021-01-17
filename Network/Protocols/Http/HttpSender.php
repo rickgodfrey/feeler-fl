@@ -141,12 +141,14 @@ class HttpSender extends Singleton
             }
 
             $queryString = "";
-            foreach($params as $key => $param){
-                $queryString .= "&".urlencode($key)."=".urlencode($param);
+            if(Arr::isArray($params)){
+                foreach($params as $key => $param){
+                    $queryString .= "&".urlencode($key)."=".urlencode($param);
+                }
+                $queryString = substr($queryString, 1);
+                $queryString = $beginSymbol.$queryString;
+                $url .= $queryString;
             }
-            $queryString = substr($queryString, 1);
-            $queryString = $beginSymbol.$queryString;
-            $url .= $queryString;
         }
 
         $headers = $this->headers;
