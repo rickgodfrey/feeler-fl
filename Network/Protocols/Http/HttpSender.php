@@ -8,11 +8,11 @@
 namespace Feeler\Fl\Network\Protocols\Http;
 
 use Feeler\Base\Arr;
+use Feeler\Base\Multiton;
 use Feeler\Base\Str;
-use Feeler\Base\Singleton;
 use Feeler\Fl\Network\Protocols\Http;
 
-class HttpSender extends Singleton
+class HttpSender extends Multiton
 {
     protected $timeout;
     protected $headers;
@@ -36,11 +36,19 @@ class HttpSender extends Singleton
         ];
     }
 
-    public function setHeaders(array $headers = [])
-    {
-        if (!Arr::isAvailable($headers)) {
-            $this->headers = $this->predefinedHeaders();
+    public function setHeader(string $key, $value, bool $override = true):self{
+        if(!Str::isAvailable($key)){
             return $this;
+        }
+        if(!isset($this->headers[$key]) || $override){
+            $this->headers[$key] = $value;
+        }
+        return $this;
+    }
+
+    public function setHeaders(array $headers = []):self{
+        if (!Arr::isAvailable($this->headers)) {
+            $this->headers = $this->predefinedHeaders();
         }
 
         foreach($headers as $name => $value){
@@ -49,7 +57,7 @@ class HttpSender extends Singleton
             }
         }
 
-        $this->headers = Arr::mergeByKey($this->predefinedHeaders(), $headers);
+        $this->headers = Arr::mergeByKey($this->headers, $headers);
 
         return $this;
     }
