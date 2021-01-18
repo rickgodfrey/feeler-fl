@@ -221,7 +221,7 @@ class Time extends \DateTime {
         return time();
     }
 
-    public static function nowMicroTime():string {
+    public static function nowInMicro():float{
         $microtime = (string)microtime();
         if(!preg_match("/^\s*0\.[0-9]+\s*[0-9]+\s*$/", $microtime, $microtime)){
             return false;
@@ -229,8 +229,8 @@ class Time extends \DateTime {
         return $microtime[2].substr($microtime[1], 1);
     }
 
-    public static function nowMicroSecond():float{
-        if(!($microtime = Str::join(".", self::nowMicroTime(), 2))){
+    public static function secondInMicro():float{
+        if(!($microtime = Str::join(".", self::nowInMicro(), 2))){
             return false;
         }
         return (float)("0.".$microtime[1]);
