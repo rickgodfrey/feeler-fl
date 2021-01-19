@@ -8,7 +8,7 @@
 namespace Feeler\Fl\Utils\UUID;
 
 use Feeler\Base\BaseClass;
-use Feeler\Base\Singleton;
+use Feeler\Base\Multiton;
 use Feeler\Base\Str;
 use Feeler\Base\DataFormat;
 use Feeler\Fl\Hardware\NetworkCard;
@@ -22,7 +22,7 @@ use Feeler\Fl\Time;
  * @brief Implement of RFC4122 Definition. Get more detail by visiting official web page.
  * @link https://tools.ietf.org/html/rfc4122.html
  */
-class UUID extends Singleton {
+class UUID extends Multiton {
     const V1 = "v1";
     const V2 = "v2";
     const V3 = "v3";

@@ -18,7 +18,7 @@ class Random extends BaseClass{
     const STRING_LETTERS = "string_letters";
 
     public static function uuid(bool $whole = false): string {
-        return UUID::instance(null, [UUID::V2, self::UUID_ZONE_FLAG, $whole])->uuidString();
+        return UUID::instance(self::UUID_ZONE_FLAG, [UUID::V2, self::UUID_ZONE_FLAG, $whole])->uuidString();
     }
 
     public static function uniqueId() :string {
