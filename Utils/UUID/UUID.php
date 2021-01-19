@@ -7,6 +7,7 @@
 
 namespace Feeler\Fl\Utils\UUID;
 
+use Feeler\Base\Arr;
 use Feeler\Base\BaseClass;
 use Feeler\Base\Multiton;
 use Feeler\Base\Str;
@@ -34,8 +35,7 @@ class UUID extends Multiton {
     const NAMESPACE_OID = "6ba7b8109dad11d180b400c04fd430c8";
     const NAMESPACE_X500 = "6ba7b8109dad11d180b400c04fd430c8";
     const GREGORIAN_OFFSET = 122192928000000000;
-    const VALID_UUID_REGEX = "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$";
-    const MAC_ADDR_FORMAT = '/^[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}$/i';
+    const VALID_UUID_REGEX = "^[0-9A-Fa-f]{8}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{12}$";
 
     protected $uuidString = "";
 
@@ -61,7 +61,6 @@ class UUID extends Multiton {
                 $uuid = strtolower(substr(sha1($uuid), 0, 32));
                 if($whole){$uuid = substr($uuid, 0, 8) ."-".substr($uuid, 8, 4) ."-".substr($uuid, 12, 4) ."-".substr($uuid, 16, 4) ."-".substr($uuid, 20, 12);}
                 break;
-
             case self::V3:
             case self::V5:
                 $time = self::GREGORIAN_OFFSET + (int)(Time::nowInMicro() * 10000000);
@@ -77,11 +76,13 @@ class UUID extends Multiton {
                 }
                 $uuid = Str::join('-', \unpack('H8a/H4b/H4c/H4d/H12e', $string));
                 break;
+            default:
+                $uuid = "";
+                break;
         }
         if(!self::isValidUUID($uuid)){
             return "";
         }
-
         return $uuid;
     }
 

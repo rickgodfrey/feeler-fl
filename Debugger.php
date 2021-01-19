@@ -8,26 +8,20 @@
 namespace Feeler\Fl;
 
 class Debugger{
-	protected static $startTime;
-	protected static $endTime;
-	protected static $executionTime;
-	protected static $decimalPlace = 6;
+    protected static $startTime;
+    protected static $endTime;
+    protected static $executionTime;
+    protected static $decimalPlace = 6;
 
-	public static function startPoint(){
-		$time = microtime();
-		$time = explode(" ", $time);
-		$time = $time[1] + $time[0];
-		self::$startTime = $time;
-	}
+    public static function startPoint(){
+        self::$startTime = Time::nowInMicro();
+    }
 
-	public static function endPoint(){
-		$time = microtime();
-		$time = explode(" ", $time);
-		$time = $time[1] + $time[0];
-		self::$endTime = $time;
-	}
+    public static function endPoint(){
+        self::$endTime = Time::nowInMicro();
+    }
 
-	public static function lastExecutionTime(){
+    public static function lastExecutionTime(){
         $decimalPlace = self::$decimalPlace;
 
         if(!self::$startTime || !self::$endTime || !is_int($decimalPlace) || $decimalPlace < 0){
@@ -42,6 +36,6 @@ class Debugger{
     }
 
     public static function setDecimalPlace($decimalPlace){
-	    self::$decimalPlace = !is_int($decimalPlace) || $decimalPlace < 0 ? 6 : $decimalPlace;
+        self::$decimalPlace = !is_int($decimalPlace) || $decimalPlace < 0 ? 6 : $decimalPlace;
     }
 }

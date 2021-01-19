@@ -20,10 +20,10 @@ class Time extends \DateTime {
     const US_STANDARD_TIME_FORMAT = "F d Y H:i:s";
     const US_STANDARD_DATE_FORMAT = "F d Y";
 
-	protected static $currentTimeZone;
+    protected static $currentTimeZone;
 
     public static function currentTimezone(string $zoneId = null):string{
-	    if($zoneId === null){
+        if($zoneId === null){
             if(!self::$currentTimeZone){
                 self::$currentTimeZone = date_default_timezone_get();
             }
@@ -38,15 +38,15 @@ class Time extends \DateTime {
         return self::$currentTimeZone;
     }
 
-	public static function timeInfo($timestamp = self::NOW):array{
-	    if($timestamp === self::NOW){
+    public static function timeInfo($timestamp = self::NOW):array{
+        if($timestamp === self::NOW){
             $timestamp = null;
         }
-	    if($timestamp !== null && !Number::isInteric($timestamp)){
-	        return [];
+        if($timestamp !== null && !Number::isInteric($timestamp)){
+            return [];
         }
         return getdate($timestamp);
-	}
+    }
 
     public static function strToTime(string $timeStr, $basedTime = null, string $timeformat = null):int{
         if(!Str::isAvailable($timeStr)){
@@ -74,7 +74,7 @@ class Time extends \DateTime {
         return date($format, $time);
     }
 
-	public static function oneDayStartTime($time = null):int{
+    public static function oneDayStartTime($time = null):int{
         return self::strToTime(self::timeToStr($time, self::US_STANDARD_DATE_FORMAT." 0:0:0"));
     }
 
@@ -98,12 +98,12 @@ class Time extends \DateTime {
         return self::strToTime("-1 day", self::oneDayEndTime($time));
     }
 
-	public static function hourStartTime($time = null):int{
-		if(!($timeInfo = self::timeInfo($time))){
-		    return false;
+    public static function hourStartTime($time = null):int{
+        if(!($timeInfo = self::timeInfo($time))){
+            return false;
         }
-		return self::strToTime(self::timeToStr($time, self::US_STANDARD_DATE_FORMAT." {$timeInfo["hours"]}:0:0"));
-	}
+        return self::strToTime(self::timeToStr($time, self::US_STANDARD_DATE_FORMAT." {$timeInfo["hours"]}:0:0"));
+    }
 
     public static function hourEndTime($time = null):int{
         if(!($timeInfo = self::timeInfo($time))){
@@ -120,12 +120,12 @@ class Time extends \DateTime {
         return self::strToTime("+1 hour", self::hourEndTime($time));
     }
 
-	public static function minuteStartTime($time = null):int{
+    public static function minuteStartTime($time = null):int{
         if(!($timeInfo = self::timeInfo($time))){
             return false;
         }
         return self::strToTime(self::timeToStr($time, self::US_STANDARD_DATE_FORMAT." {$timeInfo["hours"]}:{$timeInfo["minutes"]}:0"));
-	}
+    }
 
     public static function minuteEndTime($time = null):int{
         if(!($timeInfo = self::timeInfo($time))){
@@ -180,8 +180,8 @@ class Time extends \DateTime {
     }
 
     public static function minutesHaveSeconds($minutes):int{
-	    if(!Number::isPosiInteric($minutes)){
-	        return 0;
+        if(!Number::isPosiInteric($minutes)){
+            return 0;
         }
         return $minutes * 60;
     }
@@ -207,7 +207,7 @@ class Time extends \DateTime {
         return $weeks * 604800;
     }
 
-	public static function countPeriodDays($startTime, $endTime):int{
+    public static function countPeriodDays($startTime, $endTime):int{
         if(!Number::isPosiInteric($startTime) || !Number::isPosiInteric($endTime)){
             return 0;
         }
@@ -222,8 +222,9 @@ class Time extends \DateTime {
     }
 
     public static function nowInMicro():float{
-        $microtime = (string)microtime();
-        if(!preg_match("/^\s*0\.[0-9]+\s*[0-9]+\s*$/", $microtime, $microtime)){
+        $microtime = microtime();
+        $microtime = (string)Arr::current($microtime);
+        if(!Str::isAvailable($microtime) || !preg_match("/^\s*0\.[0-9]+\s*[0-9]+\s*$/", $microtime, $microtime)){
             return false;
         }
         return $microtime[2].substr($microtime[1], 1);
@@ -234,5 +235,5 @@ class Time extends \DateTime {
             return false;
         }
         return (float)("0.".$microtime[1]);
-	}
+    }
 }
