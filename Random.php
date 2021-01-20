@@ -17,12 +17,12 @@ class Random extends BaseClass{
     const STRING_NUMERIC = "string_numeric";
     const STRING_LETTERS = "string_letters";
 
-    public static function uuid(bool $whole = false): string {
-        return UUID::instance(self::UUID_ZONE_FLAG, [UUID::V2, self::UUID_ZONE_FLAG, $whole])->uuidString();
+    public static function uuid(string $uuidVersion = UUID::V2, bool $whole = false): string {
+        return UUID::instance(self::UUID_ZONE_FLAG, [$uuidVersion, self::UUID_ZONE_FLAG, $whole])->uuidString();
     }
 
     public static function uniqueId() :string {
-        return md5(uniqid(random_int((int)(Time::secondInMicro() * 100000000), Number::intMaximum()), true));
+        return strtolower(substr(sha1(uniqid(random_int((int)(Time::secondInMicro() * 100000000), Number::intMaximum()), true)), 0, 32));
     }
 
     /**

@@ -8,10 +8,8 @@
 namespace Feeler\Fl\Utils\UUID;
 
 use Feeler\Base\Arr;
-use Feeler\Base\BaseClass;
 use Feeler\Base\Multiton;
 use Feeler\Base\Str;
-use Feeler\Base\DataFormat;
 use Feeler\Fl\Hardware\NetworkCard;
 use Feeler\Fl\Random;
 use Feeler\Fl\System\Process;
@@ -35,7 +33,7 @@ class UUID extends Multiton {
     const NAMESPACE_OID = "6ba7b8109dad11d180b400c04fd430c8";
     const NAMESPACE_X500 = "6ba7b8109dad11d180b400c04fd430c8";
     const GREGORIAN_OFFSET = 122192928000000000;
-    const VALID_UUID_REGEX = "^[0-9A-Fa-f]{8}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{12}$";
+    const VALID_UUID_REGEX = "^[0-9A-Fa-f]{8}[0-9A-Fa-f]{4}[0-9A-Fa-f]{4}[0-9A-Fa-f]{4}[0-9A-Fa-f]{12}$";
 
     protected $uuidString = "";
 
@@ -53,17 +51,15 @@ class UUID extends Multiton {
             case self::V2:
             case self::V4:
                 $uuid = "{".self::NAMESPACE_DNS."}";
-                if($macAddr = NetworkCard::getEth0MacAddr()){$macAddr = Str::replace(":", "", $macAddr);$macAddr = str_shuffle($macAddr);$macAddr = str_split($macAddr, 2);$macAddr = Arr::join(":", $macAddr);$uuid .= "-{".md5($macAddr)."}";}
-                if($uuidVersion === self::V2 && $pid = Process::pid()){$uuid .= "-{".md5($pid)."}";}
+                if($uuidVersion === self::V1 && ($macAddr = NetworkCard::getEth0MacAddr())){$uuid .= "-{".md5($macAddr)."}";}
+                if(Arr::inArray($uuidVersion, [self::V1, self::V2]) && $pid = Process::pid()){$uuid .= "-{".md5($pid)."}";}
                 $uuid .= "-{".md5(Random::chars(64, Random::STRING_MIXED, false))."}";
                 $uuid .= "-{".Random::uniqueId()."}";
-                if(Str::isAvailable($name)){$uuid .= "-{{$name}}";}
                 $uuid = strtolower(substr(sha1($uuid), 0, 32));
-                if($whole){$uuid = substr($uuid, 0, 8) ."-".substr($uuid, 8, 4) ."-".substr($uuid, 12, 4) ."-".substr($uuid, 16, 4) ."-".substr($uuid, 20, 12);}
                 break;
             case self::V3:
             case self::V5:
-                $time = self::GREGORIAN_OFFSET + (int)(Time::nowInMicro() * 10000000);
+                $time = self::GREGORIAN_OFFSET + (int)(Time::nowInMicro() * 100000000);
                 $string = pack('NnnnH12',
                     $time & 0xffffffff,
                     $time >> 32 & 0xffff,
@@ -74,7 +70,7 @@ class UUID extends Multiton {
                 if(strlen($string) !== 16){
                     return "";
                 }
-                $uuid = Str::join('-', \unpack('H8a/H4b/H4c/H4d/H12e', $string));
+                $uuid = Arr::join("", \unpack('H8a/H4b/H4c/H4d/H12e', $string));
                 break;
             default:
                 $uuid = "";
@@ -83,6 +79,7 @@ class UUID extends Multiton {
         if(!self::isValidUUID($uuid)){
             return "";
         }
+        if($whole){$uuid = substr($uuid, 0, 8) ."-".substr($uuid, 8, 4) ."-".substr($uuid, 12, 4) ."-".substr($uuid, 16, 4) ."-".substr($uuid, 20, 12);}
         return $uuid;
     }
 
