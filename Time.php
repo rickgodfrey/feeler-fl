@@ -229,7 +229,7 @@ class Time extends \DateTime {
         return "{$microtime[2]}.{$microtime[1]}";
     }
 
-    public static function secondInMicro():string{
+    public static function secondInMicro():float{
         if(!($microtime = Str::join(".", self::nowInMicro(), 2))){
             return false;
         }
