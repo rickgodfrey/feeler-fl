@@ -40,6 +40,9 @@ class HttpSender extends Multiton
         if(!Str::isAvailable($key)){
             return $this;
         }
+        if (!Arr::isAvailable($this->headers)) {
+            $this->headers = $this->predefinedHeaders();
+        }
         if(!isset($this->headers[$key]) || $override){
             $this->headers[$key] = $value;
         }
@@ -49,12 +52,6 @@ class HttpSender extends Multiton
     public function setHeaders(array $headers = []):self{
         if (!Arr::isAvailable($this->headers)) {
             $this->headers = $this->predefinedHeaders();
-        }
-
-        foreach($headers as $name => $value){
-            if(strpos($name, "-") === false){
-                continue;
-            }
         }
 
         $this->headers = Arr::mergeByKey($this->headers, $headers);
