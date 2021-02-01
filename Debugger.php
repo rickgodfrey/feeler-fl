@@ -7,11 +7,13 @@
 
 namespace Feeler\Fl;
 
+use Feeler\Base\Number;
+
 class Debugger{
     protected static $startTime;
     protected static $endTime;
     protected static $executionTime;
-    protected static $decimalPlace = 6;
+    protected static $decimalPlace = 8;
 
     public static function startPoint(){
         self::$startTime = Time::nowInMicro();
@@ -30,12 +32,12 @@ class Debugger{
         }
 
         $time = self::$endTime - self::$startTime;
-        self::$executionTime = number_format($time, $decimalPlace);
+        self::$executionTime = Number::decimalFormat($time, $decimalPlace, false);
 
         return self::$executionTime;
     }
 
     public static function setDecimalPlace($decimalPlace){
-        self::$decimalPlace = !is_int($decimalPlace) || $decimalPlace < 0 ? 6 : $decimalPlace;
+        self::$decimalPlace = !is_int($decimalPlace) || $decimalPlace < 0 ? 8 : $decimalPlace;
     }
 }

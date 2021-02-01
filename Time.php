@@ -221,16 +221,15 @@ class Time extends \DateTime {
         return time();
     }
 
-    public static function nowInMicro():float{
+    public static function nowInMicro():string{
         $microtime = microtime();
-        $microtime = (string)Arr::current($microtime);
-        if(!Str::isAvailable($microtime) || !preg_match("/^\s*0\.[0-9]+\s*[0-9]+\s*$/", $microtime, $microtime)){
+        if(!Str::isAvailable($microtime) || !preg_match("/^\s*0\.([0-9]+)\s*([0-9]+)\s*$/", $microtime, $microtime)){
             return false;
         }
-        return $microtime[2].substr($microtime[1], 1);
+        return "{$microtime[2]}.{$microtime[1]}";
     }
 
-    public static function secondInMicro():float{
+    public static function secondInMicro():string{
         if(!($microtime = Str::join(".", self::nowInMicro(), 2))){
             return false;
         }
