@@ -10,7 +10,6 @@ namespace Feeler\Fl\Network\Protocols\Http;
 use Feeler\Base\Singleton;
 use Feeler\Base\Arr;
 use Feeler\Base\GlobalAccess;
-use Feeler\Fl\Network\Protocols\Http;
 
 class RequestReceiver extends Singleton {
     const GET = "GET";
@@ -76,6 +75,6 @@ class RequestReceiver extends Singleton {
     }
 
     public function requestMethod():string{
-        return Http::receiverInstance()->requestMethod();
+        return HttpReceiver::instance()->requestMethod();
     }
 }

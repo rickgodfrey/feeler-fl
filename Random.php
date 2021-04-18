@@ -9,7 +9,7 @@ namespace Feeler\Fl;
 
 use Feeler\Base\BaseClass;
 use Feeler\Base\Number;
-use Feeler\Fl\Utils\UUID\UUID;
+use Feeler\Fl\Utils\UUID\UUID_Generator;
 
 class Random extends BaseClass{
     const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
@@ -17,8 +17,8 @@ class Random extends BaseClass{
     const STRING_NUMERIC = "string_numeric";
     const STRING_LETTERS = "string_letters";
 
-    public static function uuid(string $uuidVersion = UUID::V2, bool $whole = false): string {
-        return UUID::instance(self::UUID_ZONE_FLAG, [$uuidVersion, self::UUID_ZONE_FLAG, $whole])->uuidString();
+    public static function uuid(string $uuidVersion = UUID_Generator::V2, bool $whole = false): string {
+        return UUID_Generator::instance(self::UUID_ZONE_FLAG, [$uuidVersion, self::UUID_ZONE_FLAG, $whole])->uuidString();
     }
 
     public static function uniqueId() :string {
@@ -64,7 +64,7 @@ class Random extends BaseClass{
         return ($number = self::_number($length, $strict, $startWith)) ? $number
             : ((($strict = ((int)$startWith === 0 ? false : $strict)) !== null && Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")))
                 ? (preg_match("/^[{$numbers}]*({$startWith}[0-9]*)$/", ($number = self::number($length, $strict)), $matches) && ($number = (int)$matches[1]) && (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) ? ($len < $length ? $number.self::number($length - $len, false) : $number) : self::number($length, $strict, $startWith)))
-                : (($number = self::chars($length, self::STRING_NUMERIC)) !== null && $strict && ($number = (int)$number) !== null ? (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) < $length ? $number.self::string(($length - $len), self::STRING_NUMERIC) : $number) : $number));
+                : (($number = self::chars($length, self::STRING_NUMERIC)) !== null && $strict && ($number = (int)$number) !== null ? (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) < $length ? $number.self::chars(($length - $len), self::STRING_NUMERIC) : $number) : $number));
     }
 
     private static function _number($length, bool $strict = true, $startWith = null) :string {

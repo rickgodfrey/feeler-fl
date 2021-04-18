@@ -17,11 +17,11 @@ use Feeler\Fl\Time;
 
 /**
  * Class UUID
- * @package Feeler\Fl\Utils\UUID
+ * @package Feeler\Fl\Utils\UUID_Generator
  * @brief Implement of RFC4122 Definition. Get more detail by visiting official web page.
  * @link https://tools.ietf.org/html/rfc4122.html
  */
-class UUID extends Multiton {
+class UUID_Generator extends Multiton {
     const V1 = "v1";
     const V2 = "v2";
     const V3 = "v3";
@@ -51,10 +51,10 @@ class UUID extends Multiton {
             case self::V2:
             case self::V4:
                 $uuid = "{".self::NAMESPACE_DNS."}";
-                if($uuidVersion === self::V1 && ($macAddr = NetworkCard::getEth0MacAddr())){$uuid .= "-{".md5($macAddr)."}";}
-                if(Arr::inArray($uuidVersion, [self::V1, self::V2]) && $pid = Process::pid()){$uuid .= "-{".md5($pid)."}";}
-                $uuid .= "-{".md5(Random::chars(64, Random::STRING_MIXED, false))."}";
-                $uuid .= "-{".Random::uniqueId()."}";
+                if($uuidVersion === self::V1 && ($macAddr = NetworkCard::getNetCardId())){$uuid .= "-".$macAddr;}
+                if(Arr::inArray($uuidVersion, [self::V1, self::V2]) && $pid = Process::pid()){$uuid .= "-".$pid;}
+                $uuid .= "-".md5(Random::chars(64, Random::STRING_MIXED, false));
+                $uuid .= "-".Random::uniqueId();
                 $uuid = strtolower(substr(sha1($uuid), 0, 32));
                 break;
             case self::V3:

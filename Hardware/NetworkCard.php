@@ -13,22 +13,17 @@ use Feeler\Fl\System\OS;
 use Feeler\Fl\System\Command;
 
 class NetworkCard {
-    protected static $eth0Info = [];
-    protected static $eth0MacAddr = "";
+    protected static $netCardsInfo = [];
+    protected static $netCardsInfoProcessed = [];
 
     public static function getCardPrefix() : string {
         switch(OS::name()){
             case "linux":
                 return "eth";
-                break;
-
             case "macos":
                 return "en";
-                break;
-
             default:
                 return "";
-                break;
         }
     }
 
@@ -36,24 +31,18 @@ class NetworkCard {
         switch(OS::name()){
             case "linux":
                 return OS::LINUX_MAC_ADDR_INFO_BEGIN_WITH;
-                break;
-
             case "macos":
                 return OS::DARWIN_MAC_ADDR_INFO_BEGIN_WITH;
-                break;
-
             default:
                 return "";
-                break;
         }
     }
 
-    public static function getEth0Info() : array {
-        if(!self::$eth0Info){
+    public static function getNetCardsInfo() : array {
+        if(!self::$netCardsInfo){
             if(($cardName = self::getCardPrefix())){
-                $cardName .= "0";
                 $rs = Command::networkDetail();
-                $rs = Str::join(PHP_EOL, $rs);
+                $rs = Str::split(PHP_EOL, $rs);
                 if(!$rs){
                     return [];
                 }
@@ -65,34 +54,44 @@ class NetworkCard {
                         continue;
                     }
 
-                    if(!$firstRowMatched && preg_match("/{$cardName}\s*(?:\:)?/i", $info)){
+                    if(!$firstRowMatched && preg_match("/{$cardName}(?<card_number>(?:[0-9]{1})|(?:[1-9][0-9]+))\s*(?:\:)?/i", $info)){
                         $firstRowMatched = true;
                     }
                     if($firstRowMatched && preg_match("/status\s*(?:\:)?/i", $info)){
                         $endFlagCrossedRows++;
                     }
                     if($firstRowMatched && $endFlagCrossedRows <= 1){
-                        $cardInfo[] = $info;
+                        $cardInfo[(int)$info["card_number"]] = $info;
                     }
                 }
-                self::$eth0Info = $cardInfo;
+                self::$netCardsInfo = $cardInfo;
             }
         }
 
-        return self::$eth0Info;
+        return self::$netCardsInfo;
     }
 
-    public static function getEth0MacAddr() : string {
-        if(!Str::isAvailable(self::$eth0MacAddr)){
-            if(!($rs = self::getEth0Info())){return "";}
-            $beginWith = self::macAddrInfoBeginWith();
-            foreach($rs as $info){
-                if(Str::isAvailable($info) && preg_match("/{$beginWith}\s*((?:[0-9a-z]{2})(?:[:0-9a-z]{3}){5})/i", $info, $matches)){
-                    self::$eth0MacAddr = $matches[1];
-                    break;
+    public static function getNetCardInfo(int $cardNumber = 0):array{
+        return isset(self::$netCardsInfo[$cardNumber]) ? self::$netCardsInfo[$cardNumber] : [];
+    }
+
+    public static function getNetCardId(int $cardNumber = 0) : string {
+        if(!($cardInfo = self::getNetCardInfo($cardNumber))){
+            return "";
+        }
+
+        $beginWith = self::macAddrInfoBeginWith();
+        $cardIdMatched = false;
+        foreach($cardInfo as $info){
+            if(Str::isAvailable($info) && preg_match("/{$beginWith}\s*((?:[0-9a-z]{2})(?:[:0-9a-z]{3}){5})/i", $info, $matches)){
+                if(!isset(self::$netCardsInfoProcessed[$cardNumber])){
+                    self::$netCardsInfoProcessed[$cardNumber] = [];
                 }
+                self::$netCardsInfoProcessed[$cardNumber]["card_id"] = $matches[1];
+                $cardIdMatched = true;
+                break;
             }
         }
-        return self::$eth0MacAddr;
+        return $cardIdMatched ? self::$netCardsInfoProcessed[$cardNumber]["card_id"] : "";
     }
 }

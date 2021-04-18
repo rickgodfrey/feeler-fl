@@ -10,7 +10,7 @@ namespace Feeler\Fl\Network\Protocols\Http\Exceptions;
 use Feeler\Base\Obj;
 use Feeler\Base\Errno;
 use Feeler\Fl\Exceptions\BaseException;
-use Feeler\Fl\Network\Protocols\Http;
+use Feeler\Fl\Network\Protocols\Http\HttpReceiver;
 
 
 class HttpException extends BaseException {
@@ -60,7 +60,7 @@ class HttpException extends BaseException {
 		call_user_func($outputCallback, $output);
         $contentLength = strlen($output);
 
-        Http::receiverInstance()->responseCode(200);
+        HttpReceiver::instance()->responseCode(200);
         ob_end_clean();
         header("Content-Type: application/json; charset=utf-8");
         header("Content-Length: {$contentLength}");

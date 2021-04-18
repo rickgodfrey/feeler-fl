@@ -10,7 +10,6 @@ namespace Feeler\Fl\Network\Protocols\Http;
 use Feeler\Base\Arr;
 use Feeler\Base\Multiton;
 use Feeler\Base\Str;
-use Feeler\Fl\Network\Protocols\Http;
 
 class HttpSender extends Multiton
 {
@@ -28,8 +27,8 @@ class HttpSender extends Multiton
             "connection" => "keep-alive",
             "cache_control" => "no-cache",
             "pragma" => "no-cache",
-            "user_agent" => Http::receiverInstance()->userAgent(),
-            "accept" => Http::receiverInstance()->accept(),
+            "user_agent" => HttpReceiver::instance()->userAgent(),
+            "accept" => HttpReceiver::instance()->accept(),
             "referer" => "",
             "accept_encoding" => "gzip,deflate,sdch",
             "accept_language" => "en-US,zh-CN;q=0.8,zh;q=0.6",
