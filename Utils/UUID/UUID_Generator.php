@@ -53,6 +53,7 @@ class UUID_Generator extends Multiton {
             case self::V1:
             case self::V2:
             case self::V4:
+                $uuid = $name;
                 if($uuidVersion === self::V1 && ($macAddr = NetworkCard::getNetCardId())){$uuid .= "-".$macAddr;}
                 if(Arr::inArray($uuidVersion, [self::V1, self::V2]) && $pid = Process::pid()){$uuid .= "-".$pid;}
                 $uuid .= "-".md5(Random::chars(64, Random::STRING_MIXED, false));
