@@ -11,15 +11,14 @@ use Feeler\Base\BaseClass;
 use Feeler\Base\Str;
 
 class Command extends BaseClass {
-    const UNIX_NETWORK_DETAIL = "ifconfig -a";
-    const UNIX_OS_DETAIL = "lsb_release -a";
+    const UNIX_NETWORK_DETAIL = "/sbin/ifconfig -a";
+    const UNIX_OS_DETAIL = "/etc/lsb_release -a";
     const WINNT_NETWORK_DETAIL = "ipconfig /all";
 
     protected static function detailInternal(string $needle):string{
         $osFamily = OS::family();
         $osFamily = strtoupper($osFamily);
         $needle = strtoupper($needle);
-
         return (string)self::constValue("{$osFamily}_{$needle}_DETAIL");
     }
 
@@ -27,7 +26,6 @@ class Command extends BaseClass {
         if(!Str::isAvailable($command)){
             return "";
         }
-
         return (string)@shell_exec($command);
     }
 

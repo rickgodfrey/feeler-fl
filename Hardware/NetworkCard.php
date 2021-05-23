@@ -53,25 +53,27 @@ class NetworkCard {
                     if(!Str::isAvailable($info)){
                         continue;
                     }
-
-                    if(!$firstRowMatched && preg_match("/{$cardName}(?<card_number>(?:[0-9]{1})|(?:[1-9][0-9]+))\s*(?:\:)?/i", $info)){
+                    if(!$firstRowMatched && preg_match("/{$cardName}(?<card_number>(?:[0-9]{1})|(?:[1-9][0-9]+))\s*(?:\:)?/i", $info, $matches)){
                         $firstRowMatched = true;
                     }
                     if($firstRowMatched && preg_match("/status\s*(?:\:)?/i", $info)){
                         $endFlagCrossedRows++;
                     }
                     if($firstRowMatched && $endFlagCrossedRows <= 1){
-                        $cardInfo[(int)$info["card_number"]] = $info;
+                        $cardInfo[] = $info;
                     }
                 }
-                self::$netCardsInfo = $cardInfo;
+                if($firstRowMatched){
+                    $cardNumber = (int)$matches["card_number"];
+                    self::$netCardsInfo[$cardNumber] = $cardInfo;
+                }
             }
         }
-
         return self::$netCardsInfo;
     }
 
     public static function getNetCardInfo(int $cardNumber = 0):array{
+        self::getNetCardsInfo();
         return isset(self::$netCardsInfo[$cardNumber]) ? self::$netCardsInfo[$cardNumber] : [];
     }
 
