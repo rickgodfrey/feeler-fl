@@ -230,7 +230,7 @@ class Time extends \DateTime {
     }
 
     public static function secondInMicro():float{
-        if(!($microtime = Str::split(".", self::nowInMicro(), 2))){
+        if(!($microtime = Str::splitToArrayByDelimiter(self::nowInMicro(), ".", 2))){
             return false;
         }
         return (float)("0.".$microtime[1]);

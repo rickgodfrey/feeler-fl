@@ -51,10 +51,10 @@ class UUID_Generator extends Multiton {
             case self::V2:
             case self::V4:
                 $uuid = self::NAMESPACE_DNS;
-                if($uuidVersion === self::V1 && ($macAddr = NetworkCard::getNetCardId())){$uuid .= $macAddr;}
-                if(Arr::inArray($uuidVersion, [self::V1, self::V2]) && $pid = Process::pid()){$uuid .= $pid;}
-                $uuid .= md5(Random::chars(64, Random::STRING_MIXED, false));
-                $uuid .= Random::uniqueId();
+                if($uuidVersion === self::V1 && ($macAddr = NetworkCard::getNetCardId())){$uuid .= "-".$macAddr;}
+                if(Arr::inArray($uuidVersion, [self::V1, self::V2]) && $pid = Process::pid()){$uuid .= "-".$pid;}
+                $uuid .= "-".md5(Random::chars(64, Random::STRING_MIXED, false));
+                $uuid .= "-".Random::uniqueId();
                 $uuid = strtolower(substr(sha1($uuid), 0, 32));
                 break;
             case self::V3:
@@ -70,7 +70,7 @@ class UUID_Generator extends Multiton {
                 if(strlen($string) !== 16){
                     return "";
                 }
-                $uuid = Arr::join("", \unpack('H8a/H4b/H4c/H4d/H12e', $string));
+                $uuid = Arr::joinToString(unpack('H8a/H4b/H4c/H4d/H12e', $string));
                 break;
             default:
                 $uuid = "";

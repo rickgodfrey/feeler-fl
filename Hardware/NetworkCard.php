@@ -42,7 +42,7 @@ class NetworkCard {
         if(!self::$netCardsInfo){
             if(($cardName = self::getCardPrefix())){
                 $rs = Command::networkDetail();
-                $rs = Str::split(PHP_EOL, $rs);
+                $rs = Str::splitToArrayByDelimiter($rs, PHP_EOL);
                 if(!$rs){
                     return [];
                 }

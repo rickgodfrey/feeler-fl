@@ -34,7 +34,7 @@ class HttpReceiver extends Singleton
                             $name = str_replace("_", " ", $name);
                             $name = str_replace(" ", "-", $name);
                             $name = strtolower($name);
-                            $nameArr = Str::split("-", $name);
+                            $nameArr = Str::splitToArrayByDelimiter($name, "-");
                             if($nameArr){
                                 $name = "";
                                 foreach($nameArr as $str){
@@ -100,7 +100,7 @@ class HttpReceiver extends Singleton
                         $name = str_replace("_", " ", $name);
                         $name = str_replace(" ", "-", $name);
                         $name = strtolower($name);
-                        $nameArr = Str::split("-", $name);
+                        $nameArr = Str::splitToArrayByDelimiter($name, "-");
                         if($nameArr){
                             $name = "";
                             foreach($nameArr as $str){
