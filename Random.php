@@ -59,6 +59,7 @@ class Random extends BaseClass{
      * @param bool $strict
      * @param null $startWith
      * @return string
+     * @throws \Exception
      */
     public static function number($length, bool $strict = true, $startWith = null) :string {
         return ($number = self::_number($length, $strict, $startWith)) ? $number
