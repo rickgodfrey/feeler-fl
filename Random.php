@@ -12,7 +12,7 @@ use Feeler\Base\Number;
 use Feeler\Fl\Utils\UUID\UUID_Generator;
 
 class Random extends BaseClass{
-    const UUID_ZONE_FLAG = "7eb4014b7da8e2ffcbaec069a5b6c87c";
+    const UUID_ZONE_FLAG = "7bc7d4ade3240e891cd9042a0179fab6";
     const STRING_MIXED = "string_mixed";
     const STRING_NUMERIC = "string_numeric";
     const STRING_LETTERS = "string_letters";
