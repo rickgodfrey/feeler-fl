@@ -16,23 +16,23 @@ class Req{
     const PUT = RequestReceiver::PUT;
     const DELETE = RequestReceiver::DELETE;
 
-    public static function filter($data, $type = Filter::HTML_ESCAPED, $len = -1){
+    public static function filter($data, $type = HttpFilter::HTML_ESCAPED, $len = -1){
         return RequestReceiver::instance()->filter($data, $type, $len);
     }
 
-    public static function get($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public static function get($field = null, $type = HttpFilter::HTML_ESCAPED, $len = -1){
         return RequestReceiver::instance()->get($field, $type, $len);
     }
 
-    public static function post($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public static function post($field = null, $type = HttpFilter::HTML_ESCAPED, $len = -1){
         return RequestReceiver::instance()->post($field, $type, $len);
     }
 
-    public static function both($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public static function both($field = null, $type = HttpFilter::HTML_ESCAPED, $len = -1){
         return RequestReceiver::instance()->both($field, $type, $len);
     }
 
-    public static function input($field = null, $type = Filter::HTML_ESCAPED, $len = -1){
+    public static function input($field = null, $type = HttpFilter::HTML_ESCAPED, $len = -1){
         return RequestReceiver::instance()->input($field, $type, $len);
     }
 

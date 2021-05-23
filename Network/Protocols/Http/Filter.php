@@ -11,7 +11,7 @@ use Feeler\Base\BaseClass;
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
 
-class Filter{
+class HttpFilter{
     const INT = "int";
     const FLOAT = "float";
     const DOUBLE = "double";
