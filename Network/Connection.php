@@ -37,10 +37,10 @@ class Connection {
     }
 
     public static function remoteIpAddr(bool $getRealIp = true):string{
-        if($getRealIp && ($ipAddr = (string)GlobalAccess::server("HTTP_CLIENT_IP")) && strcasecmp($ipAddr, "unknown")){
+        if($getRealIp && ($ipAddr = (string)GlobalAccess::server("HTTP_CLIENT_IP")) && strcasecmp($ipAddr, IP::IP_UNKNOWN)){
             return $ipAddr;
         }
-        if($getRealIp && ($ipAddr = (string)GlobalAccess::server("HTTP_X_FORWARDED_FOR")) && strcasecmp($ipAddr, "unknown")){
+        if($getRealIp && ($ipAddr = (string)GlobalAccess::server("HTTP_X_FORWARDED_FOR")) && strcasecmp($ipAddr, IP::IP_UNKNOWN)){
             return $ipAddr;
         }
         return (string)GlobalAccess::server("REMOTE_ADDR");

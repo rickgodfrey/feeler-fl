@@ -12,7 +12,7 @@ use Feeler\Base\Errno;
 /**
  * Exception thrown if an error which can only be found on runtime occurs.
  */
-class BaseException extends \Feeler\Base\Exceptions\BaseException {
+class BaseException extends \Exception {
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

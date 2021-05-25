@@ -24,13 +24,28 @@ class Uploader{
 	private $_sysErrCodeBaseNum = 1000;
 	private $_commonErrCodeBaseNum = 2000;
 	
-	function __construct($dir, $maxSize = 20480, $force = false){
-		$this->rootPath = ROOT_PATH;
+	public function __construct($dir, $maxSize = 20480, $force = false){
 		$this->dir = $dir;
 		$this->path = $this->rootPath.$dir;
 		$this->maxSize = $maxSize * 1024;
 		$this->force = $force;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getRootPath()
+    {
+        return $this->rootPath;
+    }
+
+    /**
+     * @param mixed $rootPath
+     */
+    public function setRootPath($rootPath): void
+    {
+        $this->rootPath = $rootPath;
+    }
 
 	private function _getErrorCode($errCode, $sys = false){
 		if(is_numeric($errCode) && $errCode){
@@ -41,7 +56,7 @@ class Uploader{
 		return $errCode;
 	}
 
-	public function act(){
+	private function _getFilesInfo(){
 		$filesInfo = [];
 		if(!is_dir($this->path)){
 			File::mkdir($this->path);
@@ -140,7 +155,6 @@ class Uploader{
 						$filesInfo[$field][0]["src"] = $this->dir.$filesInfo[$field][0]["name"];
 						$filesInfo[$field][0]["file"] = $this->path.$filesInfo[$field][0]["name"];
 						$filesInfo[$field][0]["size"] = $file["size"];
-
 						$filesInfo[$field][0]["code"] = $this->_getErrorCode(100, true);
 
 						if((!$this->force && is_file($filesInfo[$field][0]["file"]) && md5_file($filesInfo[$field][0]["file"]) === $filesInfo[$field][0]["md5"]) ||
@@ -152,7 +166,19 @@ class Uploader{
 				}
 			}
 		}
-		
 		return $filesInfo;
 	}
+
+	public function upload():array{
+        $filesInfo = $this->_getFilesInfo();
+        $filesObjs = [];
+        foreach($filesInfo as $field => $fieldFilesInfo){
+            foreach($filesInfo as $fileNumber => $fieldFileInfo) {
+                $file = new File($fieldFileInfo["file"]);
+                $file->setFileSrc($fieldFileInfo["src"]);
+                $filesObjs[$field][$fileNumber] = $file;
+            }
+        }
+        return $filesObjs;
+    }
 }

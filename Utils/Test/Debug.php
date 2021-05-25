@@ -5,11 +5,11 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl;
+namespace Feeler\Fl\Utils\Test;
 
 use Feeler\Base\Number;
 
-class Debugger{
+class Debug{
     protected static $startTime;
     protected static $endTime;
     protected static $executionTime;
