@@ -5,8 +5,8 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl\Network\AccessControl;
+namespace Feeler\Fl\Hardware;
 
-class AccessControl {
-
+class CpuThrottle extends \Feeler\Fl\Throttle {
+    
 }

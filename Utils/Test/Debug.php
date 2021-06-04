@@ -8,6 +8,7 @@
 namespace Feeler\Fl\Utils\Test;
 
 use Feeler\Base\Number;
+use Feeler\Fl\Time;
 
 class Debug{
     protected static $startTime;
@@ -37,7 +38,7 @@ class Debug{
         return self::$executionTime;
     }
 
-    public static function setDecimalPlace($decimalPlace){
-        self::$decimalPlace = !is_int($decimalPlace) || $decimalPlace < 0 ? 8 : $decimalPlace;
+    public static function setDecimalPlace(int $decimalPlace){
+        self::$decimalPlace = $decimalPlace < 0 ? 8 : $decimalPlace;
     }
 }

@@ -7,6 +7,6 @@
 
 namespace Feeler\Fl\Network;
 
-class Throttle extends \Feeler\Fl\Throttle {
+class NetworkThrottle extends \Feeler\Fl\Throttle {
 
 }

@@ -169,7 +169,7 @@ class Uploader{
 		return $filesInfo;
 	}
 
-	public function upload():array{
+	public function act():array{
         $filesInfo = $this->_getFilesInfo();
         $filesObjs = [];
         foreach($filesInfo as $field => $fieldFilesInfo){
