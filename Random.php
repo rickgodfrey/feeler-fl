@@ -9,6 +9,7 @@ namespace Feeler\Fl;
 
 use Feeler\Base\BaseClass;
 use Feeler\Base\Number;
+use Feeler\Base\Math\Utils\BasicOperation;
 use Feeler\Fl\Utils\UUID\UUID_Generator;
 
 class Random extends BaseClass{
@@ -22,7 +23,7 @@ class Random extends BaseClass{
     }
 
     public static function uniqueId() :string {
-        return strtolower(substr(sha1(uniqid(random_int((int)(Time::secondInMicro() * 100000000), Number::intMaximum()), true)), 0, 32));
+        return strtolower(substr(sha1(uniqid(random_int((int)(Time::secondInMicro() * 100000000), Number::intMax()), true)), 0, 32));
     }
 
     /**
@@ -32,20 +33,19 @@ class Random extends BaseClass{
      * @return string
      * @throws \Exception
      */
-    public static function chars($length, string $stringType = self::STRING_MIXED, bool $withUUID = true) :string {
-        if(!self::defined($stringType) || !Number::isPosiInteric($length)){return "";}
-        $length = (int)$length;
+    public static function chars(int $length, string $stringType = self::STRING_MIXED, bool $withUUID = false) :string {
+        if(!self::defined($stringType) || !Number::isPosiInt($length)){return "";}
         $hash = "";
         $seed = "";
-        $max = 0;
-        while($max < $length){
+        $round = 0;
+        while($round < $length){
             $str = str_shuffle(($withUUID ? self::uuid() : self::uniqueId()));
             ($stringType === self::STRING_NUMERIC) and ($str = base_convert($str, 16, 10));
             $seed .= $str;
-            $max += strlen($str);
+            $round += strlen($str);
         }
-        for(($max--) && $i = 0; $i < $length; $i++) {
-            $char = $seed[random_int(0, $max)];
+        for(($round--) && $i = 0; $i < $length; $i++) {
+            $char = $seed[random_int(0, $round)];
             if(($stringType === self::STRING_LETTERS) && ($ord = ord($char)) >= 48 && $ord <= 57){
                 $char = chr(random_int(65, 122));
             }
@@ -54,27 +54,16 @@ class Random extends BaseClass{
         return $hash;
     }
 
-    /**
-     * @param $length
-     * @param bool $strict
-     * @param null $startWith
-     * @return string
-     * @throws \Exception
-     */
-    public static function number($length, bool $strict = true, $startWith = null) :string {
-        return ($number = self::_number($length, $strict, $startWith)) ? $number
-            : ((($strict = ((int)$startWith === 0 ? false : $strict)) !== null && Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($numbers = str_replace("{$startWith}", "", "0123456789")))
-                ? (preg_match("/^[{$numbers}]*({$startWith}[0-9]*)$/", ($number = self::number($length, $strict)), $matches) && ($number = (int)$matches[1]) && (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) ? ($len < $length ? $number.self::number($length - $len, false) : $number) : self::number($length, $strict, $startWith)))
-                : (($number = self::chars($length, self::STRING_NUMERIC)) !== null && $strict && ($number = (int)$number) !== null ? (($len = ($number = (int)$number) === 0 ? 0 : strlen($number = (string)$number)) < $length ? $number.self::chars(($length - $len), self::STRING_NUMERIC) : $number) : $number));
-    }
-
-    private static function _number($length, bool $strict = true, $startWith = null) :string {
-        if(!Number::isPosiInteric($length) || ($length = (int)$length) > 18){return "";}
-        if(Number::isInteric($startWith) && ($startWith = (int)$startWith) !== null && $startWith >= 0 && $startWith <= 9 && ($startWith = (string)$startWith) !== null){if($length === 1){return $startWith;}}else{$startWith = "";}
-        $max = (int)str_repeat("9", $length);
-        if($strict){$min = (int)("1".str_repeat("0", $length - 1));$number = (string)mt_rand($min, $max);if(($len = ($length - strlen($number))) > 0){$number = str_repeat("0", $len).$number;}}else{$min = 0;$number = (string)mt_rand($min, $max);}
-        $number = $startWith.$number;
-        if($length > strlen($number)){$number = substr($number, 0, ($length - 1));}
+    public static function number(int $length, bool $strict = true) :string {
+        if($length > 18){
+            $asBigNumber = true;
+        }
+        else{
+            $asBigNumber = false;
+        }
+        $min = $strict ? (int)("1".str_repeat("0", $length - 1)) : 0;
+        $max = str_repeat("9", $length);
+        $number = BasicOperation::randomInt($min, $max, $asBigNumber);
         return $number;
     }
 }
