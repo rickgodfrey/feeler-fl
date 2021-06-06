@@ -5,7 +5,7 @@
 * @license http://www.feeler.top/license/
 */
 
-namespace Feeler\Fl\Network;
+namespace Feeler\Fl\Client;
 
 class Client {
 

@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Fl;
+namespace Feeler\Fl\Throttle;
 
 use Feeler\Base\BaseClass;
 
