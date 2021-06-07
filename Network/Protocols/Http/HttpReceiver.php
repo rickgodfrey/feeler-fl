@@ -233,62 +233,6 @@ class HttpReceiver extends Singleton
         }
     }
 
-    /**
-     * @param $ipAddrPattern
-     * @return bool
-     * @throws HttpException
-     */
-    public function isAllowedIpAddr($ipAddrPattern)
-    {
-        if (!$ipAddrPattern || !Str::isString($ipAddrPattern)) {
-            throw new HttpException("ILLEGAL_IP_ADDR", 1003);
-        }
-
-        $ipAddr = $this->clientIpAddr();
-        $ipVersion = IP::IP_V4;
-        $ipv4AddrRegex = "/^\s*?([0-9]{1,3}|\*)((?:\.(?:[0-9]{1,3}|\*)){1,3})\s*$/i";
-
-        if (!preg_match($ipv4AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
-            $ipVersion = IP::IP_V6;
-        }
-
-        if ($ipVersion == IP::IP_V4) {
-            $array = explode(".", $ipAddrPatternSegs[2]);
-            foreach ($array as $key => $val) {
-                if ($val == "") {
-                    unset($array[$key]);
-                }
-            }
-
-            $ipAddrPatternSegs = Arr::mergeAll([$ipAddrPatternSegs[1]], $array);
-
-            $ipAddrSegs = explode(".", $ipAddr);
-
-            for ($i = 0; $i <= 3; $i++) {
-                if (!isset($ipAddrPatternSegs[$i]) || !isset($ipAddrSegs[$i])) {
-                    return false;
-                }
-
-                if ($ipAddrPatternSegs[$i] == "*") {
-                    continue;
-                }
-
-                if ($ipAddrPatternSegs[$i] !== $ipAddrSegs[$i]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        else if($ipVersion == IP::IP_V6){
-            $ipv6Addr = "::1";
-            return $ipAddr === $ipv6Addr ? true : false;
-        }
-        else{
-            return false;
-        }
-    }
-
     public function version(){
         return Protocol::version();
     }

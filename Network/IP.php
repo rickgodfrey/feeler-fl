@@ -10,12 +10,15 @@ namespace Feeler\Fl\Network;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 use Feeler\Base\ByteFormat;
+use Feeler\Fl\Network\Protocols\Http\Exceptions\HttpException;
 
 class IP {
     const IP_V4 = "IPv4";
     const IP_V6 = "IPv6";
     const IP_INVALID = "IP_INVALID";
     const IP_UNKNOWN = "unknown";
+    const IP_V4_REGEX = "\s*([0-9]{1,3}|\*)((?:\.(?:[0-9]{1,3}|\*)){1,3})\s*";
+    const IP_V6_REGEX = "\s*([0-9A-Fa-f]{1,4})?(?:(?:\:)|(?:[0-9A-Fa-f]{1,4})|\*)*(\:(?:(?:[0-9A-Fa-f]{1,4})|\*))\s*";
 
     public static function version(string $ipAddr):string{
         if(self::isValidIPv6($ipAddr)){
@@ -44,10 +47,10 @@ class IP {
     }
 
     public static function convertNumberToIp($number) : string{
-        return (Number::isInteric($number) ? ($rs = long2ip($number)) : "") ?: "";
+        return (Number::isInteric($number) ? (string)long2ip($number) : "") ?: "";
     }
 
-    public static function isAllowedIpRange($ipAddr1, $ipAddr2):bool{
+    public static function isAllowedIpRange(string $ipAddr1, string $ipAddr2, string $remoteIpAddr = ""):bool{
         $ip1Version = self::version($ipAddr1);
         if($ip1Version === self::IP_INVALID){
             return false;
@@ -56,7 +59,10 @@ class IP {
         if($ip2Version === self::IP_INVALID){
             return false;
         }
-        $remoteIpAddr = Connection::remoteIpAddr();
+        if($ip1Version !== $ip2Version){
+            return false;
+        }
+        $remoteIpAddr = Str::isAvailable($remoteIpAddr) ? $remoteIpAddr : Connection::remoteIpAddr();
         $remoteIpVersion = self::version($remoteIpAddr);
         if($remoteIpVersion === self::IP_INVALID){
             return false;
@@ -80,7 +86,41 @@ class IP {
         return true;
     }
 
-    public static function isAllowedIpAddr($ipAddr):bool{
-        return self::isAllowedIpRange($ipAddr, $ipAddr);
+    public function isAllowedIpAddr(string $ipAddrPattern, string $remoteIpAddr = "")
+    {
+        if (!Str::isAvailable($ipAddrPattern)) {
+            return false;
+        }
+
+        $ipv4AddrRegex = "/^".self::IP_V4_REGEX."$/i";
+        $ipv6AddrRegex = "/^".self::IP_V6_REGEX."$/i";
+        if (preg_match($ipv4AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
+            $patternIpVersion = self::IP_V4;
+        }
+        else if(preg_match($ipv6AddrRegex, $ipAddrPattern, $ipAddrPatternSegs)) {
+            if(substr_count($ipv6AddrRegex, "::") > 1 || substr_count($ipv6AddrRegex, ":::") > 0){
+                return false;
+            }
+            $patternIpVersion = self::IP_V6;
+        }
+        else{
+            return false;
+        }
+
+        $remoteIpAddr = Str::isAvailable($remoteIpAddr) ? $remoteIpAddr : Connection::remoteIpAddr();
+        $remoteIpVersion = self::version($remoteIpAddr);
+        if($remoteIpVersion === self::IP_INVALID || $patternIpVersion !== $remoteIpAddr){
+            return false;
+        }
+
+        $ipAddrStart = str_replace("*", "0", $ipAddrPattern);
+        if ($remoteIpVersion === self::IP_V6) {
+            $ipAddrEnd = str_replace("*", "ffff", $ipAddrPattern);
+        }
+        else {
+            $ipAddrEnd = str_replace("*", "255", $ipAddrPattern);
+        }
+
+        return self::isAllowedIpRange($ipAddrStart, $ipAddrEnd, $remoteIpAddr);
     }
 }
