@@ -17,43 +17,34 @@ use Feeler\Base\TMultiton;
 class Redis extends \Redis {
     use TMultiton;
 
-    protected static $prefix = "";
-    protected static $expiration = null;
+    protected $prefix = "";
+    protected $expiration = null;
 
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
     public function prefix(): string
     {
-        return static::$prefix;
+        return $this->prefix;
     }
 
-    /**
-     * @param mixed $prefix
-     */
-    public static function setPrefix($prefix): void
+    public function setPrefix($prefix): void
     {
         if(Str::isAvailable($prefix)){
-            static::$prefix = $prefix;
+            $this->prefix = $prefix;
         }
     }
 
-    /**
-     * @param $expiration
-     */
-    public static function setExpiration($expiration){
+    public function setExpiration($expiration){
         if(Number::isPosiInteric($expiration)){
-            static::$expiration = (int)$expiration;
+            $this->expiration = (int)$expiration;
         }
     }
 
     public function expiration(){
-        return static::$expiration;
+        return $this->expiration;
     }
 
     public function genKey($key) : string {
@@ -65,11 +56,20 @@ class Redis extends \Redis {
     }
 
     /**
-     * @param string $instanceName
-     * @param ServiceObject $serviceObject
-     * @return bool
+     * @throws \Feeler\Base\Exceptions\InvalidDataDomainException
+     * @throws \RedisException
+     * @throws \ReflectionException
      */
-    public static function init(ServiceObject $serviceObject, string $instanceName = ""){
+    public function checkStatus():void{
+        static::instance()->ping("");
+    }
+
+    /**
+     * @param ServiceObject $serviceObject
+     * @throws \Feeler\Base\Exceptions\InvalidDataDomainException
+     * @throws \ReflectionException
+     */
+    public function init(ServiceObject $serviceObject){
         if($serviceObject->isPersistent == true){
             static::instance()->pconnect($serviceObject->ipAddr, $serviceObject->port);
         }
@@ -80,9 +80,8 @@ class Redis extends \Redis {
         if(Str::isAvailable($serviceObject->password)){
             static::instance()->auth($serviceObject->password);
         }
-
-        static::setPrefix($serviceObject->prefix);
-        static::setExpiration($serviceObject->expiration);
+        static::instance()->setPrefix($serviceObject->prefix);
+        static::instance()->setExpiration($serviceObject->expiration);
     }
 
     /**
