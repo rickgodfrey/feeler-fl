@@ -7,6 +7,8 @@
 
 namespace Feeler\Fl\Hardware;
 
-class CpuThrottle extends \Feeler\Fl\Throttle {
+use Feeler\Fl\Throttle\Throttle;
+
+class CpuThrottle extends Throttle {
     
 }
