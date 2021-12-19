@@ -12,6 +12,7 @@
         "ext-mbstring": "*",
         "ext-json": "*",
         "ext-curl": "*",
+        "ext-redis": "*",
         "feeler/base": "*"
     },
     "license": "MIT",
