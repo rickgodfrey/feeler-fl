@@ -10,6 +10,7 @@ namespace Feeler\Fl\Network\Protocols\Http;
 use Feeler\Base\Arr;
 use Feeler\Base\Str;
 use Feeler\Base\File;
+use Feeler\Base\Number;
 use Feeler\Base\GlobalAccess;
 
 class Uploader{
@@ -48,7 +49,7 @@ class Uploader{
     }
 
 	private function _getErrorCode($errCode, $sys = false){
-		if(is_numeric($errCode) && $errCode){
+		if(Number::isNumeric($errCode) && $errCode){
 			if($sys) $errCode += $this->_sysErrCodeBaseNum;
 			else $errCode += $this->_commonErrCodeBaseNum;
 		}
