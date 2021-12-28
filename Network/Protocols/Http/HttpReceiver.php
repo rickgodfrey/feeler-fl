@@ -121,19 +121,13 @@ class HttpReceiver extends Singleton
         return $this->headers;
     }
 
-    public function getHeader($key)
+    public function getHeader($key):?array
     {
         if (!Str::isAvailable($key)) {
             return null;
         }
 
-        $this->getAllHeaders();
-        if (!Arr::isAvailable($this->headers)) {
-            return null;
-        }
-
-        $dataKey = null;
-        $val = Arr::getVal($this->headers, $key, $dataKey);
+        $val = Arr::getVal($this->getAllHeaders(), $key, $dataKey);
         if($dataKey == null){
             return null;
         }
@@ -143,7 +137,7 @@ class HttpReceiver extends Singleton
 
     public function getHeaders($keys)
     {
-        if (!Arr::isArray($keys) || !$keys) {
+        if (!Arr::isAvailable($keys)) {
             return [];
         }
 
@@ -155,7 +149,7 @@ class HttpReceiver extends Singleton
             }
             $headers[$key] = Arr::current($rs);
         }
-
+        
         return $headers;
     }
 
