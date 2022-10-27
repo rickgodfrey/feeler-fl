@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.feeler.top/
+ * @link https://www.feeler.cc/
  * @copyright Copyright (c) 2019 Rick Guo
- * @license http://www.feeler.top/license/
+ * @license https://www.feeler.cc/license/
  */
 
 namespace Feeler\Fl\Network\Protocols\Http;
@@ -10,6 +10,7 @@ namespace Feeler\Fl\Network\Protocols\Http;
 use Feeler\Base\Arr;
 use Feeler\Base\Multiton;
 use Feeler\Base\Str;
+use Feeler\Fl\Cache\Redis\Redis;
 
 class HttpSender extends Multiton
 {
@@ -17,8 +18,27 @@ class HttpSender extends Multiton
     protected $headers;
     protected $basicAuth;
 
+    protected $redis;
+
     public function __construct(){
         $this->setHeaders();
+    }
+
+    /**
+     * @param object $redis
+     * @var $redis Redis
+     * @return void
+     */
+    public function setRedisInstance(object $redis){
+        $this->redis = $redis;
+    }
+
+    public function redisInstance(){
+        return $this->redis;
+    }
+
+    protected function checkRequestRate(){
+
     }
 
     protected function predefinedHeaders()
