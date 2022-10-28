@@ -30,9 +30,9 @@ class NetworkCard {
     public static function macAddrInfoBeginWith() : string {
         switch(OS::name()){
             case "linux":
-                return OS::LINUX_MAC_ADDR_INFO_BEGIN_WITH;
+                return OS::LINUX_MAC_ADDR_BEGIN_WITH;
             case "macos":
-                return OS::DARWIN_MAC_ADDR_INFO_BEGIN_WITH;
+                return OS::DARWIN_MAC_ADDR_BEGIN_WITH;
             default:
                 return "";
         }

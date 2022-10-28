@@ -20,9 +20,9 @@ class OS extends BaseClass {
     const KEY_DISTRIBUTION_NAME = "distribution_name";
     const KEY_DISTRIBUTION_VERSION = "distribution_version";
 
-    const UNIX_MAC_ADDR_INFO_BEGIN_WITH = "ether";
-    const LINUX_MAC_ADDR_INFO_BEGIN_WITH = self::UNIX_MAC_ADDR_INFO_BEGIN_WITH;
-    const DARWIN_MAC_ADDR_INFO_BEGIN_WITH = self::UNIX_MAC_ADDR_INFO_BEGIN_WITH;
+    const UNIX_MAC_ADDR_BEGIN_WITH = "ether";
+    const LINUX_MAC_ADDR_BEGIN_WITH = self::UNIX_MAC_ADDR_BEGIN_WITH;
+    const DARWIN_MAC_ADDR_BEGIN_WITH = self::UNIX_MAC_ADDR_BEGIN_WITH;
 
     protected static $detail;
 

@@ -27,7 +27,7 @@ class UUID_Generator extends Multiton {
     const V3 = "v3";
     const V4 = "v4";
     const V5 = "v5";
-    const NIL = "00000000-0000-0000-0000-000000000000";
+    const NIL = "00000000000000000000000000000000";
     const NAMESPACE_DNS = "6ba7b8109dad11d180b400c04fd430c8";
     const NAMESPACE_URL = "6ba7b8109dad11d180b400c04fd430c8";
     const NAMESPACE_OID = "6ba7b8109dad11d180b400c04fd430c8";
