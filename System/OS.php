@@ -24,6 +24,8 @@ class OS extends BaseClass {
     const LINUX_MAC_ADDR_BEGIN_WITH = self::UNIX_MAC_ADDR_BEGIN_WITH;
     const DARWIN_MAC_ADDR_BEGIN_WITH = self::UNIX_MAC_ADDR_BEGIN_WITH;
 
+    const UNKNOWN = "unkown";
+
     protected static $detail;
 
     public static function name(){
